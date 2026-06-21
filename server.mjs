@@ -1,4 +1,4 @@
-import { randomBytes } from 'node:crypto';
+import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import fs from 'node:fs/promises';
 import http from 'node:http';
 import net from 'node:net';
@@ -20,6 +20,17 @@ const smtpConfig = {
   from: process.env.MAIL_FROM || process.env.SMTP_USER || '',
   to: process.env.MAIL_TO || 'tiaan374@gmail.com',
 };
+
+// ─── Dashboard auth config ────────────────────────────────────────────────────
+// Server-only secrets — never bundled to the client (unlike the old VITE_DASHBOARD_PASS).
+const dashboardConfig = {
+  pass: process.env.DASHBOARD_PASS || '',
+  supabaseUrl: process.env.VITE_SUPABASE_URL || '',
+  serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
+};
+const DASHBOARD_COOKIE = '_gym_dash_session';
+const DASHBOARD_SESSION_TTL_MS = 12 * 60 * 60 * 1000;
+const dashboardSessions = new Map(); // token -> expiresAt
 
 // Simple in-memory rate limiter: max 10 requests per IP per 10 minutes.
 const rateLimitMap = new Map();
@@ -72,6 +83,36 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === 'GET' && req.url === '/api/geo') {
       await handleGeo(req, res);
+      return;
+    }
+
+    if (req.method === 'POST' && req.url === '/api/dashboard/login') {
+      const ip = req.socket.remoteAddress || 'unknown';
+      if (isRateLimited(ip)) {
+        sendJson(res, 429, { ok: false, error: 'Too many attempts — please try again later.' });
+        return;
+      }
+      await handleDashboardLogin(req, res);
+      return;
+    }
+
+    if (req.method === 'POST' && req.url === '/api/dashboard/logout') {
+      handleDashboardLogout(req, res);
+      return;
+    }
+
+    if (req.method === 'GET' && req.url === '/api/dashboard/session') {
+      const ok = requireDashboardSession(req);
+      sendJson(res, ok ? 200 : 401, { ok });
+      return;
+    }
+
+    if (req.method === 'GET' && req.url?.startsWith('/api/dashboard/data')) {
+      if (!requireDashboardSession(req)) {
+        sendJson(res, 401, { ok: false, error: 'Not authenticated' });
+        return;
+      }
+      await handleDashboardData(req, res);
       return;
     }
 
@@ -139,6 +180,104 @@ async function handleGeo(req, res) {
   } catch (err) {
     sendJson(res, 200, { city: null, country: null });
   }
+}
+
+// ─── Dashboard auth + analytics proxy ─────────────────────────────────────────
+
+function safeCompare(a, b) {
+  const ah = createHash('sha256').update(String(a)).digest();
+  const bh = createHash('sha256').update(String(b)).digest();
+  return timingSafeEqual(ah, bh);
+}
+
+function parseCookies(req) {
+  const header = req.headers.cookie || '';
+  return header.split(';').reduce((acc, pair) => {
+    const idx = pair.indexOf('=');
+    if (idx === -1) return acc;
+    acc[pair.slice(0, idx).trim()] = decodeURIComponent(pair.slice(idx + 1).trim());
+    return acc;
+  }, {});
+}
+
+function dashboardCookieHeader(token, maxAgeSeconds) {
+  const parts = [
+    `${DASHBOARD_COOKIE}=${token}`,
+    'Path=/',
+    'HttpOnly',
+    'SameSite=Lax',
+    `Max-Age=${maxAgeSeconds}`,
+  ];
+  if (!isDev) parts.push('Secure');
+  return parts.join('; ');
+}
+
+function requireDashboardSession(req) {
+  const token = parseCookies(req)[DASHBOARD_COOKIE];
+  if (!token) return false;
+  const expiresAt = dashboardSessions.get(token);
+  if (!expiresAt) return false;
+  if (Date.now() > expiresAt) {
+    dashboardSessions.delete(token);
+    return false;
+  }
+  return true;
+}
+
+async function handleDashboardLogin(req, res) {
+  if (!dashboardConfig.pass) {
+    sendJson(res, 500, { ok: false, error: 'Dashboard password not configured.' });
+    return;
+  }
+
+  const body = await readJsonBody(req);
+  const submitted = String(body.password || '');
+
+  if (!submitted || !safeCompare(submitted, dashboardConfig.pass)) {
+    sendJson(res, 401, { ok: false, error: 'Incorrect passphrase.' });
+    return;
+  }
+
+  const token = randomBytes(32).toString('hex');
+  dashboardSessions.set(token, Date.now() + DASHBOARD_SESSION_TTL_MS);
+  res.setHeader('Set-Cookie', dashboardCookieHeader(token, DASHBOARD_SESSION_TTL_MS / 1000));
+  sendJson(res, 200, { ok: true });
+}
+
+function handleDashboardLogout(req, res) {
+  const token = parseCookies(req)[DASHBOARD_COOKIE];
+  if (token) dashboardSessions.delete(token);
+  res.setHeader('Set-Cookie', dashboardCookieHeader('', 0));
+  sendJson(res, 200, { ok: true });
+}
+
+async function fetchAnalyticsTable(table, dateColumn, sinceIso) {
+  const url = `${dashboardConfig.supabaseUrl}/rest/v1/${table}?select=*&${dateColumn}=gte.${encodeURIComponent(sinceIso)}`;
+  const r = await fetch(url, {
+    headers: {
+      apikey: dashboardConfig.serviceRoleKey,
+      Authorization: `Bearer ${dashboardConfig.serviceRoleKey}`,
+    },
+  });
+  if (!r.ok) throw new Error(`Supabase ${table} fetch failed: ${r.status}`);
+  return r.json();
+}
+
+async function handleDashboardData(req, res) {
+  if (!dashboardConfig.supabaseUrl || !dashboardConfig.serviceRoleKey) {
+    sendJson(res, 500, { ok: false, error: 'Analytics backend is not configured.' });
+    return;
+  }
+
+  const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  const start = url.searchParams.get('start') || new Date(Date.now() - 30 * 86_400_000).toISOString();
+
+  const [views, events] = await Promise.all([
+    fetchAnalyticsTable('page_views', 'entered_at', start),
+    fetchAnalyticsTable('events', 'created_at', start),
+  ]);
+
+  sendJson(res, 200, { views, events });
 }
 
 async function handleSendAgreement(req, res) {

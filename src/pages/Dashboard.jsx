@@ -1,17 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import { createClient } from '@supabase/supabase-js';
 
 import PagePose from '../components/ui/PagePose.jsx';
 import Container from '../components/ui/Container.jsx';
 import StatCard from '../components/dashboard/StatCard.jsx';
 import LineChart from '../components/dashboard/LineChart.jsx';
 import DashboardLogin from '../components/dashboard/DashboardLogin.jsx';
-
-// ─── Supabase client (same anon key used by the tracker) ─────────────────────
-const sb = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY,
-);
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function rangeStart(days) {
@@ -66,26 +59,62 @@ function allDatesInRange(days) {
 }
 
 // ─── ProtectedDashboard ───────────────────────────────────────────────────────
+// Auth lives server-side now (server.mjs `/api/dashboard/*`) — the passphrase
+// is never bundled to the client and analytics data is fetched with the
+// Supabase service_role key, not the public anon key.
 function ProtectedDashboard({ children }) {
-  const [authed, setAuthed] = useState(
-    () => sessionStorage.getItem('_gym_dash') === '1',
-  );
+  const [authed, setAuthed] = useState(null); // null = checking
   const [pass, setPass] = useState('');
   const [error, setError] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleSubmit(e) {
+  useEffect(() => {
+    fetch('/api/dashboard/session', { credentials: 'include' })
+      .then((r) => setAuthed(r.ok))
+      .catch(() => setAuthed(false));
+  }, []);
+
+  async function handleSubmit(e) {
     e.preventDefault();
-    if (pass === import.meta.env.VITE_DASHBOARD_PASS) {
-      sessionStorage.setItem('_gym_dash', '1');
-      setAuthed(true);
-    } else {
+    setSubmitting(true);
+    setError(false);
+    try {
+      const res = await fetch('/api/dashboard/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pass }),
+      });
+      if (res.ok) {
+        setAuthed(true);
+      } else {
+        setError(true);
+        setPass('');
+      }
+    } catch {
       setError(true);
-      setPass('');
+    } finally {
+      setSubmitting(false);
     }
   }
 
+  if (authed === null) {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center px-4">
+        <p className="text-ink-400 text-sm">Checking session…</p>
+      </div>
+    );
+  }
   if (!authed) {
-    return <DashboardLogin onSubmit={handleSubmit} pass={pass} setPass={setPass} error={error} />;
+    return (
+      <DashboardLogin
+        onSubmit={handleSubmit}
+        pass={pass}
+        setPass={setPass}
+        error={error}
+        submitting={submitting}
+      />
+    );
   }
   return children;
 }
@@ -107,10 +136,19 @@ export default function Dashboard() {
     setLoading(true);
     const start = rangeStart(range);
 
-    const [{ data: pvData }, { data: evData }] = await Promise.all([
-      sb.from('page_views').select('*').gte('entered_at', start),
-      sb.from('events').select('*').gte('created_at', start),
-    ]);
+    const res = await fetch(`/api/dashboard/data?start=${encodeURIComponent(start)}`, {
+      credentials: 'include',
+    });
+
+    if (res.status === 401) {
+      // Session expired — reload to fall back to the login screen.
+      window.location.reload();
+      return;
+    }
+
+    const { views: pvData, events: evData } = res.ok
+      ? await res.json()
+      : { views: [], events: [] };
 
     setViews(pvData || []);
     setEvents(evData || []);
@@ -118,6 +156,12 @@ export default function Dashboard() {
   }, [range]);
 
   useEffect(() => { load(); }, [load]);
+
+  function handleLogout() {
+    fetch('/api/dashboard/logout', { method: 'POST', credentials: 'include' }).finally(() => {
+      window.location.reload();
+    });
+  }
 
   // ── Derived stats — ordered so every variable is declared before use ────────
   const totalViews = views.length;
@@ -252,6 +296,12 @@ export default function Dashboard() {
                     {label}
                   </button>
                 ))}
+                <button
+                  onClick={handleLogout}
+                  className="btn btn-ghost text-sm px-4 py-2 rounded-full text-ink-400 hover:text-white transition-colors"
+                >
+                  Log out
+                </button>
               </div>
             </div>
 

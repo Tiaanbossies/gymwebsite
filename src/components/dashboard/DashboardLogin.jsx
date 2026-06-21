@@ -1,4 +1,4 @@
-export default function DashboardLogin({ onSubmit, pass, setPass, error }) {
+export default function DashboardLogin({ onSubmit, pass, setPass, error, submitting }) {
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4">
       <div className="card-surface rounded-2xl p-8 w-full max-w-sm flex flex-col gap-6">
@@ -15,12 +15,13 @@ export default function DashboardLogin({ onSubmit, pass, setPass, error }) {
             value={pass}
             onChange={(e) => setPass(e.target.value)}
             autoFocus
+            disabled={submitting}
           />
           {error && (
             <p className="text-sm text-brand-400">Incorrect passphrase. Try again.</p>
           )}
-          <button type="submit" className="btn btn-primary justify-center">
-            Unlock
+          <button type="submit" className="btn btn-primary justify-center" disabled={submitting}>
+            {submitting ? 'Checking…' : 'Unlock'}
           </button>
         </form>
       </div>

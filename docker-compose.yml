@@ -6,7 +6,6 @@ services:
       args:
         - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
         - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
-        - VITE_DASHBOARD_PASS=${VITE_DASHBOARD_PASS}
     env_file:
       - .env
     environment:

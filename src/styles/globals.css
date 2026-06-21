@@ -1,0 +1,289 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #05070d;
+    color: #f5f6fa;
+    /* Prevent decorative blobs / off-screen orbs from triggering a horizontal
+       scroll on small phones. `clip` would be ideal but `hidden` is supported
+       everywhere and behaves identically here. */
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: 'Archivo Black', 'Bebas Neue', system-ui, sans-serif;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+
+  /* Long words / URLs / emails should wrap on narrow screens instead of
+     forcing the column wider than the viewport. */
+  p, li, dd, dt, figcaption, address {
+    overflow-wrap: anywhere;
+  }
+
+  img,
+  svg,
+  iframe {
+    max-width: 100%;
+  }
+
+  ::selection {
+    background: rgba(220, 43, 56, 0.4);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid #f4535f;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Skip-link — appears on keyboard focus, lets screen-reader / keyboard users
+     jump past chrome straight to the page's main content. */
+  .skip-link {
+    @apply pointer-events-none absolute left-3 top-3 z-[60] -translate-y-20 rounded-full bg-brand-500 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white opacity-0 shadow-glow transition;
+  }
+  .skip-link:focus {
+    @apply pointer-events-auto translate-y-0 opacity-100;
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-[82rem] px-4 sm:px-6 lg:px-10 xl:px-12;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-[11px] sm:text-xs font-semibold uppercase tracking-[0.25em] text-brand-300;
+  }
+
+  .display-1 {
+    @apply font-display text-[clamp(2.35rem,7vw,5.5rem)] leading-[0.95] tracking-mega;
+  }
+
+  .display-2 {
+    @apply font-display text-[clamp(1.85rem,4.8vw,3.9rem)] leading-[1] tracking-headline;
+  }
+
+  .display-3 {
+    @apply font-display text-[clamp(1.35rem,3vw,2.25rem)] leading-[1.08] tracking-headline;
+  }
+
+  /* Fluid body copy — readable on a 320px phone (15px) and not too big on
+     a 1440px desktop (~18px). */
+  .body-lg {
+    @apply text-ink-300 leading-relaxed;
+    font-size: clamp(0.95rem, 1.05vw + 0.7rem, 1.125rem);
+  }
+
+  .divider-y {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent;
+  }
+
+  /* Fluid section spacing — replaces a hard step at sm. */
+  .section {
+    padding-block: clamp(4rem, 8vw, 7rem);
+  }
+
+  .section-tight {
+    padding-block: clamp(3rem, 6vw, 5.25rem);
+  }
+
+  .card-surface {
+    @apply relative rounded-[1.25rem] border border-white/10 bg-gradient-to-b from-ink-800/80 to-ink-900/80 backdrop-blur transition-all duration-300;
+  }
+
+  .btn {
+    @apply inline-flex min-h-12 max-w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-center text-[13px] font-semibold uppercase leading-tight tracking-[0.12em] transition-all duration-200 focus-visible:outline-none sm:px-6 sm:text-sm sm:whitespace-nowrap;
+  }
+
+  /* Compact variant for dense locations like the sticky header. */
+  .btn-compact {
+    @apply !min-h-[38px] !px-4 !py-2.5 !text-[12px] !tracking-[0.1em];
+  }
+
+  /* Primary CTA → Brand Red (matches BOSSIE'S logo wordmark; Join Online is
+     the primary conversion per questionnaire Q17). */
+  .btn-primary {
+    @apply btn bg-brand-500 text-white hover:bg-brand-400 hover:shadow-glow active:scale-[0.98];
+  }
+
+  /* Accent CTA → Steel Blue. Used sparingly for secondary highlights. */
+  .btn-accent {
+    @apply btn bg-accent-500 text-white hover:bg-accent-400 active:scale-[0.98];
+  }
+
+  .btn-ghost {
+    @apply btn border border-white/15 bg-white/5 text-ink-100 hover:border-white/30 hover:bg-white/10;
+  }
+
+  /* WhatsApp green — used only for the WhatsApp click-to-chat chip, kept restrained. */
+  .btn-whatsapp {
+    @apply btn bg-[#25D366] text-[#05070d] hover:bg-[#1ebb5a] active:scale-[0.98];
+  }
+
+  .btn-link {
+    @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.15em] text-brand-300 transition-colors hover:text-brand-200 sm:text-sm;
+  }
+
+  .nav-link {
+    @apply relative inline-flex py-1 text-sm font-medium text-ink-300 transition-colors hover:text-white;
+  }
+
+  .nav-link-active {
+    @apply text-white;
+  }
+
+  .tag {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-ink-300;
+  }
+
+  .chip-live {
+    @apply inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-300;
+  }
+
+  .divider-red {
+    background: linear-gradient(to right, transparent, rgba(220, 43, 56, 0.6), transparent);
+    height: 1px;
+    width: 100%;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────
+     Form inputs — promoted from inline <style>{`.input{}`}</style> so every
+     form on the site gets identical, accessible field styling. min-height
+     keeps tap targets a comfortable 48px on mobile.
+  ───────────────────────────────────────────────────────────────────── */
+  .input {
+    @apply w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3.5 text-[0.95rem] text-ink-100 transition-colors placeholder:text-ink-400;
+    min-height: 48px;
+  }
+  .input:hover {
+    @apply border-white/20;
+  }
+  .input:focus {
+    @apply border-brand-500/60 bg-white/[0.06] outline-none ring-2 ring-brand-500/30;
+  }
+  textarea.input {
+    @apply leading-relaxed;
+    min-height: 9rem;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────
+     Hover-lift utility — for cards that should rise + glow on pointer hover.
+     Guarded behind `(hover: hover)` so it never fires on touch devices,
+     and disabled under prefers-reduced-motion (handled below).
+  ───────────────────────────────────────────────────────────────────── */
+  .hover-lift {
+    @apply transition-all duration-300 ease-out;
+    will-change: transform, box-shadow, border-color;
+  }
+  @media (hover: hover) {
+    .hover-lift:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        0 0 0 1px rgba(220, 43, 56, 0.32),
+        0 22px 50px -22px rgba(220, 43, 56, 0.45),
+        0 12px 40px -16px rgba(0, 0, 0, 0.5);
+    }
+  }
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -0.35rem;
+  width: 100%;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(220, 43, 56, 0.15), rgba(244, 83, 95, 0.95));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-link:hover::after,
+.nav-link-active::after {
+  transform: scaleX(1);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  .mask-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, black 65%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 65%, transparent 100%);
+  }
+
+  .noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Hide scrollbar for horizontally-scrolling chip rows (e.g. /services jump-nav) */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Honour the iOS home indicator on floating UI like StickyWhatsApp. */
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  .bottom-safe {
+    bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .bg-hero {
+    /* This adds a smooth, dark gradient over the image. 
+      It goes from 95% dark on the left (behind the text) to 40% dark on the right.
+      Make sure to update the url() if your image name is different!
+    */
+    background-image: 
+      linear-gradient(to right, rgba(5, 7, 13, 0.95) 0%, rgba(5, 7, 13, 0.7) 50%, rgba(5, 7, 13, 0.4) 100%),
+      url('/images/gym/floor-hero.webp');
+    background-size: cover;
+    background-position: center 30%; /* 30% shifts the image slightly up */
+    background-repeat: no-repeat;
+  }
+}
+
+
+/* Reduce motion for users who prefer it (hero floats / pulses / marquees) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Disable the hover-lift transform under reduced-motion — the card still
+     gets its border/shadow change, just no Y translation. */
+  .hover-lift:hover {
+    transform: none !important;
+  }
+}

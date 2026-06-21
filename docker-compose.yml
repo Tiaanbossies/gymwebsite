@@ -1,0 +1,19 @@
+services:
+  web:
+    build:
+      context: .
+      target: production
+      args:
+        - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+        - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+        - VITE_DASHBOARD_PASS=${VITE_DASHBOARD_PASS}
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: "production"
+      PORT: "5173"
+    ports:
+      - "5173:5173"
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true

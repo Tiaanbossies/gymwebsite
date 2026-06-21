@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#05070d" />
+
+    <title>Bossie's Gym — Personal Training Studio in Centurion</title>
+    <meta
+      name="description"
+      content="A family-run gym in Hennopspark, Centurion. Personal training, open gym access, nutrition coaching and body assessments. Free trial available."
+    />
+    <meta
+      name="keywords"
+      content="gym Centurion, personal training Centurion, Bossie's Gym, personal trainer Hennopspark, Midstream gym, body assessments Centurion, nutrition coaching Centurion"
+    />
+    <meta name="author" content="Bossie's Gym & Personal Training Studio" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Bossie's Gym" />
+    <meta property="og:title" content="Bossie's Gym — Personal Training Studio in Centurion" />
+    <meta
+      property="og:description"
+      content="Family-run gym in Hennopspark, Centurion. Personal training, open gym, nutrition & body assessments. Free trial available."
+    />
+    <meta property="og:locale" content="en_ZA" />
+    <meta property="og:url" content="https://bossiesgym.co.za" />
+    <meta property="og:image" content="https://bossiesgym.co.za/logo.png" />
+    <meta property="og:image:width" content="796" />
+    <meta property="og:image:height" content="800" />
+    <meta property="og:image:alt" content="Bossie's Gym & Personal Training Studio logo" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Bossie's Gym — Personal Training Studio in Centurion" />
+    <meta
+      name="twitter:description"
+      content="Family-run gym in Hennopspark, Centurion. Real coaching. Real community. Free trial available."
+    />
+    <meta name="twitter:image" content="https://bossiesgym.co.za/logo.png" />
+    <meta name="twitter:image:alt" content="Bossie's Gym &amp; Personal Training Studio logo" />
+
+    <!-- Fonts — non-blocking load.
+         The Google Fonts stylesheet is normally render-blocking (the browser
+         pauses first paint until it comes back). We avoid that with the
+         "print-onload" pattern: request it as media="print" so the browser
+         deprioritises it, then swap to media="all" once it has loaded. The
+         <noscript> fallback keeps the site readable for the rare JS-off
+         visitor (and well-behaved crawlers that don't run JS but do honour
+         <link rel="stylesheet">). `display=swap` is already in the URL so
+         text renders immediately in the system fallback, then re-renders in
+         Inter / Archivo Black when the webfont arrives. -->
+    <!-- Preload the homepage hero background. This is a client-rendered SPA
+         (no SSR), so the browser's preload scanner can't discover this image
+         from markup until React mounts and renders HeroHome — without this
+         hint it only starts downloading after the full JS bundle parses and
+         executes, which is the dominant LCP delay on /. Only the homepage
+         benefits; interior pages use a different hero image per route. -->
+    <link rel="preload" as="image" href="/images/gym/floor-hero.webp" fetchpriority="high" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;500;600;700;800&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;500;600;700;800&display=swap"
+      />
+    </noscript>
+
+    <!-- Favicons & home-screen icons — real Bossie's logo crest.
+         • favicon.png (64) for browser tabs.
+         • favicon.svg as a sharper fallback where supported.
+         • apple-touch-icon.png (180) is what iOS uses when you "Add to Home Screen".
+         • logo-mark.png (192) and icon-512.png (512) are referenced from
+           site.webmanifest so Android also picks the crest as the home-screen icon. -->
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png?v=2" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Structured data — HealthClub / LocalBusiness.
+         Every fact below is from the completed client questionnaire and the
+         April 2026 follow-up. Google reads this to populate rich results,
+         the Knowledge Panel, and local-pack listings.
+
+         If you ever change a price, an hour, or contact detail elsewhere on
+         the site (src/lib/site.js is the source of truth), update this block
+         too. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "HealthClub",
+        "@id": "https://bossiesgym.co.za/#gym",
+        "name": "Bossie's Gym & Personal Training Studio",
+        "alternateName": "Bossie's Gym",
+        "description": "A small, family-run commercial gym in Centurion offering personal training, open gym access, nutrition coaching and body assessments.",
+        "url": "https://bossiesgym.co.za",
+        "telephone": "+27724827922",
+        "email": "bossiesgym@gmail.com",
+        "image": "https://bossiesgym.co.za/logo.png",
+        "logo": "https://bossiesgym.co.za/logo.png",
+        "founder": {
+          "@type": "Person",
+          "name": "Johan \"Bossie\" Boshoff"
+        },
+        "currenciesAccepted": "ZAR",
+        "paymentAccepted": "Cash, Credit Card, EFT, Debit Order",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "1st Floor, 207 Edison Crescent",
+          "addressLocality": "Hennopspark, Centurion",
+          "addressRegion": "Gauteng",
+          "postalCode": "0157",
+          "addressCountry": "ZA"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": -25.871806,
+          "longitude": 28.166222
+        },
+        "areaServed": [
+          { "@type": "Place", "name": "Centurion" },
+          { "@type": "Place", "name": "Midstream" },
+          { "@type": "Place", "name": "Hennopspark" },
+          { "@type": "Place", "name": "Lyttelton" }
+        ],
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday"],
+            "opens": "05:00",
+            "closes": "20:00"
+          },
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": "Friday",
+            "opens": "05:00",
+            "closes": "19:00"
+          },
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": "Saturday",
+            "opens": "08:00",
+            "closes": "11:00"
+          }
+        ],
+        "sameAs": ["https://www.instagram.com/bossiesgym/"],
+        "priceRange": "R100–R2700",
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Memberships & Services",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "name": "Day Pass",
+              "description": "One-off training visit. No contract, no joining fee.",
+              "priceCurrency": "ZAR",
+              "price": "100",
+              "category": "Day pass",
+              "availability": "https://schema.org/InStock"
+            },
+            {
+              "@type": "Offer",
+              "name": "Open Gym — Month-to-Month",
+              "description": "Full open gym access, cancel anytime.",
+              "priceCurrency": "ZAR",
+              "price": "450",
+              "category": "Membership",
+              "availability": "https://schema.org/InStock",
+              "priceSpecification": {
+                "@type": "UnitPriceSpecification",
+                "price": "450",
+                "priceCurrency": "ZAR",
+                "billingDuration": "P1M"
+              }
+            },
+            {
+              "@type": "Offer",
+              "name": "Open Gym — 6-Month Contract",
+              "description": "Full open gym access on a 6-month contract.",
+              "priceCurrency": "ZAR",
+              "price": "380",
+              "category": "Membership",
+              "availability": "https://schema.org/InStock"
+            },
+            {
+              "@type": "Offer",
+              "name": "Open Gym — 12-Month Contract",
+              "description": "Full open gym access on a 12-month contract — best monthly rate.",
+              "priceCurrency": "ZAR",
+              "price": "360",
+              "category": "Membership",
+              "availability": "https://schema.org/InStock"
+            },
+            {
+              "@type": "Offer",
+              "name": "Student & Pensioner Membership",
+              "description": "Open gym access for students and pensioners on production of a valid card or proof.",
+              "priceCurrency": "ZAR",
+              "price": "250",
+              "category": "Membership",
+              "availability": "https://schema.org/InStock"
+            },
+            {
+              "@type": "Offer",
+              "name": "Personal Training — 3 sessions / week",
+              "description": "1-on-1 coaching three times per week, includes diet plan and body assessments.",
+              "priceCurrency": "ZAR",
+              "price": "2100",
+              "category": "Personal training",
+              "availability": "https://schema.org/InStock"
+            },
+            {
+              "@type": "Offer",
+              "name": "Personal Training — 4 sessions / week",
+              "description": "1-on-1 coaching four times per week, includes diet plan and body assessments.",
+              "priceCurrency": "ZAR",
+              "price": "2400",
+              "category": "Personal training",
+              "availability": "https://schema.org/InStock"
+            },
+            {
+              "@type": "Offer",
+              "name": "Personal Training — 5 sessions / week",
+              "description": "1-on-1 coaching five times per week, includes diet plan and body assessments.",
+              "priceCurrency": "ZAR",
+              "price": "2700",
+              "category": "Personal training",
+              "availability": "https://schema.org/InStock"
+            }
+          ]
+        }
+      }
+    </script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W3MX7HZKCW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-W3MX7HZKCW');
+    </script>
+  </head>
+  <body class="bg-ink-950 text-ink-100 antialiased">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

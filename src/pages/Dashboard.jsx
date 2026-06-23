@@ -62,17 +62,16 @@ function allDatesInRange(days) {
 // Auth lives server-side now (server.mjs `/api/dashboard/*`) — the passphrase
 // is never bundled to the client and analytics data is fetched with the
 // Supabase service_role key, not the public anon key.
-function ProtectedDashboard({ children }) {
-  const [authed, setAuthed] = useState(null); // null = checking
+function ProtectedDashboard({ authed, onAuthed, children }) {
   const [pass, setPass] = useState('');
   const [error, setError] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     fetch('/api/dashboard/session', { credentials: 'include' })
-      .then((r) => setAuthed(r.ok))
-      .catch(() => setAuthed(false));
-  }, []);
+      .then((r) => onAuthed(r.ok))
+      .catch(() => onAuthed(false));
+  }, [onAuthed]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -86,7 +85,7 @@ function ProtectedDashboard({ children }) {
         body: JSON.stringify({ password: pass }),
       });
       if (res.ok) {
-        setAuthed(true);
+        onAuthed(true);
       } else {
         setError(true);
         setPass('');
@@ -127,12 +126,17 @@ const RANGES = [
 ];
 
 export default function Dashboard() {
+  const [authed, setAuthed] = useState(null); // null = checking
   const [range, setRange] = useState(30);
   const [loading, setLoading] = useState(true);
   const [views, setViews] = useState([]);
   const [events, setEvents] = useState([]);
 
   const load = useCallback(async () => {
+    // ProtectedDashboard hasn't confirmed a session yet — fetching now would
+    // 401 while logged out and reload-loop the page before login even shows.
+    if (!authed) return;
+
     setLoading(true);
     const start = rangeStart(range);
 
@@ -153,7 +157,7 @@ export default function Dashboard() {
     setViews(pvData || []);
     setEvents(evData || []);
     setLoading(false);
-  }, [range]);
+  }, [range, authed]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -274,7 +278,7 @@ export default function Dashboard() {
 
   return (
     <PagePose>
-      <ProtectedDashboard>
+      <ProtectedDashboard authed={authed} onAuthed={setAuthed}>
         <section className="section">
           <Container>
 

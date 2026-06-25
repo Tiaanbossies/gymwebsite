@@ -94,19 +94,25 @@ export async function trackPageView(pathname) {
   // Await geo — resolves in ~100–400ms, ensuring city/country are always set.
   const geo = await geoPromise;
 
-  const { data, error } = await getClient()
+  // Generate the id client-side instead of reading it back via .select().single():
+  // anon has no SELECT policy on page_views (intentionally — see
+  // 20260621000000_analytics_restrict_anon_select.sql), and under RLS an
+  // INSERT ... RETURNING is evaluated against the SELECT policy. Without one,
+  // every insert was rejected outright with "new row violates row-level
+  // security policy", which silently broke all page-view tracking.
+  const id = crypto.randomUUID();
+  const { error } = await getClient()
     .from('page_views')
     .insert({
+      id,
       session_id: sessionId,
       page: pathname,
       entered_at: new Date().toISOString(),
       country: geo.country,
       city: geo.city,
-    })
-    .select('id')
-    .single();
+    });
 
-  if (!error && data) currentViewId = data.id;
+  if (!error) currentViewId = id;
 }
 
 export function trackEvent(eventType, label, pathname) {

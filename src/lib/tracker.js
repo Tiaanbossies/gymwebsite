@@ -2,15 +2,16 @@ import { createClient } from '@supabase/supabase-js';
 
 let client = null;
 let sessionId = null;
-let currentViewId = null;
-let enteredAt = null;
-let firedMilestones = new Set();
 let listenersAttached = false;
+let firedMilestones = new Set();
 
-// Sessions expire after 30 minutes of inactivity, matching the standard
-// analytics session model. Using localStorage (not sessionStorage) so that
-// the same person browsing across multiple tabs shares one session — each new
-// sessionStorage tab was creating its own session, fragmenting Sankey data.
+// Pending page view — held in memory until the user navigates away or the tab
+// hides, at which point we INSERT once with duration_ms already calculated.
+// This eliminates the need for a Supabase UPDATE and the RLS UPDATE policy.
+let pending = null; // { id, page, sessionId, device, geo, enteredAt }
+let currentPath = null;
+let lastGeo = { country: null, city: null };
+
 const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
 
 function refreshSession() {
@@ -29,8 +30,6 @@ function refreshSession() {
   return id;
 }
 
-// Stored as a Promise so trackPageView can await it — avoids the race condition
-// where the first page view is inserted before the geo response arrives.
 let geoPromise = null;
 
 function getClient() {
@@ -58,33 +57,49 @@ function throttle(fn, ms) {
   };
 }
 
-export async function flushDuration() {
-  if (!currentViewId || !enteredAt) return;
-  const id = currentViewId;
-  const ms = Date.now() - enteredAt;
-  currentViewId = null;
-  enteredAt = null;
+// INSERT the pending page view with duration computed at call time.
+async function commitPending() {
+  if (!pending) return;
+  const snap = pending;
+  pending = null;
+  const durationMs = Date.now() - snap.enteredAt;
   const { error } = await getClient()
     .from('page_views')
-    .update({ duration_ms: ms })
-    .eq('id', id);
-  if (error) console.error('[tracker] duration update failed:', error.message);
+    .insert({
+      id: snap.id,
+      session_id: snap.sessionId,
+      page: snap.page,
+      entered_at: new Date(snap.enteredAt).toISOString(),
+      duration_ms: durationMs > 0 ? durationMs : null,
+      device: snap.device,
+      country: snap.geo.country,
+      city: snap.geo.city,
+    });
+  if (error) console.error('[tracker] page view commit failed:', error.message);
 }
 
 function handleVisibilityChange() {
   if (document.visibilityState === 'hidden') {
-    flushDuration();
+    commitPending();
   } else {
-    enteredAt = Date.now();
+    // Tab visible again — restart timing for the current page so hidden time
+    // is not counted toward duration.
+    if (currentPath && sessionId) {
+      pending = {
+        id: crypto.randomUUID(),
+        page: currentPath,
+        sessionId,
+        device: detectDevice(),
+        geo: lastGeo,
+        enteredAt: Date.now(),
+      };
+    }
   }
 }
 
 export function initTracker() {
   sessionId = refreshSession();
 
-  // Geo is resolved server-side via /api/geo — the server reads the visitor's
-  // real IP from the X-Real-IP header set by nginx, then calls ipwho.is.
-  // This avoids ad blockers, CORS issues, and external-domain fetch failures.
   geoPromise = fetch('/api/geo')
     .then((r) => r.json())
     .then((d) => ({ country: d.country || null, city: d.city || null }))
@@ -94,7 +109,7 @@ export function initTracker() {
   listenersAttached = true;
 
   document.addEventListener('visibilitychange', handleVisibilityChange);
-  window.addEventListener('beforeunload', flushDuration);
+  window.addEventListener('beforeunload', commitPending);
 
   const MILESTONES = [25, 50, 75, 90];
   window.addEventListener('scroll', throttle(() => {
@@ -117,35 +132,25 @@ export function initTracker() {
 }
 
 export async function trackPageView(pathname) {
+  currentPath = pathname;
   sessionId = refreshSession();
-  await flushDuration();
+
+  // Commit the previous page view with its duration before recording the new one.
+  await commitPending();
+
   firedMilestones = new Set();
-  enteredAt = Date.now();
 
-  // Await geo — resolves in ~100–400ms, ensuring city/country are always set.
   const geo = await geoPromise;
+  lastGeo = geo;
 
-  // Generate the id client-side instead of reading it back via .select().single():
-  // anon has no SELECT policy on page_views (intentionally — see
-  // 20260621000000_analytics_restrict_anon_select.sql), and under RLS an
-  // INSERT ... RETURNING is evaluated against the SELECT policy. Without one,
-  // every insert was rejected outright with "new row violates row-level
-  // security policy", which silently broke all page-view tracking.
-  const id = crypto.randomUUID();
-  const { error } = await getClient()
-    .from('page_views')
-    .insert({
-      id,
-      session_id: sessionId,
-      page: pathname,
-      entered_at: new Date().toISOString(),
-      device: detectDevice(),
-      country: geo.country,
-      city: geo.city,
-    });
-
-  if (error) console.error('[tracker] page view insert failed:', error.message);
-  if (!error) currentViewId = id;
+  pending = {
+    id: crypto.randomUUID(),
+    page: pathname,
+    sessionId,
+    device: detectDevice(),
+    geo,
+    enteredAt: Date.now(),
+  };
 }
 
 export function trackEvent(eventType, label, pathname) {

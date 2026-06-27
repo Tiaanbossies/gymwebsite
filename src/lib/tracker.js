@@ -139,6 +139,7 @@ export async function trackPageView(pathname) {
       city: geo.city,
     });
 
+  if (error) console.error('[tracker] page view insert failed:', error.message);
   if (!error) currentViewId = id;
 }
 

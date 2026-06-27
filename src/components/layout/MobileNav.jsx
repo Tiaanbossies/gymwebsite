@@ -76,6 +76,7 @@ export default function MobileNav({ open, onClose }) {
                   className="w-full justify-center"
                   iconNode={<Phone size={14} strokeWidth={2.5} />}
                   onClick={onClose}
+                  data-track="Call — Mobile Nav"
                 >
                   Call {site.phone.display}
                 </Button>
@@ -85,6 +86,7 @@ export default function MobileNav({ open, onClose }) {
                   className="w-full justify-center"
                   iconNode={<MessageCircle size={14} strokeWidth={2.5} />}
                   onClick={onClose}
+                  data-track="WhatsApp — Mobile Nav"
                 >
                   WhatsApp Us
                 </Button>

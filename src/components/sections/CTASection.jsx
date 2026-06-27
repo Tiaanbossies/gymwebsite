@@ -74,6 +74,7 @@ export default function CTASection({
                   className="w-full sm:w-auto"
                   iconNode={secondary.iconNode}
                   icon={secondary.iconNode ? true : false}
+                  data-track={secondary.label ? `${secondary.label} — CTA` : undefined}
                 >
                   {secondary.label}
                 </Button>

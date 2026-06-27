@@ -40,17 +40,10 @@ function buildSankeyData(views) {
     sessions[v.session_id].push(v);
   }
 
-  const transitionCounts = {};
-  const durationSums = {};
-  const durationCounts = {};
-  const visitCounts = {};
-  const exitCounts = {};
-
+  // Build deduplicated, time-sorted path per session.
+  const allPaths = [];
   for (const seq of Object.values(sessions)) {
     seq.sort((a, b) => new Date(a.entered_at) - new Date(b.entered_at));
-
-    // Only track the first visit to each page per session — prevents cycles
-    // in the Sankey layout that d3-sankey cannot handle.
     const seen = new Set();
     const path = [];
     for (const v of seq) {
@@ -59,7 +52,36 @@ function buildSankeyData(views) {
         path.push(v);
       }
     }
+    allPaths.push(path);
+  }
 
+  const sessionCount = allPaths.length;
+
+  // First pass: compute average position of each page across multi-page paths.
+  // This establishes a "depth" ordering so we only draw forward links —
+  // d3-sankey requires a DAG and throws "circular link" if A→B and B→A both exist.
+  const positionSums = {};
+  const positionCounts = {};
+  for (const path of allPaths) {
+    if (path.length < 2) continue;
+    path.forEach((v, i) => {
+      positionSums[v.page] = (positionSums[v.page] || 0) + i;
+      positionCounts[v.page] = (positionCounts[v.page] || 0) + 1;
+    });
+  }
+  const avgDepth = {};
+  for (const page of Object.keys(positionSums)) {
+    avgDepth[page] = positionSums[page] / positionCounts[page];
+  }
+
+  // Second pass: build visit counts, durations, and forward-only transitions.
+  const transitionCounts = {};
+  const durationSums = {};
+  const durationCounts = {};
+  const visitCounts = {};
+  const exitCounts = {};
+
+  for (const path of allPaths) {
     for (let i = 0; i < path.length; i++) {
       const { page, duration_ms } = path[i];
       visitCounts[page] = (visitCounts[page] || 0) + 1;
@@ -68,16 +90,22 @@ function buildSankeyData(views) {
         durationCounts[page] = (durationCounts[page] || 0) + 1;
       }
       if (i < path.length - 1) {
-        const key = `${page}|${path[i + 1].page}`;
-        transitionCounts[key] = (transitionCounts[key] || 0) + 1;
+        const nextPage = path[i + 1].page;
+        const srcDepth = avgDepth[page] ?? 0;
+        const tgtDepth = avgDepth[nextPage] ?? Infinity;
+        if (tgtDepth > srcDepth) {
+          // Forward transition only — prevents circular links in d3-sankey.
+          const key = `${page}|${nextPage}`;
+          transitionCounts[key] = (transitionCounts[key] || 0) + 1;
+        } else {
+          // Backward navigation treated as exit from this page.
+          exitCounts[page] = (exitCounts[page] || 0) + 1;
+        }
       } else {
         exitCounts[page] = (exitCounts[page] || 0) + 1;
       }
     }
   }
-
-  const sessionCount = Object.keys(sessions).length;
-  const totalTransitions = Object.keys(transitionCounts).length;
 
   const validLinks = Object.entries(transitionCounts)
     .filter(([, count]) => count >= MIN_LINK_COUNT)
@@ -87,7 +115,7 @@ function buildSankeyData(views) {
     });
 
   if (validLinks.length === 0) {
-    return { nodes: [], links: [], sessionCount, debug: `${sessionCount} sessions, ${totalTransitions} transitions — all single-page` };
+    return { nodes: [], links: [], sessionCount, debug: `${sessionCount} sessions — no forward-only transitions to diagram` };
   }
 
   const pageSet = new Set();

@@ -21,6 +21,13 @@ function getClient() {
   return client;
 }
 
+function detectDevice() {
+  const ua = navigator.userAgent;
+  if (!/Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)) return 'desktop';
+  if (/iPad/i.test(ua) || (navigator.maxTouchPoints > 1 && !/Mobile/i.test(ua))) return 'tablet';
+  return 'mobile';
+}
+
 function throttle(fn, ms) {
   let last = 0;
   return (...args) => {
@@ -108,6 +115,7 @@ export async function trackPageView(pathname) {
       session_id: sessionId,
       page: pathname,
       entered_at: new Date().toISOString(),
+      device: detectDevice(),
       country: geo.country,
       city: geo.city,
     });

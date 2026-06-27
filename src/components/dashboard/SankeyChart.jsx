@@ -35,6 +35,7 @@ function buildSankeyData(views) {
 
   const sessions = {};
   for (const v of views) {
+    if (!v.session_id) continue;
     if (!sessions[v.session_id]) sessions[v.session_id] = [];
     sessions[v.session_id].push(v);
   }
@@ -138,13 +139,18 @@ export default function SankeyChart({ views }) {
   }, [data]);
 
   if (!layout) {
+    const sessionLine = data?.sessionCount > 0
+      ? `${data.sessionCount} session${data.sessionCount !== 1 ? 's' : ''} recorded, but each only visited one page.`
+      : 'No sessions recorded yet.';
     return (
-      <p className="text-ink-500 text-xs py-2">
-        {data?.debug
-          ? `No cross-page navigation to show yet (${data.debug}).`
-          : 'Not enough navigation data to render a flow diagram.'}
-        {' '}Multi-page sessions will appear here automatically.
-      </p>
+      <div className="py-3 space-y-1">
+        <p className="text-ink-400 text-xs">{sessionLine}</p>
+        <p className="text-ink-600 text-xs">
+          The flow diagram needs at least one visitor to navigate between pages in a single
+          session — e.g. Home → Pricing → Contact. Open the site in a new tab, browse
+          through a few pages, and the chart will appear here automatically.
+        </p>
+      </div>
     );
   }
 

@@ -13,9 +13,12 @@ function rangeStart(days) {
 }
 
 function fmtDuration(ms) {
-  if (!ms || ms < 0) return '—';
+  if (ms == null || ms <= 0) return '—';
+  if (ms < 1000) return '<1s';
   const s = Math.round(ms / 1000);
   const m = Math.floor(s / 60);
+  const h = Math.floor(m / 60);
+  if (h > 0) return `${h}h ${m % 60}m`;
   return m > 0 ? `${m}m ${s % 60}s` : `${s}s`;
 }
 
@@ -259,6 +262,7 @@ export default function Dashboard() {
       page: v.page,
       label: null,
       duration: v.duration_ms,
+      device: v.device,
       city: v.city,
       country: v.country,
       session: v.session_id?.slice(0, 8),
@@ -269,6 +273,7 @@ export default function Dashboard() {
       page: e.page,
       label: e.label,
       duration: null,
+      device: null,
       city: null,
       country: null,
       session: e.session_id?.slice(0, 8),
@@ -590,6 +595,7 @@ export default function Dashboard() {
                         <th className="px-4 py-3 font-medium">Page</th>
                         <th className="px-4 py-3 font-medium">Detail</th>
                         <th className="px-4 py-3 font-medium whitespace-nowrap">Duration</th>
+                        <th className="px-4 py-3 font-medium whitespace-nowrap">Device</th>
                         <th className="px-4 py-3 font-medium">City</th>
                         <th className="px-4 py-3 font-medium">Country</th>
                         <th className="px-4 py-3 font-medium">Session</th>
@@ -607,12 +613,13 @@ export default function Dashboard() {
                           <td className="px-4 py-2.5 text-ink-200 font-mono max-w-[140px] truncate">{row.page}</td>
                           <td className="px-4 py-2.5 text-ink-300 max-w-[160px] truncate">{row.label || '—'}</td>
                           <td className="px-4 py-2.5 text-ink-400 whitespace-nowrap">{row.duration != null ? fmtDuration(row.duration) : '—'}</td>
+                          <td className="px-4 py-2.5 text-ink-400 whitespace-nowrap capitalize">{row.device || '—'}</td>
                           <td className="px-4 py-2.5 text-ink-300 whitespace-nowrap">{row.city || '—'}</td>
                           <td className="px-4 py-2.5 text-ink-300 whitespace-nowrap">{row.country || '—'}</td>
                           <td className="px-4 py-2.5 text-ink-500 font-mono">{row.session}…</td>
                         </tr>
                       )) : (
-                        <tr><td colSpan={8} className="px-4 py-6 text-ink-500">No activity yet.</td></tr>
+                        <tr><td colSpan={9} className="px-4 py-6 text-ink-500">No activity yet.</td></tr>
                       )}
                     </tbody>
                   </table>

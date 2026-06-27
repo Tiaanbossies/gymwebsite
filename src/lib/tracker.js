@@ -59,11 +59,16 @@ function throttle(fn, ms) {
 }
 
 export async function flushDuration() {
-  if (!currentViewId) return;
+  if (!currentViewId || !enteredAt) return;
   const id = currentViewId;
   const ms = Date.now() - enteredAt;
   currentViewId = null;
-  await getClient().from('page_views').update({ duration_ms: ms }).eq('id', id);
+  enteredAt = null;
+  const { error } = await getClient()
+    .from('page_views')
+    .update({ duration_ms: ms })
+    .eq('id', id);
+  if (error) console.error('[tracker] duration update failed:', error.message);
 }
 
 function handleVisibilityChange() {

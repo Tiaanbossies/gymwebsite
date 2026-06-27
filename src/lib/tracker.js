@@ -7,6 +7,28 @@ let enteredAt = null;
 let firedMilestones = new Set();
 let listenersAttached = false;
 
+// Sessions expire after 30 minutes of inactivity, matching the standard
+// analytics session model. Using localStorage (not sessionStorage) so that
+// the same person browsing across multiple tabs shares one session — each new
+// sessionStorage tab was creating its own session, fragmenting Sankey data.
+const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
+
+function refreshSession() {
+  const now = Date.now();
+  const existing = localStorage.getItem('_gym_sid');
+  const expiry = parseInt(localStorage.getItem('_gym_sid_exp') || '0', 10);
+
+  if (existing && expiry > now) {
+    localStorage.setItem('_gym_sid_exp', String(now + SESSION_TIMEOUT_MS));
+    return existing;
+  }
+
+  const id = crypto.randomUUID();
+  localStorage.setItem('_gym_sid', id);
+  localStorage.setItem('_gym_sid_exp', String(now + SESSION_TIMEOUT_MS));
+  return id;
+}
+
 // Stored as a Promise so trackPageView can await it — avoids the race condition
 // where the first page view is inserted before the geo response arrives.
 let geoPromise = null;
@@ -53,11 +75,7 @@ function handleVisibilityChange() {
 }
 
 export function initTracker() {
-  sessionId = sessionStorage.getItem('_gym_sid');
-  if (!sessionId) {
-    sessionId = crypto.randomUUID();
-    sessionStorage.setItem('_gym_sid', sessionId);
-  }
+  sessionId = refreshSession();
 
   // Geo is resolved server-side via /api/geo — the server reads the visitor's
   // real IP from the X-Real-IP header set by nginx, then calls ipwho.is.
@@ -94,6 +112,7 @@ export function initTracker() {
 }
 
 export async function trackPageView(pathname) {
+  sessionId = refreshSession();
   await flushDuration();
   firedMilestones = new Set();
   enteredAt = Date.now();

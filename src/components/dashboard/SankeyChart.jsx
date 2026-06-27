@@ -3,14 +3,20 @@ import { sankey as d3Sankey, sankeyLinkHorizontal } from 'd3-sankey';
 
 const NODE_WIDTH = 16;
 const NODE_PADDING = 14;
-const MIN_LINK_COUNT = 2;
-const CHART_W = 820;
-const CHART_H = 440;
+const MIN_LINK_COUNT = 1;
+const CHART_W = 860;
+const CHART_H = 460;
 
-const COLORS = [
+const PALETTE = [
   '#dc2b38', '#3d6479', '#22c55e', '#eab308',
   '#a855f7', '#f97316', '#06b6d4', '#84cc16',
 ];
+
+function stableColor(page) {
+  let h = 0;
+  for (let i = 0; i < page.length; i++) h = (h * 31 + page.charCodeAt(i)) >>> 0;
+  return PALETTE[h % PALETTE.length];
+}
 
 function fmtMs(ms) {
   if (!ms || ms <= 0) return null;
@@ -19,8 +25,13 @@ function fmtMs(ms) {
   return m > 0 ? `${m}m ${s % 60}s` : `${s}s`;
 }
 
+function pageName(id) {
+  if (id === '/') return 'Home';
+  return id.slice(1).replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 function buildSankeyData(views) {
-  if (!views || views.length < 5) return null;
+  if (!views || views.length < 2) return { nodes: [], links: [], sessionCount: 0, debug: 'fewer than 2 page views' };
 
   const sessions = {};
   for (const v of views) {
@@ -64,6 +75,9 @@ function buildSankeyData(views) {
     }
   }
 
+  const sessionCount = Object.keys(sessions).length;
+  const totalTransitions = Object.keys(transitionCounts).length;
+
   const validLinks = Object.entries(transitionCounts)
     .filter(([, count]) => count >= MIN_LINK_COUNT)
     .map(([key, value]) => {
@@ -71,7 +85,9 @@ function buildSankeyData(views) {
       return { source, target, value };
     });
 
-  if (validLinks.length === 0) return null;
+  if (validLinks.length === 0) {
+    return { nodes: [], links: [], sessionCount, debug: `${sessionCount} sessions, ${totalTransitions} transitions — all single-page` };
+  }
 
   const pageSet = new Set();
   for (const { source, target } of validLinks) {
@@ -98,25 +114,25 @@ function buildSankeyData(views) {
     value,
   }));
 
-  return { nodes, links };
+  return { nodes, links, sessionCount, debug: null };
 }
 
 export default function SankeyChart({ views }) {
   const data = useMemo(() => buildSankeyData(views), [views]);
 
   const layout = useMemo(() => {
-    if (!data) return null;
+    if (!data || data.links.length === 0) return null;
     try {
       const gen = d3Sankey()
         .nodeWidth(NODE_WIDTH)
         .nodePadding(NODE_PADDING)
-        .nodeSort(null)
-        .extent([[1, 1], [CHART_W - 60, CHART_H - 6]]);
+        .extent([[1, 1], [CHART_W - 140, CHART_H - 6]]);
       return gen({
         nodes: data.nodes.map((n) => ({ ...n })),
         links: data.links.map((l) => ({ ...l })),
       });
-    } catch {
+    } catch (err) {
+      console.error('[SankeyChart] d3-sankey layout error:', err);
       return null;
     }
   }, [data]);
@@ -124,48 +140,50 @@ export default function SankeyChart({ views }) {
   if (!layout) {
     return (
       <p className="text-ink-500 text-xs py-2">
-        Not enough cross-page navigation data yet — needs at least {MIN_LINK_COUNT} sessions
-        moving between different pages.
+        {data?.debug
+          ? `No cross-page navigation to show yet (${data.debug}).`
+          : 'Not enough navigation data to render a flow diagram.'}
+        {' '}Multi-page sessions will appear here automatically.
       </p>
     );
   }
 
   const maxX1 = Math.max(...layout.nodes.map((n) => n.x1));
+  const linkPath = sankeyLinkHorizontal();
 
   return (
     <div className="overflow-x-auto">
       <svg
         viewBox={`0 0 ${CHART_W} ${CHART_H}`}
         className="w-full min-w-[560px]"
-        style={{ maxHeight: CHART_H }}
+        style={{ maxHeight: CHART_H, overflow: 'visible' }}
         aria-label="User navigation flow diagram"
       >
         {/* Links */}
         {layout.links.map((link, i) => (
           <path
             key={i}
-            d={sankeyLinkHorizontal()(link)}
+            d={linkPath(link)}
             fill="none"
-            stroke="rgba(255,255,255,0.09)"
-            strokeWidth={Math.max(1.5, link.width)}
+            stroke="rgba(255,255,255,0.10)"
+            strokeWidth={Math.max(2, link.width)}
           />
         ))}
 
         {/* Nodes */}
-        {layout.nodes.map((node, i) => {
-          const color = COLORS[i % COLORS.length];
+        {layout.nodes.map((node) => {
+          const color = stableColor(node.id);
           const onRight = node.x1 >= maxX1 - 4;
           const labelX = onRight ? node.x0 - 8 : node.x1 + 8;
           const anchor = onRight ? 'end' : 'start';
           const midY = (node.y0 + node.y1) / 2;
           const dur = fmtMs(node.avgDuration);
-          const exit = `${Math.round(node.exitRate * 100)}% exit`;
-          const sublabel = [dur && `avg ${dur}`, exit].filter(Boolean).join(' · ');
-          const label = node.id === '/' ? 'Home' : node.id.slice(1).replace(/-/g, ' ');
-          const nodeH = Math.max(1, node.y1 - node.y0);
+          const exitPct = Math.round(node.exitRate * 100);
+          const sublabel = [dur && `avg ${dur}`, `${exitPct}% exit`].filter(Boolean).join(' · ');
+          const nodeH = Math.max(2, node.y1 - node.y0);
 
           return (
-            <g key={i}>
+            <g key={node.id}>
               <rect
                 x={node.x0}
                 y={node.y0}
@@ -177,32 +195,34 @@ export default function SankeyChart({ views }) {
               />
               <text
                 x={labelX}
-                y={midY - (sublabel ? 6 : 0)}
+                y={midY - 6}
                 textAnchor={anchor}
                 fill="#e2e8f0"
                 fontSize={11}
                 dominantBaseline="middle"
-                style={{ textTransform: 'capitalize', fontFamily: 'inherit' }}
+                style={{ fontFamily: 'inherit' }}
               >
-                {label}
+                {pageName(node.id)}
               </text>
-              {sublabel && (
-                <text
-                  x={labelX}
-                  y={midY + 8}
-                  textAnchor={anchor}
-                  fill="#64748b"
-                  fontSize={9}
-                  dominantBaseline="middle"
-                  style={{ fontFamily: 'inherit' }}
-                >
-                  {sublabel}
-                </text>
-              )}
+              <text
+                x={labelX}
+                y={midY + 8}
+                textAnchor={anchor}
+                fill="#64748b"
+                fontSize={9}
+                dominantBaseline="middle"
+                style={{ fontFamily: 'inherit' }}
+              >
+                {sublabel}
+              </text>
             </g>
           );
         })}
       </svg>
+      <p className="mt-2 text-[10px] text-ink-600">
+        Based on {data.sessionCount} session{data.sessionCount !== 1 ? 's' : ''} ·
+        link width = relative transition volume · exit % = sessions that left from this page
+      </p>
     </div>
   );
 }

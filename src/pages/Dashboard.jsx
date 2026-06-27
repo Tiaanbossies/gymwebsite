@@ -4,6 +4,7 @@ import PagePose from '../components/ui/PagePose.jsx';
 import Container from '../components/ui/Container.jsx';
 import StatCard from '../components/dashboard/StatCard.jsx';
 import LineChart from '../components/dashboard/LineChart.jsx';
+import SankeyChart from '../components/dashboard/SankeyChart.jsx';
 import DashboardLogin from '../components/dashboard/DashboardLogin.jsx';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -560,6 +561,18 @@ export default function Dashboard() {
                   </div>
                 </div>
 
+              </div>
+            </div>
+
+            {/* ── User Flow ────────────────────────────────────────────── */}
+            <div>
+              <h2 className="eyebrow text-[10px]">User Navigation Flow</h2>
+              <p className="mt-1 text-xs text-ink-500">
+                How visitors move between pages — width of each band shows relative traffic volume.
+                Avg time on page and exit rate shown per node.
+              </p>
+              <div className="mt-4 card-surface rounded-2xl p-6">
+                <SankeyChart views={views} />
               </div>
             </div>
 

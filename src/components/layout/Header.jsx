@@ -75,6 +75,7 @@ export default function Header() {
               variant="ghost"
               className="hidden md:inline-flex btn-compact"
               iconNode={<Phone size={13} strokeWidth={2.5} />}
+              data-track="Call — Header"
             >
               {site.phone.display}
             </Button>

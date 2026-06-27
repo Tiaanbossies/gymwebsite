@@ -123,7 +123,7 @@ export default function ContactForm() {
           You can also reach us faster on WhatsApp if you prefer.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <a href={wa} target="_blank" rel="noreferrer" className="btn-whatsapp">
+          <a href={wa} target="_blank" rel="noreferrer" className="btn-whatsapp" data-track="WhatsApp — Contact Success">
             <span>Follow up on WhatsApp</span>
             <MessageCircle size={16} strokeWidth={2.5} />
           </a>

@@ -116,10 +116,10 @@ export async function trackPageView(pathname) {
 }
 
 export function trackEvent(eventType, label, pathname) {
-  getClient().from('events').insert({
-    session_id: sessionId,
-    page: pathname,
-    event_type: eventType,
-    label,
-  });
+  getClient()
+    .from('events')
+    .insert({ session_id: sessionId, page: pathname, event_type: eventType, label })
+    .then(({ error }) => {
+      if (error) console.error('[tracker] event insert failed:', error.message);
+    });
 }

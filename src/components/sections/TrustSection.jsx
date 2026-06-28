@@ -1,5 +1,7 @@
+import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { HeartHandshake, ShieldCheck, Users2, MapPin } from 'lucide-react';
+import anime from 'animejs';
 
 import Container from '../ui/Container.jsx';
 import { fadeUp, stagger } from '../../lib/site.js';
@@ -36,6 +38,56 @@ const defaultPillars = [
   },
 ];
 
+// ─── AnimatedIcon ─────────────────────────────────────────────────────────────
+
+function AnimatedIcon({ Icon }) {
+  const ref = useRef(null);
+  const done = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const paths = el.querySelectorAll('svg path');
+    paths.forEach((p) => {
+      try {
+        const len = p.getTotalLength();
+        p.style.strokeDasharray = len;
+        p.style.strokeDashoffset = len;
+      } catch (_) {}
+    });
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || done.current) return;
+        done.current = true;
+        anime({
+          targets: paths,
+          strokeDashoffset: 0,
+          easing: 'easeOutCubic',
+          duration: 900,
+          delay: anime.stagger(80),
+        });
+        observer.disconnect();
+      },
+      { threshold: 0.5 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-500/15 text-brand-300 ring-1 ring-brand-500/30"
+    >
+      <Icon size={20} />
+    </div>
+  );
+}
+
+// ─── TrustSection ─────────────────────────────────────────────────────────────
+
 export default function TrustSection({
   eyebrow = 'Why Bossie\'s',
   title = 'A small gym, run by a family, focused on you.',
@@ -70,9 +122,7 @@ export default function TrustSection({
               variants={fadeUp}
               className="flex flex-col gap-4 bg-ink-900 p-6 transition-transform duration-300 hover:-translate-y-1 sm:p-7"
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-500/15 text-brand-300 ring-1 ring-brand-500/30">
-                <p.icon size={20} />
-              </div>
+              <AnimatedIcon Icon={p.icon} />
               <h3 className="font-display text-lg tracking-headline text-white">{p.title}</h3>
               <p className="text-sm text-ink-300 leading-relaxed">{p.body}</p>
             </motion.li>

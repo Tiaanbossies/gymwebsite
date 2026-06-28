@@ -1,11 +1,34 @@
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
+import anime from 'animejs';
 
-/**
- * Button — single source of truth for CTA styling.
- * variant: 'primary' | 'ghost' | 'link' | 'accent' | 'whatsapp'
- * to: internal route; href: external/tel/mailto; otherwise renders as <button>
- */
+function PulseRing() {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const anim = anime({
+      targets: ref.current,
+      scale: [1, 1.7],
+      opacity: [0.5, 0],
+      duration: 2200,
+      easing: 'easeOutExpo',
+      loop: true,
+      delay: 1800,
+    });
+    return () => anim.pause();
+  }, []);
+
+  return (
+    <span
+      ref={ref}
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 rounded-full bg-brand-500/30"
+      style={{ opacity: 0 }}
+    />
+  );
+}
+
 export default function Button({
   variant = 'primary',
   to,
@@ -24,15 +47,18 @@ export default function Button({
     whatsapp: 'btn-whatsapp',
   }[variant];
 
+  const isPrimary = variant === 'primary';
+
   const inner = (
     <>
-      <span>{children}</span>
+      {isPrimary && <PulseRing />}
+      <span className="relative">{children}</span>
       {icon && variant !== 'link' && (iconNode ?? <ArrowUpRight size={16} strokeWidth={2.5} />)}
       {variant === 'link' && (iconNode ?? <ArrowUpRight size={16} strokeWidth={2.5} />)}
     </>
   );
 
-  const merged = `${classes} ${className}`.trim();
+  const merged = `${classes}${isPrimary ? ' relative' : ''} ${className}`.trim();
 
   if (to) {
     return (

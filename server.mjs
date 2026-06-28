@@ -19,6 +19,7 @@ const smtpConfig = {
   pass: process.env.SMTP_PASS || '',
   from: process.env.MAIL_FROM || process.env.SMTP_USER || '',
   to: process.env.MAIL_TO || 'tiaan374@gmail.com',
+  to2: process.env.MAIL_TO_2 || '',
 };
 
 // ─── Dashboard auth config ────────────────────────────────────────────────────
@@ -306,6 +307,7 @@ async function handleSendAgreement(req, res) {
   const message = buildMime({
     from: smtpConfig.from,
     to: smtpConfig.to,
+    to2: smtpConfig.to2,
     replyTo: memberEmail,
     subject,
     text: buildAgreementText(formData, memberName, memberEmail),
@@ -341,6 +343,7 @@ async function handleSendEnquiry(req, res) {
   const mime = buildMime({
     from: smtpConfig.from,
     to: smtpConfig.to,
+    to2: smtpConfig.to2,
     replyTo: email,
     subject,
     text: `Name: ${name}\nPhone: ${phone || 'Not provided'}\nEmail: ${email}\n\n${message}`,
@@ -582,13 +585,17 @@ function htmlRow(label, value) {
 // MIME builder
 // ---------------------------------------------------------------------------
 
-function buildMime({ from, to, replyTo, subject, text, html, attachments }) {
+function buildMime({ from, to, to2, replyTo, subject, text, html, attachments }) {
   const outer = `bossies-outer-${randomBytes(8).toString('hex')}`;
   const inner = `bossies-inner-${randomBytes(8).toString('hex')}`;
 
+  const toHeader = to2
+    ? `${formatAddress(to)}, ${formatAddress(to2)}`
+    : formatAddress(to);
+
   const headers = [
     `From: ${formatAddress(from)}`,
-    `To: ${formatAddress(to)}`,
+    `To: ${toHeader}`,
     replyTo ? `Reply-To: ${formatAddress(replyTo)}` : '',
     `Subject: ${encodeHeader(subject)}`,
     'MIME-Version: 1.0',
@@ -698,6 +705,7 @@ async function sendSmtpMail(config, message) {
     await client.command(Buffer.from(config.pass).toString('base64'), 235);
     await client.command(`MAIL FROM:<${config.from}>`, 250);
     await client.command(`RCPT TO:<${config.to}>`, 250);
+    if (config.to2) await client.command(`RCPT TO:<${config.to2}>`, 250);
     await client.command('DATA', 354);
     await client.command(`${dotStuff(message)}\r\n.`, 250);
     await client.command('QUIT', 221);

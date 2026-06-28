@@ -139,10 +139,6 @@ export const stagger = {
   },
 };
 
-export const fadeIn = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.6 } },
-};
 
 export const pageVariants = {
   initial: { opacity: 0, y: 12 },

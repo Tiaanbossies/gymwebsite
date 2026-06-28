@@ -26,7 +26,7 @@ function useElementWidth(ref) {
   return width;
 }
 
-export const ScrollVelocity = ({
+const ScrollVelocity = ({
   scrollContainerRef,
   texts = [],
   velocity = 100,

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-06-20T00:00:00.000Z",
+  "generatedAt": "2026-06-28T00:00:00.000Z",
   "title": "Design System: Bossie's Gym & Personal Training Studio",
   "extensions": {
     "colorMeta": {
@@ -75,7 +75,7 @@
       "refersTo": "card-surface",
       "description": "Default raised panel — flat at rest, lifts with a red-tinted glow on hover.",
       "html": "<div class=\"ds-card\"><span class=\"ds-card-eyebrow\">Personal Training</span><h3 class=\"ds-card-title\">Real coaching, every session.</h3><p class=\"ds-card-body\">One-on-one programming that adapts to where you actually are.</p></div>",
-      "css": ".ds-card { position: relative; border-radius: 1.25rem; border: 1px solid rgba(255,255,255,0.1); background: linear-gradient(to bottom, rgba(10,13,22,0.8), rgba(5,7,13,0.8)); padding: 24px; transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s ease-out; } @media (hover: hover) { .ds-card:hover { transform: translateY(-3px); box-shadow: 0 0 0 1px rgba(220,43,56,0.32), 0 22px 50px -22px rgba(220,43,56,0.45), 0 12px 40px -16px rgba(0,0,0,0.5); } } .ds-card-eyebrow { display: inline-flex; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.25em; color: #ff8d96; } .ds-card-title { margin-top: 12px; font-family: 'Archivo Black', 'Bebas Neue', system-ui, sans-serif; font-size: clamp(1.35rem, 3vw, 2.25rem); line-height: 1.08; letter-spacing: -0.02em; color: #f5f6fa; } .ds-card-body { margin-top: 12px; color: #c4c9d8; line-height: 1.625; }"
+      "css": ".ds-card { position: relative; border-radius: 1.25rem; border: 1px solid rgba(255,255,255,0.1); background: linear-gradient(to bottom, rgba(10,13,22,0.8), rgba(5,7,13,0.8)); padding: 24px; transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s ease-out; } @media (hover: hover) { .ds-card:hover { transform: translateY(-3px); box-shadow: 0 0 0 1px rgba(220,43,56,0.32), 0 22px 50px -22px rgba(220,43,56,0.45), 0 12px 40px -16px rgba(0,0,0,0.5); } } .ds-card-eyebrow { display: inline-flex; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.25em; color: #ff8d96; } .ds-card-title { margin-top: 12px; font-family: 'Barlow Condensed', 'Archivo Black', system-ui, sans-serif; font-weight: 600; font-size: clamp(1.35rem, 3vw, 2.25rem); line-height: 1.08; letter-spacing: -0.01em; color: #f5f6fa; } .ds-card-body { margin-top: 12px; color: #c4c9d8; line-height: 1.625; }"
     },
     {
       "name": "Input Field",
@@ -116,7 +116,7 @@
     "keyCharacteristics": [
       "Near-black base (#05070d), never true black — calm, not gothic",
       "Two-color glow system: red dominant, steel-blue secondary, used with restraint",
-      "Archivo Black display type paired with Inter body — impact contrasted with legibility",
+      "Barlow Condensed display + Barlow body — single sport-coded family at two optical widths",
       "Flat by default; glow and lift are interaction rewards, not ambient decoration",
       "Fluid clamp() scales everywhere — type and spacing breathe across viewport instead of stepping at breakpoints"
     ],

@@ -1,0 +1,20 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-font",
+        "value": "barlow condensed",
+        "reason": "User confirmed Barlow Condensed is intentional",
+        "createdAt": "2026-06-28T16:41:30.692Z"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "barlow",
+        "reason": "User confirmed Barlow is intentional",
+        "createdAt": "2026-06-28T16:41:30.914Z"
+      }
+    ]
+  }
+}

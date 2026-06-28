@@ -159,19 +159,19 @@ export default function Team() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: '-60px' }}
-            className="mt-12 grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3 md:mt-20"
+            className="mt-12 -mx-4 flex snap-x snap-mandatory overflow-x-auto px-4 gap-5 pb-4 sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:snap-none sm:overflow-x-visible sm:grid-cols-2 sm:gap-x-6 sm:gap-y-14 lg:grid-cols-3 md:mt-20"
           >
             {team.map((person, idx) => (
               <motion.div
                 key={person.name}
                 variants={fadeUp}
-                className="group overflow-hidden"
+                className="group shrink-0 min-w-[72vw] xs:min-w-[60vw] sm:min-w-0 snap-start overflow-hidden"
               >
-                {/* Photo or initials placeholder */}
-                <div className="relative h-96 w-full overflow-hidden rounded-md transition-all duration-500 group-hover:h-[22rem] group-hover:rounded-xl">
+                {/* Photo or initials placeholder — fixed height, no layout-property animation */}
+                <div className="relative h-[22rem] w-full overflow-hidden rounded-xl">
                   {person.photo ? (
                     <img
-                      className="h-full w-full object-cover object-top grayscale transition-all duration-500 group-hover:grayscale-0"
+                      className="h-full w-full object-cover object-top grayscale transition-[filter] duration-500 group-hover:grayscale-0"
                       src={person.photo}
                       alt={person.name}
                       width="826"
@@ -179,14 +179,14 @@ export default function Team() {
                     />
                   ) : (
                     <div
-                      className={`h-full w-full flex flex-col items-center justify-center gap-4 transition-all duration-500 ${
+                      className={`h-full w-full flex flex-col items-center justify-center gap-4 ${
                         person.family
                           ? 'bg-gradient-to-br from-brand-500/25 via-ink-900 to-accent-500/10'
                           : 'bg-gradient-to-br from-accent-500/20 via-ink-900 to-brand-500/10'
                       }`}
                     >
                       <span
-                        className={`font-display text-6xl font-bold tracking-tight transition-all duration-500 ${
+                        className={`font-display text-6xl font-bold tracking-tight transition-[color,opacity] duration-500 ${
                           person.family
                             ? 'text-brand-500/40 group-hover:text-brand-500/60'
                             : 'text-accent-500/40 group-hover:text-accent-500/60'
@@ -204,16 +204,17 @@ export default function Team() {
                 {/* Name, number, role */}
                 <div className="px-1 pt-3">
                   <div className="flex items-baseline justify-between">
-                    <h3 className="font-display text-base font-medium tracking-wide text-white transition-all duration-500 group-hover:tracking-wider">
+                    <h3 className="font-display text-base font-medium tracking-wide text-white transition-[letter-spacing] duration-300 group-hover:tracking-wider">
                       {person.name}
                     </h3>
                     <span className="text-xs text-ink-500">
                       _{String(idx + 1).padStart(2, '0')}
                     </span>
                   </div>
+                  {/* Role visible on mobile; slides up from below on pointer hover at sm+ */}
                   <div className="mt-1 h-5 overflow-hidden">
                     <span
-                      className={`inline-block translate-y-5 text-sm transition duration-300 group-hover:translate-y-0 ${
+                      className={`inline-block text-sm transition-transform duration-300 sm:translate-y-5 sm:group-hover:translate-y-0 ${
                         person.family ? 'text-brand-300' : 'text-accent-300'
                       }`}
                     >

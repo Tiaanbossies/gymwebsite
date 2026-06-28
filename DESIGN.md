@@ -13,30 +13,30 @@ colors:
   whatsapp-green: "#25D366"
 typography:
   display:
-    fontFamily: "\"Archivo Black\", \"Bebas Neue\", system-ui, sans-serif"
+    fontFamily: "\"Barlow Condensed\", \"Archivo Black\", system-ui, sans-serif"
     fontSize: "clamp(2.35rem, 7vw, 5.5rem)"
-    fontWeight: 400
+    fontWeight: 700
     lineHeight: 0.95
-    letterSpacing: "-0.035em"
+    letterSpacing: "-0.02em"
   headline:
-    fontFamily: "\"Archivo Black\", \"Bebas Neue\", system-ui, sans-serif"
+    fontFamily: "\"Barlow Condensed\", \"Archivo Black\", system-ui, sans-serif"
     fontSize: "clamp(1.85rem, 4.8vw, 3.9rem)"
-    fontWeight: 400
+    fontWeight: 700
     lineHeight: 1
-    letterSpacing: "-0.02em"
+    letterSpacing: "-0.015em"
   title:
-    fontFamily: "\"Archivo Black\", \"Bebas Neue\", system-ui, sans-serif"
+    fontFamily: "\"Barlow Condensed\", \"Archivo Black\", system-ui, sans-serif"
     fontSize: "clamp(1.35rem, 3vw, 2.25rem)"
-    fontWeight: 400
+    fontWeight: 600
     lineHeight: 1.08
-    letterSpacing: "-0.02em"
+    letterSpacing: "-0.01em"
   body:
-    fontFamily: "Inter, system-ui, sans-serif"
+    fontFamily: "Barlow, system-ui, sans-serif"
     fontSize: "clamp(0.95rem, 1.05vw + 0.7rem, 1.125rem)"
     fontWeight: 400
     lineHeight: 1.625
   label:
-    fontFamily: "Inter, system-ui, sans-serif"
+    fontFamily: "Barlow, system-ui, sans-serif"
     fontSize: "11px"
     fontWeight: 600
     letterSpacing: "0.25em"
@@ -91,7 +91,7 @@ The personality is friendly, minimal, energetic, community-focused (the client's
 **Key Characteristics:**
 - Near-black base (#05070d), never true black — calm, not gothic
 - Two-color glow system: red dominant, steel-blue secondary, used with restraint
-- Archivo Black display type paired with Inter body — impact contrasted with legibility
+- Barlow Condensed display type paired with Inter body — sport-coded impact contrasted with legibility
 - Flat by default; glow and lift are interaction rewards, not ambient decoration
 - Fluid `clamp()` scales everywhere — type and spacing breathe across viewport instead of stepping at breakpoints
 
@@ -120,15 +120,15 @@ A two-color glow system over a near-black neutral base — both accent colors tr
 
 ## 3. Typography
 
-**Display Font:** "Archivo Black", with "Bebas Neue" then system-ui as fallback
-**Body Font:** Inter, with system-ui fallback
+**Display Font:** "Barlow Condensed" (700–800), with "Archivo Black" then system-ui as fallback
+**Body Font:** Barlow (400–600), with system-ui fallback
 
-**Character:** Archivo Black is heavy, condensed, and impact-driven — a poster face, not a refined editorial serif — deliberately contrasted against Inter's clean, humanist legibility. The pairing reads as "confident announcement, then a real conversation": headlines shout once, body copy talks normally.
+**Character:** A single-family system — Barlow Condensed for display, Barlow for body. The family is sport-coded throughout: tall, tight, athletic. Display weight shouts from a gym wall; regular weight reads as a normal conversation. Using one family at two optical widths keeps the system coherent without a mismatched pairing.
 
 ### Hierarchy
-- **Display** (400, `clamp(2.35rem, 7vw, 5.5rem)`, leading 0.95, tracking -0.035em): Homepage hero headline only (`.display-1`). The single largest moment on the site.
-- **Headline** (400, `clamp(1.85rem, 4.8vw, 3.9rem)`, leading 1, tracking -0.02em): Interior page-hero H1s (`.display-2`, `PageHero`). One per page, always paired with an eyebrow above and a description below.
-- **Title** (400, `clamp(1.35rem, 3vw, 2.25rem)`, leading 1.08, tracking -0.02em): Section headings within a page (`.display-3`, `SectionHeading`).
+- **Display** (700, `clamp(2.35rem, 7vw, 5.5rem)`, leading 0.95, tracking -0.02em): Homepage hero headline only (`.display-1`). The single largest moment on the site.
+- **Headline** (700, `clamp(1.85rem, 4.8vw, 3.9rem)`, leading 1, tracking -0.015em): Interior page-hero H1s (`.display-2`, `PageHero`). One per page, always paired with an eyebrow above and a description below.
+- **Title** (600, `clamp(1.35rem, 3vw, 2.25rem)`, leading 1.08, tracking -0.01em): Section headings within a page (`.display-3`, `SectionHeading`).
 - **Body** (400, `clamp(0.95rem, 1.05vw + 0.7rem, 1.125rem)`, leading 1.625, color Cool Slate): Paragraph copy (`.body-lg`). Capped at a comfortable measure by each section's max-width container, not a bare full-bleed column.
 - **Label** (600, 11px, tracking 0.25em, uppercase, color Soft Rose): Eyebrows, tags, button text. The only place letter-spacing this wide is used — it signals "this is a label, not a sentence."
 

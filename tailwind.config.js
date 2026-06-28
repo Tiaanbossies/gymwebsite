@@ -62,13 +62,12 @@ export default {
         },
       },
       fontFamily: {
-        // Kept Archivo Black for impact, Inter for body. No brand font was specified (Q27).
-        display: ['"Archivo Black"', '"Bebas Neue"', 'system-ui', 'sans-serif'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['"Barlow Condensed"', '"Archivo Black"', 'system-ui', 'sans-serif'],
+        sans: ['Barlow', 'system-ui', 'sans-serif'],
       },
       letterSpacing: {
-        headline: '-0.02em',
-        mega: '-0.035em',
+        headline: '-0.015em',
+        mega: '-0.02em',
       },
       // Fluid spacing tokens — used by the .section / .section-tight component
       // classes so vertical rhythm scales smoothly from mobile to desktop instead

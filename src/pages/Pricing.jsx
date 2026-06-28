@@ -382,7 +382,7 @@ export default function Pricing() {
                   Every personal training package includes:
                 </p>
                 <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-                  <PTIncluded icon={User} text="1-on-1 coaching — never group sessions" />
+                  <PTIncluded icon={User} text="Personal coaching with a dedicated trainer" />
                   <PTIncluded icon={Dumbbell} text="Programme tailored to your goals" />
                   <PTIncluded icon={Salad} text="Personalised diet / nutrition plan" />
                   <PTIncluded icon={LineChart} text="Regular body assessments to track progress" />

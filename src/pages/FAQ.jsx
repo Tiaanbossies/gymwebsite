@@ -75,12 +75,12 @@ const faqGroups = [
       {
         question: 'What services do you offer?',
         answer:
-          "Personal training (1-on-1), open gym access, nutrition / diet plans, and body assessments. We don't run group classes — our coaching is always personal.",
+          "Personal training, open gym access, nutrition / diet plans, and body assessments.",
       },
       {
         question: 'Do you run group classes?',
         answer:
-          "No. We're a small commercial gym focused on 1-on-1 coaching and open-gym training. If you're looking for bootcamps or scheduled group classes, we're not the right fit.",
+          "We're a small commercial gym focused on personal training and open-gym training.",
       },
       {
         question: 'Do you have a boxing area?',

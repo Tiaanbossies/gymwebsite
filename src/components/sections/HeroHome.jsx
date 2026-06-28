@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { Fragment, useEffect, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -97,21 +97,22 @@ export default function HeroHome() {
               aria-label="A small gym that puts you first. Right here in Centurion."
             >
               {HEADLINE_WORDS.map((item, i) => (
-                <span
-                  key={i}
-                  aria-hidden="true"
-                  className={`hw inline-block${item.accent ? ' text-brand-500' : ''}`}
-                  style={{ opacity: 0 }}
-                >
-                  {item.w}
+                <Fragment key={i}>
+                  <span
+                    aria-hidden="true"
+                    className={`hw inline-block${item.accent ? ' text-brand-500' : ''}`}
+                    style={{ opacity: 0 }}
+                  >
+                    {item.w}
+                  </span>
                   {i < HEADLINE_WORDS.length - 1 && ' '}
-                </span>
+                </Fragment>
               ))}
             </h1>
 
             <p className="mt-6 body-lg text-ink-200 max-w-xl text-balance leading-relaxed">
               Personal training with eight dedicated coaches. Open gym access. Real nutrition guidance.
-              Body assessments. No group classes—everything is 1-on-1.
+              Body assessments.
             </p>
 
             <ClickSpark sparkColor="#dc2b38" sparkCount={8} sparkSize={9} sparkRadius={28} duration={500}>

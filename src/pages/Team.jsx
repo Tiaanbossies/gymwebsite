@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { User, ArrowUpRight, Trophy, HeartHandshake, Users2, Flame } from 'lucide-react';
+import { ArrowUpRight, Trophy, HeartHandshake, Users2, Flame } from 'lucide-react';
 
 import PagePose from '../components/ui/PagePose.jsx';
 import PageHero from '../components/sections/PageHero.jsx';
@@ -16,7 +16,7 @@ import { site, fadeUp, stagger } from '../lib/site.js';
  * Q2 — owner: Johan "Bossie" Boshoff
  * Q3 / Q39 — family members who run / coach in the gym:
  * Rene and Debbie (Boshoff)
- * Q40 — 1-on-1 personal training roster. Confirmed names:
+ * Q40 — personal training roster. Confirmed names:
  * Quibert Dippenaar, Niell Bezuidenhout, Nikki Bredenkamp, Do-Neill Dowry,
  * Dale Collins (none Boshoff family).
  *
@@ -27,8 +27,7 @@ import { site, fadeUp, stagger } from '../lib/site.js';
  * Bios, roles and portraits are explicitly TBD — the client needs to supply
  * them. Every bio line below is either factual (from the questionnaire) or a
  * short, neutral placeholder clearly marked "Bio coming soon" so we never
- * fabricate credentials. Photos use a subtle silhouette placeholder with a
- * visible "Photo TBD" label so it reads correctly even without images.
+ * fabricate credentials. Photos use initials placeholder until real images arrive.
  *
  * Visual treatment: family cards (Bossie, Rene, Debbie) use the brand-red
  * gradient; non-family coaches use the steel-blue accent gradient so the
@@ -40,7 +39,7 @@ const team = [
     role: 'Owner & Head Coach',
     roleShort: 'Owner',
     bio: "Part of the family team that runs the gym day-to-day. Bio coming soon.",
-    placeholderNote: 'Portrait — TBD',
+    photo: null,
     family: true,
   },
   {
@@ -48,7 +47,7 @@ const team = [
     role: 'Family Team',
     roleShort: 'Family · Coach',
     bio: 'Part of the family team that runs the gym day-to-day. Bio coming soon.',
-    placeholderNote: 'Portrait — TBD',
+    photo: null,
     family: true,
   },
   {
@@ -56,15 +55,15 @@ const team = [
     role: 'Family Team',
     roleShort: 'Family · Coach',
     bio: 'Part of the family team that runs the gym day-to-day. Bio coming soon.',
-    placeholderNote: 'Portrait — TBD',
+    photo: null,
     family: true,
   },
   {
     name: 'Niell Bezuidenhout',
     role: 'Personal Trainer',
     roleShort: 'Personal Trainer',
-    bio: 'Coaches 1-on-1 sessions on the personal training roster. Full bio coming soon.',
-    placeholderNote: 'Portrait — TBD',
+    bio: 'Coaches on our personal training roster. Full bio coming soon.',
+    photo: null,
     family: false,
   },
   {
@@ -72,31 +71,31 @@ const team = [
     role: 'Personal Trainer',
     roleShort: 'Personal Trainer',
     bio: 'Coaches on our personal training roster. Full bio coming soon.',
-    placeholderNote: 'Portrait — TBD',
+    photo: null,
     family: false,
   },
   {
     name: 'Nikki Bredenkamp',
     role: 'Personal Trainer',
     roleShort: 'Personal Trainer',
-    bio: 'Coaches 1-on-1 sessions on the personal training roster. Full bio coming soon.',
-    placeholderNote: 'Portrait — TBD',
+    bio: 'Coaches on our personal training roster. Full bio coming soon.',
+    photo: null,
     family: false,
   },
   {
     name: 'Do-Neill Dowry',
     role: 'Personal Trainer',
     roleShort: 'Personal Trainer',
-    bio: 'Coaches 1-on-1 sessions on the personal training roster. Full bio coming soon.',
-    placeholderNote: 'Portrait — TBD',
+    bio: 'Coaches on our personal training roster. Full bio coming soon.',
+    photo: null,
     family: false,
   },
   {
     name: 'Dale Collins',
     role: 'Personal Trainer',
     roleShort: 'Personal Trainer',
-    bio: 'Coaches 1-on-1 sessions on the personal training roster. Full bio coming soon.',
-    placeholderNote: 'Portrait — TBD',
+    bio: 'Coaches on our personal training roster. Full bio coming soon.',
+    photo: null,
     family: false,
   },
 ];
@@ -109,8 +108,8 @@ const culturePillars = [
   },
   {
     icon: Users2,
-    title: 'Eight trainers, 1-on-1',
-    body: 'Personal training here is always one-on-one with one of our eight trainers — not rotating faces and templates.',
+    title: 'Eight trainers',
+    body: 'Personal training here is always with one of our eight dedicated trainers — not rotating faces and templates.',
   },
   {
     icon: Trophy,
@@ -124,6 +123,16 @@ const culturePillars = [
   },
 ];
 
+function initials(name) {
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .map((n) => n[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+}
+
 export default function Team() {
   return (
     <PagePose>
@@ -136,7 +145,7 @@ export default function Team() {
         breadcrumbs={[{ label: 'Home', to: '/' }, { label: 'Team' }]}
       />
 
-      {/* Trainer grid */}
+      {/* Trainer grid — "Our dream team" editorial layout */}
       <section className="section">
         <Container>
           <SectionHeading
@@ -150,56 +159,73 @@ export default function Team() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: '-60px' }}
-            className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+            className="mt-12 grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3 md:mt-20"
           >
-            {team.map((person) => (
-              <motion.article
+            {team.map((person, idx) => (
+              <motion.div
                 key={person.name}
                 variants={fadeUp}
-                className="flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-ink-900 hover-lift"
+                className="group overflow-hidden"
               >
-                <div
-                  className={`relative aspect-[4/5] w-full overflow-hidden ${
-                    person.family
-                      ? 'bg-gradient-to-br from-brand-500/20 via-ink-900 to-accent-500/10'
-                      : 'bg-gradient-to-br from-accent-500/15 via-ink-900 to-brand-500/10'
-                  }`}
-                >
-                  {/* Photo-TBD placeholder — deliberately explicit so no fake imagery */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
+                {/* Photo or initials placeholder */}
+                <div className="relative h-96 w-full overflow-hidden rounded-md transition-all duration-500 group-hover:h-[22rem] group-hover:rounded-xl">
+                  {person.photo ? (
+                    <img
+                      className="h-full w-full object-cover object-top grayscale transition-all duration-500 group-hover:grayscale-0"
+                      src={person.photo}
+                      alt={person.name}
+                      width="826"
+                      height="1239"
+                    />
+                  ) : (
                     <div
-                      className={`flex h-14 w-14 items-center justify-center rounded-full ring-1 ${
+                      className={`h-full w-full flex flex-col items-center justify-center gap-4 transition-all duration-500 ${
                         person.family
-                          ? 'bg-brand-500/15 text-brand-300 ring-brand-500/30'
-                          : 'bg-accent-500/15 text-accent-300 ring-accent-500/30'
+                          ? 'bg-gradient-to-br from-brand-500/25 via-ink-900 to-accent-500/10'
+                          : 'bg-gradient-to-br from-accent-500/20 via-ink-900 to-brand-500/10'
                       }`}
                     >
-                      <User size={22} />
+                      <span
+                        className={`font-display text-6xl font-bold tracking-tight transition-all duration-500 ${
+                          person.family
+                            ? 'text-brand-500/40 group-hover:text-brand-500/60'
+                            : 'text-accent-500/40 group-hover:text-accent-500/60'
+                        }`}
+                      >
+                        {initials(person.name)}
+                      </span>
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-500">
+                        Photo coming soon
+                      </span>
                     </div>
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-400">
-                      {person.placeholderNote}
+                  )}
+                </div>
+
+                {/* Name, number, role */}
+                <div className="px-1 pt-3">
+                  <div className="flex items-baseline justify-between">
+                    <h3 className="font-display text-base font-medium tracking-wide text-white transition-all duration-500 group-hover:tracking-wider">
+                      {person.name}
+                    </h3>
+                    <span className="text-xs text-ink-500">
+                      _{String(idx + 1).padStart(2, '0')}
+                    </span>
+                  </div>
+                  <div className="mt-1 h-5 overflow-hidden">
+                    <span
+                      className={`inline-block translate-y-5 text-sm transition duration-300 group-hover:translate-y-0 ${
+                        person.family ? 'text-brand-300' : 'text-accent-300'
+                      }`}
+                    >
+                      {person.role}
                     </span>
                   </div>
                 </div>
-                <div className="flex flex-1 flex-col gap-2 p-5">
-                  <span
-                    className={`text-[11px] font-semibold uppercase tracking-[0.22em] ${
-                      person.family ? 'text-brand-300' : 'text-accent-300'
-                    }`}
-                  >
-                    {person.roleShort}
-                  </span>
-                  <h3 className="font-display text-lg tracking-headline text-white">
-                    {person.name}
-                  </h3>
-                  <p className="text-xs font-medium text-ink-400">{person.role}</p>
-                  <p className="mt-2 text-sm text-ink-300 leading-relaxed">{person.bio}</p>
-                </div>
-              </motion.article>
+              </motion.div>
             ))}
           </motion.div>
 
-          <p className="mt-8 text-xs text-ink-400">
+          <p className="mt-10 text-xs text-ink-400">
             Full trainer profiles and portraits will go up here as each coach shares their bio and
             photo with us.
           </p>

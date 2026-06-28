@@ -1,6 +1,6 @@
 import ScrollVelocity from '../ui/ScrollVelocity.jsx';
 
-const TICKER_TEXT = 'Honesty · Commitment · Community · Family-run · Centurion · 1-on-1 Only · Free Trial ·';
+const TICKER_TEXT = 'Honesty · Commitment · Community · Family-run · Centurion · Personal Training · Free Trial ·';
 
 export default function GymTicker() {
   return (

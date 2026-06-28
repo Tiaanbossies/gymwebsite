@@ -75,7 +75,7 @@ export default function HeroHome() {
           <motion.div variants={fadeUp} className="max-w-2xl">
             <div className="flex flex-wrap items-center gap-3 mb-6">
               <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">
-                ● Hennopspark · Centurion &amp; Midstream
+                <span aria-hidden="true">● </span>Hennopspark · Centurion &amp; Midstream
               </span>
               <span aria-hidden="true" className="text-ink-500">·</span>
               <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">

@@ -526,7 +526,7 @@ function StepIndicator({ currentStep }) {
             <div className="flex flex-col items-center gap-1.5">
               <div
                 aria-current={isActive ? 'step' : undefined}
-                className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold ring-1 transition-all duration-300 ${
+                className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold ring-1 transition-[background-color,color,box-shadow] duration-300 ${
                   isDone
                     ? 'bg-brand-500 ring-brand-500 text-white'
                     : isActive

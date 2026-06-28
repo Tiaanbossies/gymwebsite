@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { cloneElement, useEffect, useId, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
 import { CheckCircle2, Send, MessageCircle, Mail } from 'lucide-react';
@@ -197,16 +197,18 @@ export default function ContactForm() {
           checked={form.consent}
           onChange={onChange}
           className="mt-1 h-4 w-4 accent-brand-500"
+          aria-describedby={errors.consent ? 'consent-error' : undefined}
+          aria-invalid={!!errors.consent}
         />
         <span>
           I agree that Bossie's Gym may contact me about my enquiry. I understand my details will
           be handled responsibly and not shared with third parties.
         </span>
       </label>
-      {errors.consent && <p className="-mt-3 text-xs text-red-400">{errors.consent}</p>}
+      {errors.consent && <p id="consent-error" className="-mt-3 text-xs text-red-400">{errors.consent}</p>}
 
       {sendState.status === 'error' && (
-        <p className="text-sm text-red-400">{sendState.message}</p>
+        <p className="text-sm text-red-400" role="alert">{sendState.message}</p>
       )}
 
       <button
@@ -222,13 +224,20 @@ export default function ContactForm() {
 }
 
 function Field({ label, error, children }) {
+  const errorId = useId();
   return (
     <label className="flex flex-col gap-2">
       <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-400">
         {label}
       </span>
-      {children}
-      {error && <span className="text-xs text-red-400">{error}</span>}
+      {error
+        ? cloneElement(children, { 'aria-describedby': errorId, 'aria-invalid': true })
+        : children}
+      {error && (
+        <span id={errorId} className="text-xs text-red-400">
+          {error}
+        </span>
+      )}
     </label>
   );
 }

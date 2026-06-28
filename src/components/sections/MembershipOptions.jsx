@@ -90,7 +90,7 @@ export default function MembershipOptions({ options = defaultOptions }) {
         <motion.div
           key={opt.name}
           variants={fadeUp}
-          className={`relative flex flex-col rounded-2xl border p-6 sm:p-8 transition-all ${
+          className={`relative flex flex-col rounded-2xl border p-6 sm:p-8 transition-[border-color,box-shadow] ${
             opt.accent
               ? 'border-brand-500/50 bg-gradient-to-b from-brand-500/15 to-ink-900 shadow-glow hover-lift'
               : 'border-white/10 bg-ink-900 hover-lift hover:border-white/20'

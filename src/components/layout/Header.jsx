@@ -28,7 +28,7 @@ export default function Header() {
   return (
     <>
       <header
-        className={`sticky top-0 z-40 transition-all duration-300 ${
+        className={`sticky top-0 z-40 transition-[background-color,border-color,backdrop-filter] duration-300 ${
           scrolled
             ? 'border-b border-white/10 bg-ink-950/80 backdrop-blur-xl'
             : 'border-b border-transparent bg-transparent'

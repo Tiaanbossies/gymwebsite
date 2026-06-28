@@ -449,7 +449,7 @@ export default function Dashboard() {
                           <span className="text-xs text-ink-400 w-8">{label}</span>
                           <div className="flex-1 h-5 bg-ink-800 rounded overflow-hidden">
                             <div
-                              className="h-full bg-accent-500 rounded transition-all"
+                              className="h-full bg-accent-500 rounded transition-[width]"
                               style={{ width: `${(count / scrollMax) * 100}%` }}
                             />
                           </div>
@@ -480,7 +480,7 @@ export default function Dashboard() {
                         <span className="text-white">{waClicks}</span>
                       </div>
                       <div className="h-5 bg-ink-800 rounded overflow-hidden">
-                        <div className="h-full bg-[#25D366] rounded transition-all" style={{ width: `${(waClicks / waVsCallMax) * 100}%` }} />
+                        <div className="h-full bg-[#25D366] rounded transition-[width]" style={{ width: `${(waClicks / waVsCallMax) * 100}%` }} />
                       </div>
                     </div>
                     <div>
@@ -489,7 +489,7 @@ export default function Dashboard() {
                         <span className="text-white">{callClicks}</span>
                       </div>
                       <div className="h-5 bg-ink-800 rounded overflow-hidden">
-                        <div className="h-full bg-accent-500 rounded transition-all" style={{ width: `${(callClicks / waVsCallMax) * 100}%` }} />
+                        <div className="h-full bg-accent-500 rounded transition-[width]" style={{ width: `${(callClicks / waVsCallMax) * 100}%` }} />
                       </div>
                     </div>
                     {waClicks + callClicks > 0 && (

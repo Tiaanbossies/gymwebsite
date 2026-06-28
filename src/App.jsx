@@ -1,6 +1,6 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { useTracker } from './hooks/useTracker.js';
 
 import AnnouncementBar from './components/layout/AnnouncementBar.jsx';
@@ -14,13 +14,14 @@ import Services from './pages/Services.jsx';
 import Membership from './pages/Membership.jsx';
 import Onboarding from './pages/Join.jsx';
 import Pricing from './pages/Pricing.jsx';
-import Gallery from './pages/Gallery.jsx';
 import Team from './pages/Team.jsx';
-import About from './pages/About.jsx';
 import Contact from './pages/Contact.jsx';
-import FAQ from './pages/FAQ.jsx';
-import NotFound from './pages/NotFound.jsx';
-import Dashboard from './pages/Dashboard.jsx';
+
+const Gallery = lazy(() => import('./pages/Gallery.jsx'));
+const About = lazy(() => import('./pages/About.jsx'));
+const FAQ = lazy(() => import('./pages/FAQ.jsx'));
+const Dashboard = lazy(() => import('./pages/Dashboard.jsx'));
+const NotFound = lazy(() => import('./pages/NotFound.jsx'));
 
 // Site origin used for canonical + OG URLs. Kept at module scope so the meta
 // effect below has a single source of truth alongside the route map.
@@ -120,6 +121,7 @@ export default function App() {
       <AnnouncementBar />
       <Header />
       <main id="main" className="flex-1">
+        <Suspense fallback={null}>
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<Home />} />
@@ -139,6 +141,7 @@ export default function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AnimatePresence>
+        </Suspense>
       </main>
       <Footer />
       <StickyWhatsApp />

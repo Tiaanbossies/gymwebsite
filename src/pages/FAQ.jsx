@@ -156,7 +156,7 @@ export default function FAQ() {
           <div className="flex flex-col gap-16">
             {faqGroups.map((group) => (
               <div key={group.heading}>
-                <SectionHeading eyebrow={group.heading} title={group.heading} />
+                <SectionHeading title={group.heading} />
                 <div className="mt-10">
                   <FAQAccordion items={group.items} />
                 </div>

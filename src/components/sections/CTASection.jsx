@@ -3,6 +3,9 @@ import { ArrowUpRight, Phone } from 'lucide-react';
 
 import Container from '../ui/Container.jsx';
 import Button from '../ui/Button.jsx';
+import ShinyText from '../ui/ShinyText.jsx';
+import ClickSpark from '../ui/ClickSpark.jsx';
+import Threads from '../ui/Threads.jsx';
 import { fadeUp, site } from '../../lib/site.js';
 
 /**
@@ -43,6 +46,9 @@ export default function CTASection({
         >
           {isBrand && (
             <>
+              <div className="pointer-events-none absolute inset-0 opacity-25">
+                <Threads color={[0.863, 0.169, 0.22]} amplitude={1.4} distance={0.25} />
+              </div>
               <div className="pointer-events-none absolute -right-20 -top-20 h-80 w-80 rounded-full bg-brand-500/30 blur-3xl" />
               <div className="pointer-events-none absolute -left-20 bottom-0 h-64 w-64 rounded-full bg-accent-500/15 blur-3xl" />
               <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
@@ -50,10 +56,11 @@ export default function CTASection({
           )}
           <div className="relative flex flex-col items-start gap-8 xl:flex-row xl:items-end xl:justify-between">
             <div className="max-w-2xl">
-              <span className="eyebrow">{eyebrow}</span>
+              <ShinyText text={eyebrow} color="#ff8d96" shineColor="#ffffff" speed={4} className="eyebrow" />
               <h2 className="mt-3 display-2 text-white text-balance">{title}</h2>
               {description && <p className="mt-5 body-lg text-balance">{description}</p>}
             </div>
+            <ClickSpark sparkColor="#dc2b38" sparkCount={8} sparkSize={9} sparkRadius={28} duration={500}>
             <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap xl:w-auto xl:justify-end">
               {primary && (
                 <Button
@@ -90,6 +97,7 @@ export default function CTASection({
                 </Button>
               )}
             </div>
+            </ClickSpark>
           </div>
         </motion.div>
       </Container>

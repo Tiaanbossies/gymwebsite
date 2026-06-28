@@ -16,6 +16,7 @@ import PagePose from '../components/ui/PagePose.jsx';
 import Container from '../components/ui/Container.jsx';
 import SectionHeading from '../components/ui/SectionHeading.jsx';
 import HeroHome from '../components/sections/HeroHome.jsx';
+import GymTicker from '../components/sections/GymTicker.jsx';
 import ServiceCard from '../components/sections/ServiceCard.jsx';
 import TrustSection from '../components/sections/TrustSection.jsx';
 import ReviewsSection from '../components/sections/ReviewsSection.jsx';
@@ -28,6 +29,7 @@ export default function Home() {
     <PagePose>
       {/* Hero section with real full-bleed background photograph */}
       <HeroHome />
+      <GymTicker />
 
       {/* Service overview — Personal Training + Open Gym */}
       <section className="section-tight">

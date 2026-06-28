@@ -3,6 +3,9 @@ import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import anime from 'animejs';
+import ShinyText from '../ui/ShinyText.jsx';
+import Magnet from '../ui/Magnet.jsx';
+import ClickSpark from '../ui/ClickSpark.jsx';
 
 import Container from '../ui/Container.jsx';
 import Button from '../ui/Button.jsx';
@@ -78,9 +81,13 @@ export default function HeroHome() {
               <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">
                 Family-run since day one
               </span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-300 flex items-center gap-1">
-                ✦ Free trial available
-              </span>
+              <ShinyText
+                text="✦ Free trial available"
+                color="#8fafc3"
+                shineColor="#ffffff"
+                speed={3}
+                className="text-[11px] font-semibold uppercase tracking-[0.22em]"
+              />
             </div>
 
             {/* Word-by-word animated headline */}
@@ -107,17 +114,21 @@ export default function HeroHome() {
               Body assessments. No group classes—everything is 1-on-1.
             </p>
 
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button to={site.ctas.join.to} data-track="Join Now — Hero" iconNode={<ArrowUpRight size={16} strokeWidth={2.5} />}>
-                {site.ctas.join.label}
-              </Button>
-              <Button href={site.ctas.call.href} variant="ghost" data-track="Call Gym — Hero">
-                Call {site.phone.display}
-              </Button>
-              <Button to={site.ctas.trial.to} variant="link" data-track="Free Trial — Hero">
-                Start a free trial
-              </Button>
-            </div>
+            <ClickSpark sparkColor="#dc2b38" sparkCount={8} sparkSize={9} sparkRadius={28} duration={500}>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Magnet magnetStrength={3} padding={50}>
+                  <Button to={site.ctas.join.to} data-track="Join Now — Hero" iconNode={<ArrowUpRight size={16} strokeWidth={2.5} />}>
+                    {site.ctas.join.label}
+                  </Button>
+                </Magnet>
+                <Button href={site.ctas.call.href} variant="ghost" data-track="Call Gym — Hero">
+                  Call {site.phone.display}
+                </Button>
+                <Button to={site.ctas.trial.to} variant="link" data-track="Free Trial — Hero">
+                  Start a free trial
+                </Button>
+              </div>
+            </ClickSpark>
 
             <div className="mt-10 pt-10 border-t border-white/10 flex flex-wrap gap-6 sm:gap-8">
               <div>

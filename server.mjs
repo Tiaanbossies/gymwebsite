@@ -206,7 +206,7 @@ function dashboardCookieHeader(token, maxAgeSeconds) {
     `${DASHBOARD_COOKIE}=${token}`,
     'Path=/',
     'HttpOnly',
-    'SameSite=Lax',
+    'SameSite=Strict',
     `Max-Age=${maxAgeSeconds}`,
   ];
   if (!isDev) parts.push('Secure');
@@ -329,6 +329,12 @@ async function handleSendEnquiry(req, res) {
   }
 
   const body = await readJsonBody(req);
+
+  if (body.website) {
+    sendJson(res, 400, { ok: false, error: 'Bad request.' });
+    return;
+  }
+
   const name = sanitize(body.name || 'Website visitor');
   const email = sanitize(body.email || '');
   const phone = sanitize(body.phone || '');
@@ -660,9 +666,8 @@ async function serveStatic(req, res) {
         'Cache-Control': filePath.includes(`${path.sep}assets${path.sep}`)
           ? 'public, max-age=31536000, immutable'
           : 'no-cache',
-        'X-Content-Type-Options': 'nosniff',
-        'X-Frame-Options': 'DENY',
-        'Referrer-Policy': 'strict-origin-when-cross-origin',
+        ...SECURITY_HEADERS,
+        'Content-Security-Policy': CSP,
       });
       if (req.method === 'HEAD') { res.end(); return; }
       res.end(await fs.readFile(filePath));
@@ -676,9 +681,8 @@ async function serveStatic(req, res) {
   res.writeHead(200, {
     'Content-Type': 'text/html; charset=utf-8',
     'Cache-Control': 'no-cache',
-    'X-Content-Type-Options': 'nosniff',
-    'X-Frame-Options': 'DENY',
-    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    ...SECURITY_HEADERS,
+    'Content-Security-Policy': CSP,
   });
   if (req.method === 'HEAD') { res.end(); return; }
   res.end(await fs.readFile(indexPath));
@@ -806,8 +810,31 @@ function readJsonBody(req) {
   });
 }
 
+const SECURITY_HEADERS = {
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+};
+
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com",
+  "img-src 'self' data: https:",
+  "connect-src 'self' https://gnsrwzmzaicxceqgcstd.supabase.co https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://region1.analytics.google.com",
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "object-src 'none'",
+].join('; ');
+
 function sendJson(res, status, payload) {
-  res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' });
+  res.writeHead(status, {
+    'Content-Type': 'application/json; charset=utf-8',
+    ...SECURITY_HEADERS,
+  });
   res.end(JSON.stringify(payload));
 }
 

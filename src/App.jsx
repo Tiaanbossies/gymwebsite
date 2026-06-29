@@ -98,6 +98,15 @@ export default function App() {
     // query strings (e.g. ?intent=join) are appended by CTAs.
     upsertLink('canonical', canonical);
 
+    // Noindex — sign-up flows and internal tools should not appear in search results.
+    const NOINDEX_ROUTES = new Set(['/onboarding', '/dashboard']);
+    if (NOINDEX_ROUTES.has(path)) {
+      upsertMeta('meta[name="robots"]', 'name', 'robots', 'noindex, nofollow');
+    } else {
+      const robotsEl = document.head.querySelector('meta[name="robots"]');
+      if (robotsEl) robotsEl.remove();
+    }
+
     // Open Graph — what a page looks like when shared on WhatsApp / Facebook.
     upsertMeta('meta[property="og:title"]',       'property', 'og:title',       entry.title);
     upsertMeta('meta[property="og:description"]', 'property', 'og:description', entry.desc);

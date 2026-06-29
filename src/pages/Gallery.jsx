@@ -40,11 +40,17 @@
  * Hero/wide shots are prioritised first for the home preview.
  */
 
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal, flushSync } from 'react-dom';
 import { motion } from 'framer-motion';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import anime from 'animejs';
+
 import PagePose from '../components/ui/PagePose.jsx';
 import PageHero from '../components/sections/PageHero.jsx';
 import CTASection from '../components/sections/CTASection.jsx';
 import Container from '../components/ui/Container.jsx';
+import ClickSpark from '../components/ui/ClickSpark.jsx';
 import { fadeUp, stagger, site } from '../lib/site.js';
 
 // ---------------------------------------------------------------------------
@@ -343,27 +349,77 @@ const allTiles = [
 const homeTiles = allTiles.filter((t) => t.homePreview);
 
 // ---------------------------------------------------------------------------
-// Component
+// Section + filter config
+// ---------------------------------------------------------------------------
+
+const SECTIONS = [
+  { id: 'floor',      label: 'The training floor',        filterId: 'floor',       cols: 'sm:grid-cols-[2fr_1fr_1fr]',     tiles: floorOverviews,  first: true },
+  { id: 'weights',    label: 'Weight training',            filterId: 'weights',     cols: 'sm:grid-cols-[2fr_1fr_1fr]',     tiles: weightTiles },
+  { id: 'cardio',     label: 'Cardio',                    filterId: 'cardio',      cols: 'sm:grid-cols-[2fr_1fr_1fr]',     tiles: cardioTiles },
+  { id: 'functional', label: 'Functional & conditioning', filterId: 'cardio',      cols: 'sm:grid-cols-[1fr_1fr]',         tiles: functionalTiles },
+  { id: 'tanning',    label: 'Tanning & assessments',     filterId: 'facilities',  cols: 'sm:grid-cols-[2fr_1fr_1fr]',     tiles: tanningTiles },
+  { id: 'reception',  label: 'Reception & lounge',        filterId: 'facilities',  cols: 'sm:grid-cols-[2fr_1fr]',         tiles: receptionTiles },
+  { id: 'mens',       label: "Men's changeroom",          filterId: 'changerooms', cols: 'sm:grid-cols-[2fr_1fr_1fr]',     tiles: mensTiles },
+  { id: 'ladies',     label: "Ladies' changeroom",        filterId: 'changerooms', cols: 'sm:grid-cols-[2fr_1fr_1fr_1fr]', tiles: ladiesTiles },
+];
+
+const FILTERS = [
+  { id: 'all',         label: 'All' },
+  { id: 'floor',       label: 'Training Floor' },
+  { id: 'weights',     label: 'Weights' },
+  { id: 'cardio',      label: 'Cardio' },
+  { id: 'facilities',  label: 'Facilities' },
+  { id: 'changerooms', label: 'Changerooms' },
+];
+
+// ---------------------------------------------------------------------------
+// Main export — dispatches to HomePreview or GalleryPage (no hooks here)
 // ---------------------------------------------------------------------------
 
 export default function GalleryGrid({ limit }) {
-  if (limit) {
-    const tiles = (homeTiles.length >= limit ? homeTiles : allTiles).slice(0, limit);
-    return (
-      <motion.div
-        variants={stagger}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: '-60px' }}
-        className="grid gap-3 sm:grid-cols-[2fr_1fr_1fr] auto-rows-[220px] sm:auto-rows-[280px]"
-      >
-        {tiles.map((tile, index) => (
-          // Eagerly load the first 2 images on the home page, lazy load the rest
-          <PhotoTile key={tile.id} tile={tile} priority={index < 2} />
-        ))}
-      </motion.div>
-    );
-  }
+  if (limit) return <HomePreview limit={limit} />;
+  return <GalleryPage />;
+}
+
+// ---------------------------------------------------------------------------
+// Home page preview (framer-motion stagger, no lightbox)
+// ---------------------------------------------------------------------------
+
+function HomePreview({ limit }) {
+  const tiles = (homeTiles.length >= limit ? homeTiles : allTiles).slice(0, limit);
+  return (
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, margin: '-60px' }}
+      className="grid gap-3 auto-rows-[220px] sm:auto-rows-[280px] sm:grid-cols-[2fr_1fr_1fr]"
+    >
+      {tiles.map((tile, index) => (
+        <PhotoTile key={tile.id} tile={tile} priority={index < 2} tileVariants={fadeUp} />
+      ))}
+    </motion.div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Full gallery page
+// ---------------------------------------------------------------------------
+
+function GalleryPage() {
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [lightbox, setLightbox] = useState(null);
+
+  const visibleSections = activeFilter === 'all'
+    ? SECTIONS
+    : SECTIONS.filter((s) => s.filterId === activeFilter);
+
+  const visibleTiles = visibleSections.flatMap((s) => s.tiles);
+
+  const openLightbox = useCallback((tile) => {
+    const idx = visibleTiles.findIndex((t) => t.id === tile.id);
+    setLightbox({ tiles: visibleTiles, index: Math.max(0, idx) });
+  }, [visibleTiles]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <PagePose>
@@ -377,57 +433,41 @@ export default function GalleryGrid({ limit }) {
 
       <section className="section">
         <Container>
+          <div className="mb-10">
+            <div className="mb-4 flex items-center justify-between gap-4">
+              <p className="text-sm text-ink-500">
+                {visibleTiles.length} photo{visibleTiles.length !== 1 ? 's' : ''}
+              </p>
+            </div>
+            <FilterTabs active={activeFilter} onChange={setActiveFilter} />
+          </div>
+
           <div className="flex flex-col gap-14">
-            <GridSection
-              label="The training floor"
-              tiles={floorOverviews}
-              isFirstSection={true} // Flags this section to load instantly
-            />
-            <GridSection
-              label="Weight training"
-              tiles={weightTiles}
-            />
-            <GridSection
-              label="Cardio"
-              tiles={cardioTiles}
-            />
-            <GridSection
-              label="Functional & conditioning"
-              tiles={functionalTiles}
-              cols="sm:grid-cols-[1fr_1fr]"
-            />
-            <GridSection
-              label="Tanning & assessments"
-              tiles={tanningTiles}
-            />
-            <GridSection
-              label="Reception & lounge"
-              tiles={receptionTiles}
-              cols="sm:grid-cols-[2fr_1fr]"
-            />
-            <GridSection
-              label="Men's changeroom"
-              tiles={mensTiles}
-            />
-            <GridSection
-              label="Ladies' changeroom"
-              tiles={ladiesTiles}
-              cols="sm:grid-cols-[2fr_1fr_1fr_1fr]"
-            />
+            {visibleSections.map((section) => (
+              <GridSection
+                key={`${section.id}-${activeFilter}`}
+                section={section}
+                onOpen={openLightbox}
+              />
+            ))}
           </div>
         </Container>
       </section>
+
+      {lightbox && (
+        <Lightbox
+          tiles={lightbox.tiles}
+          startIndex={lightbox.index}
+          onClose={() => setLightbox(null)}
+        />
+      )}
 
       <CTASection
         eyebrow="Like what you see?"
         title="Come see it in person."
         description="Book a free trial, give us a call, or send a WhatsApp — we'll show you around the floor."
         primary={{ label: site.ctas.join.label, to: site.ctas.join.to }}
-        secondary={{
-          label: `Call ${site.phone.display}`,
-          href: site.ctas.call.href,
-          variant: 'ghost',
-        }}
+        secondary={{ label: `Call ${site.phone.display}`, href: site.ctas.call.href, variant: 'ghost' }}
         tertiary={{ label: 'Start a Free Trial', to: site.ctas.trial.to, variant: 'link' }}
       />
     </PagePose>
@@ -435,64 +475,265 @@ export default function GalleryGrid({ limit }) {
 }
 
 // ---------------------------------------------------------------------------
-// Section wrapper
+// Filter tabs with anime.js animated underline indicator
 // ---------------------------------------------------------------------------
 
-function GridSection({ label, tiles, cols, isFirstSection = false }) {
+function FilterTabs({ active, onChange }) {
+  const indicatorRef = useRef(null);
+  const tabsRef = useRef([]);
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    const idx = FILTERS.findIndex((f) => f.id === active);
+    const tab = tabsRef.current[idx];
+    if (!tab || !indicatorRef.current) return;
+
+    requestAnimationFrame(() => {
+      anime({
+        targets: indicatorRef.current,
+        left: tab.offsetLeft,
+        width: tab.offsetWidth,
+        duration: isFirstRender.current ? 0 : 320,
+        easing: 'easeOutExpo',
+      });
+      isFirstRender.current = false;
+    });
+  }, [active]);
+
   return (
-    <div>
-      <h2 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">
-        {label}
-      </h2>
-      <motion.div
-        variants={stagger}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: '-60px' }}
-        className={`grid gap-3 auto-rows-[220px] sm:auto-rows-[280px] ${cols || 'sm:grid-cols-[2fr_1fr_1fr]'}`}
-      >
-        {tiles.map((tile, index) => (
-          // Only apply priority loading to the first 2 images of the very first section
-          <PhotoTile 
-            key={tile.id} 
-            tile={tile} 
-            priority={isFirstSection && index < 2} 
-          />
+    <div className="relative overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+      <div className="relative flex min-w-max border-b border-white/10">
+        <div
+          ref={indicatorRef}
+          className="pointer-events-none absolute bottom-0 h-0.5 rounded-full bg-brand-500"
+          style={{ left: 0, width: 0 }}
+        />
+        {FILTERS.map((f, idx) => (
+          <button
+            key={f.id}
+            ref={(el) => { tabsRef.current[idx] = el; }}
+            type="button"
+            onClick={() => onChange(f.id)}
+            className={`whitespace-nowrap px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] transition-colors duration-200 ${
+              active === f.id ? 'text-white' : 'text-ink-500 hover:text-ink-300'
+            }`}
+          >
+            {f.label}
+          </button>
         ))}
-      </motion.div>
+      </div>
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Individual photo tile
+// Section wrapper — anime.js cascade entrance on mount / filter change
 // ---------------------------------------------------------------------------
 
-function PhotoTile({ tile, priority }) {
+function GridSection({ section, onOpen }) {
+  const gridRef = useRef(null);
+
+  useEffect(() => {
+    const tiles = gridRef.current?.querySelectorAll('[data-tile]');
+    if (!tiles?.length) return;
+
+    anime.set(tiles, { opacity: 0, translateY: 22, scale: 0.97 });
+    anime({
+      targets: tiles,
+      opacity: 1,
+      translateY: 0,
+      scale: 1,
+      delay: anime.stagger(55, { start: 60 }),
+      duration: 560,
+      easing: 'easeOutExpo',
+    });
+  }, []);
+
+  return (
+    <div>
+      <h2 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">
+        {section.label}
+      </h2>
+      <div
+        ref={gridRef}
+        className={`grid gap-3 auto-rows-[220px] sm:auto-rows-[280px] ${section.cols}`}
+      >
+        {section.tiles.map((tile, index) => (
+          <PhotoTile
+            key={tile.id}
+            tile={tile}
+            priority={section.first && index < 2}
+            onOpen={onOpen}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Individual photo tile — ClickSpark + hover reveal + optional lightbox click
+// ---------------------------------------------------------------------------
+
+function PhotoTile({ tile, priority, onOpen, tileVariants }) {
   return (
     <motion.div
-      variants={fadeUp}
-      className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-ink-900 hover-lift ${tile.span || ''}`}
+      data-tile
+      variants={tileVariants}
+      onClick={onOpen ? () => onOpen(tile) : undefined}
+      className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-ink-900 hover-lift ${onOpen ? 'cursor-pointer' : ''} ${tile.span || ''}`}
     >
-      <img
-        src={tile.src}
-        alt={tile.alt}
-        // Swaps between immediate loading for top images and lazy loading for off-screen images
-        loading={priority ? "eager" : "lazy"}
-        // Tells the browser to decode the image off the main thread so scrolling doesn't stutter
-        decoding="async" 
-        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-      />
-      {/* Gradient overlay — keeps label legible on any photo */}
-      <div className="absolute inset-0 bg-gradient-to-t from-ink-950/75 via-ink-950/10 to-transparent" />
-      {/* Label */}
-      <div className="absolute inset-x-0 bottom-0 px-5 pb-4 pt-10">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-300">
-          {tile.label}
-        </p>
-      </div>
-      {/* Subtle inner ring */}
-      <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/5" />
+      <ClickSpark sparkColor="#f4535f" sparkRadius={26} sparkCount={6} sparkSize={8} duration={480}>
+        <img
+          src={tile.src}
+          alt={tile.alt}
+          loading={priority ? 'eager' : 'lazy'}
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink-950/80 via-ink-950/15 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 px-5 pb-4 pt-12">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-300 transition-colors duration-300 group-hover:text-white">
+            {tile.label}
+          </p>
+          {onOpen && (
+            <p className="mt-0.5 translate-y-1 text-[10px] text-ink-400 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+              Click to view
+            </p>
+          )}
+        </div>
+        <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/5 transition-all duration-300 group-hover:ring-white/10" />
+      </ClickSpark>
     </motion.div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Lightbox — portal, keyboard nav, anime.js open / slide / close
+// ---------------------------------------------------------------------------
+
+function Lightbox({ tiles, startIndex, onClose }) {
+  const [index, setIndex] = useState(startIndex);
+  const indexRef = useRef(startIndex);
+  const isAnimating = useRef(false);
+  const backdropRef = useRef(null);
+  const contentRef = useRef(null);
+  const closeBtnRef = useRef(null);
+
+  // Body scroll lock + entrance animation
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    closeBtnRef.current?.focus();
+    anime({ targets: backdropRef.current, opacity: [0, 1], duration: 220, easing: 'easeOutQuad' });
+    anime({ targets: contentRef.current, scale: [0.92, 1], opacity: [0, 1], duration: 380, easing: 'easeOutExpo' });
+
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
+  const navigate = useCallback((dir) => {
+    if (isAnimating.current) return;
+    isAnimating.current = true;
+
+    anime({
+      targets: contentRef.current,
+      opacity: [1, 0],
+      translateX: [0, dir > 0 ? -28 : 28],
+      duration: 180,
+      easing: 'easeInQuad',
+      complete: () => {
+        const next = (indexRef.current + dir + tiles.length) % tiles.length;
+        indexRef.current = next;
+        flushSync(() => setIndex(next));
+        anime({
+          targets: contentRef.current,
+          opacity: [0, 1],
+          translateX: [dir > 0 ? 28 : -28, 0],
+          duration: 300,
+          easing: 'easeOutExpo',
+          complete: () => { isAnimating.current = false; },
+        });
+      },
+    });
+  }, [tiles.length]);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowRight') navigate(1);
+      if (e.key === 'ArrowLeft') navigate(-1);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [navigate, onClose]);
+
+  const tile = tiles[index];
+
+  return createPortal(
+    <div
+      ref={backdropRef}
+      style={{ opacity: 0 }}
+      role="dialog"
+      aria-modal="true"
+      aria-label={tile.alt}
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink-950/96 p-4 backdrop-blur-sm md:p-10"
+    >
+      {/* Counter */}
+      <p className="absolute top-5 left-1/2 -translate-x-1/2 text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-500">
+        {index + 1} / {tiles.length}
+      </p>
+
+      {/* Close */}
+      <button
+        ref={closeBtnRef}
+        type="button"
+        onClick={onClose}
+        aria-label="Close gallery"
+        className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+      >
+        <X size={18} />
+      </button>
+
+      {/* Prev */}
+      {tiles.length > 1 && (
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); navigate(-1); }}
+          aria-label="Previous photo"
+          className="absolute left-3 top-1/2 z-10 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 md:left-5"
+        >
+          <ChevronLeft size={22} />
+        </button>
+      )}
+
+      {/* Image */}
+      <div
+        ref={contentRef}
+        style={{ opacity: 0 }}
+        onClick={(e) => e.stopPropagation()}
+        className="mx-14 flex max-h-[88vh] w-full max-w-5xl flex-col items-center gap-4 md:mx-24"
+      >
+        <img
+          key={tile.id}
+          src={tile.src}
+          alt={tile.alt}
+          className="max-h-[80vh] w-full rounded-xl object-contain"
+        />
+        <p className="text-sm font-medium text-white">{tile.label}</p>
+      </div>
+
+      {/* Next */}
+      {tiles.length > 1 && (
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); navigate(1); }}
+          aria-label="Next photo"
+          className="absolute right-3 top-1/2 z-10 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 md:right-5"
+        >
+          <ChevronRight size={22} />
+        </button>
+      )}
+    </div>,
+    document.body,
   );
 }

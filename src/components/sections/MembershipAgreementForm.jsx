@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Children, cloneElement, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
 import {
+  AlertCircle,
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
@@ -108,39 +109,60 @@ const slideVariants = {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
+const SS_KEY = 'bossies-onboarding';
+
+const defaultForm = (queryPlan) => ({
+  planType: planFromQuery(queryPlan),
+  openGymPlan: openGymDefaultFromQuery(queryPlan),
+  startDate: new Date().toISOString().slice(0, 10),
+  fullName: '',
+  idNumber: '',
+  birthDate: '',
+  phone: '',
+  email: '',
+  address: '',
+  emergencyName: '',
+  emergencyPhone: '',
+  goals: '',
+  medicalNotes: '',
+  healthFlags: [],
+  consentAccuracy: false,
+  consentHealth: false,
+  consentTerms: false,
+  consentContact: false,
+  signatureName: '',
+  signatureDate: new Date().toISOString().slice(0, 10),
+});
+
 export default function MembershipAgreementForm() {
   const [params] = useSearchParams();
   const queryPlan = params.get('plan');
 
+  const formRef = useRef(null);
+
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(1);
 
-  const [form, setForm] = useState({
-    planType: planFromQuery(queryPlan),
-    openGymPlan: openGymDefaultFromQuery(queryPlan),
-    startDate: new Date().toISOString().slice(0, 10),
-    fullName: '',
-    idNumber: '',
-    birthDate: '',
-    phone: '',
-    email: '',
-    address: '',
-    emergencyName: '',
-    emergencyPhone: '',
-    goals: '',
-    medicalNotes: '',
-    healthFlags: [],
-    consentAccuracy: false,
-    consentHealth: false,
-    consentTerms: false,
-    consentContact: false,
-    signatureName: '',
-    signatureDate: new Date().toISOString().slice(0, 10),
+  const [form, setForm] = useState(() => {
+    if (!queryPlan) {
+      try {
+        const saved = sessionStorage.getItem(SS_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && typeof parsed === 'object') return parsed;
+        }
+      } catch {}
+    }
+    return defaultForm(queryPlan);
   });
 
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [sendState, setSendState] = useState({ status: 'idle', message: '' });
+
+  useEffect(() => {
+    try { sessionStorage.setItem(SS_KEY, JSON.stringify(form)); } catch {}
+  }, [form]);
 
   // ── Derived ────────────────────────────────────────────────────────────────
 
@@ -257,20 +279,23 @@ export default function MembershipAgreementForm() {
     return next;
   };
 
+  const scrollToForm = () =>
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
   const goNext = () => {
     const errs = validateStep(step);
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
     setDirection(1);
     setStep((s) => Math.min(s + 1, 4));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToForm();
   };
 
   const goBack = () => {
     setErrors({});
     setDirection(-1);
     setStep((s) => Math.max(s - 1, 1));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToForm();
   };
 
   const onSubmit = async (e) => {
@@ -317,6 +342,7 @@ export default function MembershipAgreementForm() {
         throw new Error(result.error || 'The agreement could not be sent.');
       setSubmitted(true);
       setSendState({ status: 'sent', message: '' });
+      try { sessionStorage.removeItem(SS_KEY); } catch {}
     } catch (error) {
       setSendState({
         status: 'error',
@@ -405,7 +431,7 @@ export default function MembershipAgreementForm() {
   // ── Multi-step form ────────────────────────────────────────────────────────
 
   return (
-    <form onSubmit={onSubmit} noValidate>
+    <form ref={formRef} onSubmit={onSubmit} noValidate>
       <StepIndicator currentStep={step} />
 
       <div className="mt-8 overflow-hidden">
@@ -537,7 +563,7 @@ function StepIndicator({ currentStep }) {
                 {isDone ? <CheckCircle2 size={16} strokeWidth={2.5} /> : s.id}
               </div>
               <span
-                className={`hidden text-[10px] font-semibold uppercase tracking-[0.18em] sm:block ${
+                className={`text-[9px] font-semibold uppercase tracking-[0.15em] sm:text-[10px] sm:tracking-[0.18em] ${
                   isActive ? 'text-brand-300' : isDone ? 'text-ink-300' : 'text-ink-600'
                 }`}
               >
@@ -824,9 +850,26 @@ function StepSign({ form, errors, onChange, planSummary, sendState }) {
           Review &amp; sign
         </h3>
         <p className="mt-2 text-sm leading-relaxed text-ink-300">
-          Confirm the plan summary below, tick the consent boxes, and type your name as your
-          digital signature.
+          Check your details below, tick the consent boxes, and type your name as your digital
+          signature.
         </p>
+      </div>
+
+      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">
+          Confirm your details
+        </p>
+        <dl className="mt-4 grid gap-x-6 gap-y-3 sm:grid-cols-2">
+          <ReviewRow label="Full name" value={form.fullName || '—'} />
+          <ReviewRow label="Phone" value={form.phone || '—'} />
+          <ReviewRow label="Email" value={form.email || '—'} />
+          <ReviewRow label="Start date" value={formatDate(form.startDate)} />
+          <ReviewRow
+            label="Emergency contact"
+            value={form.emergencyName ? `${form.emergencyName} · ${form.emergencyPhone}` : '—'}
+          />
+          <ReviewRow label="Plan" value={`${planSummary.label} · ${planSummary.priceLine}`} />
+        </dl>
       </div>
 
       <div className="rounded-2xl border border-brand-500/25 bg-brand-500/5 p-5">
@@ -898,7 +941,13 @@ function StepSign({ form, errors, onChange, planSummary, sendState }) {
       </div>
 
       {sendState.status === 'error' && (
-        <p className="text-sm text-red-400">{sendState.message}</p>
+        <div
+          role="alert"
+          className="flex items-start gap-3 rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-300"
+        >
+          <AlertCircle size={16} className="mt-0.5 shrink-0 text-red-400" />
+          <span>{sendState.message}</span>
+        </div>
       )}
     </div>
   );
@@ -907,13 +956,18 @@ function StepSign({ form, errors, onChange, planSummary, sendState }) {
 // ─── Shared sub-components ────────────────────────────────────────────────────
 
 function Field({ label, error, children }) {
+  const errorId = useId();
+  const child = Children.only(children);
+  const enhanced = error
+    ? cloneElement(child, { 'aria-invalid': 'true', 'aria-describedby': errorId })
+    : children;
   return (
     <label className="flex flex-col gap-2">
       <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-400">
         {label}
       </span>
-      {children}
-      {error && <ErrorText>{error}</ErrorText>}
+      {enhanced}
+      {error && <ErrorText id={errorId}>{error}</ErrorText>}
     </label>
   );
 }
@@ -921,7 +975,7 @@ function Field({ label, error, children }) {
 function ChoiceCard({ compact = false, name, value, checked, onChange, label, priceLine, helper }) {
   return (
     <label
-      className={`flex cursor-pointer flex-col rounded-2xl border p-4 transition-colors ${
+      className={`flex cursor-pointer flex-col rounded-2xl border p-4 transition-colors focus-within:ring-2 focus-within:ring-brand-500/50 focus-within:ring-offset-1 focus-within:ring-offset-ink-950 ${
         checked
           ? 'border-brand-500/45 bg-brand-500/10'
           : 'border-white/10 bg-ink-950/60 hover:border-white/20'
@@ -970,6 +1024,15 @@ function ConsentRow({ checked, name, onChange, error, children }) {
   );
 }
 
+function ReviewRow({ label, value }) {
+  return (
+    <div>
+      <dt className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-500">{label}</dt>
+      <dd className="mt-1 text-sm text-ink-100">{value}</dd>
+    </div>
+  );
+}
+
 function SummaryMetric({ label, value }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-ink-950/70 p-4">
@@ -979,8 +1042,8 @@ function SummaryMetric({ label, value }) {
   );
 }
 
-function ErrorText({ children }) {
-  return <p className="mt-1 text-xs text-red-400">{children}</p>;
+function ErrorText({ id, children }) {
+  return <p id={id} className="mt-1 text-xs text-red-400">{children}</p>;
 }
 
 // ─── Utilities ────────────────────────────────────────────────────────────────

@@ -1,4 +1,4 @@
-import { FileText, Phone, ShieldCheck, Sparkles } from 'lucide-react';
+import { CreditCard, FileText, Phone, ShieldCheck, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 import PagePose from '../components/ui/PagePose.jsx';
@@ -61,6 +61,26 @@ export default function Onboarding() {
                 title="Clear, not legalese-heavy"
                 body="We’ve kept this form focused on the operational essentials the site can responsibly collect. Final onboarding details still get confirmed directly with the gym."
               />
+
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-500">
+                  Before you fill in
+                </p>
+                <ul className="mt-4 space-y-3">
+                  <TrustLine
+                    icon={ShieldCheck}
+                    text="Your details are only used for your membership application — not shared or sold."
+                  />
+                  <TrustLine
+                    icon={CreditCard}
+                    text="No payment is taken on this page. Everything is confirmed in person or by phone."
+                  />
+                  <TrustLine
+                    icon={Phone}
+                    text="Once submitted, one of the Bossie’s team will reach out personally to confirm your sign-up."
+                  />
+                </ul>
+              </div>
 
               <div className="rounded-2xl border border-brand-500/30 bg-gradient-to-b from-brand-500/10 to-ink-900 p-6">
                 <span className="eyebrow">Need help first?</span>
@@ -129,5 +149,14 @@ function InfoCard({ icon: Icon, eyebrow, title, body }) {
       <h3 className="mt-3 font-display text-2xl tracking-headline text-white">{title}</h3>
       <p className="mt-3 text-sm leading-relaxed text-ink-300">{body}</p>
     </div>
+  );
+}
+
+function TrustLine({ icon: Icon, text }) {
+  return (
+    <li className="flex items-start gap-2.5 text-sm text-ink-300">
+      <Icon size={14} className="mt-0.5 shrink-0 text-brand-400" strokeWidth={2.5} />
+      <span>{text}</span>
+    </li>
   );
 }

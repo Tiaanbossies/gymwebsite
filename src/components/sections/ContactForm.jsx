@@ -42,6 +42,7 @@ export default function ContactForm() {
     phone: '',
     email: '',
     message: prefillMessage,
+    website: '',
     consent: false,
   });
   const [submitted, setSubmitted] = useState(false);
@@ -86,6 +87,7 @@ export default function ContactForm() {
           email: form.email,
           phone: form.phone,
           message: form.message,
+          website: form.website,
         }),
       });
       const result = await response.json().catch(() => ({}));
@@ -138,6 +140,17 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={onSubmit} noValidate className="flex flex-col gap-5">
+      {/* Honeypot — hidden from real users, bots fill it, server rejects if non-empty */}
+      <input
+        type="text"
+        name="website"
+        value={form.website}
+        onChange={onChange}
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden' }}
+      />
       <Field label="Your name" error={errors.name}>
         <input
           type="text"

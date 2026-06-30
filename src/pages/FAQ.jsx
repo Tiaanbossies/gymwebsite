@@ -100,6 +100,26 @@ const faqGroups = [
     ],
   },
   {
+    heading: 'Sessions & cancellations',
+    items: [
+      {
+        question: 'What is the cancellation policy for personal training?',
+        answer:
+          "Sessions must be cancelled at least 24 hours in advance. Cancel within that window — or don't show up — and the session is forfeited from your monthly package. No credit, no refund, and no make-up session will be offered.\n\nThis policy applies to all personal training plans and is acknowledged as part of the membership agreement.",
+      },
+      {
+        question: 'Can I reschedule a session?',
+        answer:
+          "Yes, with at least 24 hours' notice. Contact your trainer or call the gym and we'll find another time that works. Sessions rescheduled within 24 hours of the start time are treated as a late cancellation and forfeited.",
+      },
+      {
+        question: 'Why does the cancellation policy exist?',
+        answer:
+          "Your trainer blocks that hour specifically for you. A last-minute cancellation or no-show leaves that slot empty with no time to fill it — which isn't fair on the coach or on other members who could have used it. The 24-hour window gives everyone a fair chance to reorganise.",
+      },
+    ],
+  },
+  {
     heading: 'Visiting & logistics',
     items: [
       {

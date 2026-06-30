@@ -17,7 +17,7 @@ import { site, fadeUp, stagger } from '../lib/site.js';
  * Q3 / Q39 — family members who run / coach in the gym:
  * Rene and Debbie (Boshoff)
  * Q40 — personal training roster. Confirmed names:
- * Quibert Dippenaar, Niell Bezuidenhout, Nikki Bredenkamp, Do-Neill Dowry,
+ * Qubitt Degenaar, Niell Bezuidenhout, Nikki Bredenkamp, Do-Neill Dowry,
  * Dale Collins (none Boshoff family).
  *
  * Note: at owner review (April 2026) Niell's surname was corrected from
@@ -67,7 +67,7 @@ const team = [
     family: false,
   },
   {
-    name: 'Quibert Dippenaar',
+    name: 'Qubitt Degenaar',
     role: 'Personal Trainer',
     roleShort: 'Personal Trainer',
     bio: 'Coaches on our personal training roster. Full bio coming soon.',

@@ -275,8 +275,8 @@ export default function MembershipAgreementForm() {
         next.consentHealth = 'Please confirm your health disclosure acknowledgement.';
       if (!form.consentTerms)
         next.consentTerms = 'Please accept the membership terms summary.';
-      if (PT_PLANS.has(form.planType) && !form.consentCancellationPolicy)
-        next.consentCancellationPolicy = 'Please acknowledge the cancellation policy for personal training.';
+      if (!form.consentCancellationPolicy)
+        next.consentCancellationPolicy = 'Please acknowledge the cancellation policy.';
       if (!form.signatureName.trim())
         next.signatureName = 'Please type your full name as your signature.';
       if (!form.signatureDate) next.signatureDate = 'Please confirm the signature date.';
@@ -656,22 +656,20 @@ function StepPlan({ form, errors, onChange, planSummary }) {
         <p className="mt-2 text-ink-300">{planSummary.termsLine}</p>
       </div>
 
-      {PT_PLANS.has(form.planType) && (
-        <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5">
-          <div className="flex items-start gap-3">
-            <AlertCircle size={16} className="mt-0.5 shrink-0 text-amber-400" strokeWidth={2.5} />
-            <div>
-              <p className="text-sm font-semibold text-amber-200">Cancellation policy</p>
-              <ul className="mt-2 space-y-1.5 text-sm text-ink-300">
-                <li>Sessions must be cancelled at least <strong className="font-semibold text-white">24 hours in advance</strong>.</li>
-                <li>Late cancellations and no-shows are forfeited from your monthly package — no credit or make-up session.</li>
-                <li>This policy applies to all personal training plans.</li>
-              </ul>
-              <p className="mt-3 text-xs text-ink-500">You will confirm this in the final sign step.</p>
-            </div>
+      <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5">
+        <div className="flex items-start gap-3">
+          <AlertCircle size={16} className="mt-0.5 shrink-0 text-amber-400" strokeWidth={2.5} />
+          <div>
+            <p className="text-sm font-semibold text-amber-200">Cancellation policy</p>
+            <ul className="mt-2 space-y-1.5 text-sm text-ink-300">
+              <li>Sessions must be cancelled at least <strong className="font-semibold text-white">24 hours in advance</strong>.</li>
+              <li>Late cancellations and no-shows are forfeited from your monthly package — no credit or make-up session.</li>
+              <li>This policy applies to all personal training sessions.</li>
+            </ul>
+            <p className="mt-3 text-xs text-ink-500">You will confirm this in the final sign step.</p>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -904,18 +902,16 @@ function StepSign({ form, errors, onChange, planSummary, sendState }) {
       </div>
 
       <div className="space-y-3">
-        {PT_PLANS.has(form.planType) && (
-          <ConsentRow
-            checked={form.consentCancellationPolicy}
-            name="consentCancellationPolicy"
-            onChange={onChange}
-            error={errors.consentCancellationPolicy}
-          >
-            I understand the cancellation policy: sessions must be cancelled at least 24 hours in
-            advance. Late cancellations and no-shows are forfeited from my monthly package — no
-            credit or make-up session will be provided.
-          </ConsentRow>
-        )}
+        <ConsentRow
+          checked={form.consentCancellationPolicy}
+          name="consentCancellationPolicy"
+          onChange={onChange}
+          error={errors.consentCancellationPolicy}
+        >
+          I understand the cancellation policy: sessions must be cancelled at least 24 hours in
+          advance. Late cancellations and no-shows are forfeited from my monthly package — no
+          credit or make-up session will be provided.
+        </ConsentRow>
         <ConsentRow
           checked={form.consentAccuracy}
           name="consentAccuracy"
@@ -1127,7 +1123,7 @@ function buildCsv(form, planSummary) {
       form.consentHealth ? 'Yes' : 'No',
       form.consentTerms ? 'Yes' : 'No',
       form.consentContact ? 'Yes' : 'No',
-      PT_PLANS.has(form.planType) ? (form.consentCancellationPolicy ? 'Yes' : 'No') : 'N/A',
+      form.consentCancellationPolicy ? 'Yes' : 'No',
       form.signatureName,
       form.signatureDate,
     ],

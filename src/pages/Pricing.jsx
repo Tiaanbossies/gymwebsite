@@ -62,6 +62,7 @@ export default function Pricing() {
         title="Pricing"
         description="Real prices. No surprises. Full breakdown below. Day pass, open gym membership, personal training and what's included in each."
         imagePath="/images/gym/assessment-desk.webp"
+        lightOverlay
         breadcrumbs={[{ label: 'Home', to: '/' }, { label: 'Pricing' }]}
       />
 
@@ -101,58 +102,6 @@ export default function Pricing() {
               accent
             />
           </motion.div>
-        </Container>
-      </section>
-
-      {/* Day pass */}
-      <section className="section-tight">
-        <Container>
-          <SectionHeading
-            eyebrow="Day pass"
-            title="In town or just trying us out."
-            description="One-off visit, no sign-up, no contract, no joining fee. Walk in during opening hours, train, walk out."
-          />
-
-          <Reveal className="mt-10">
-            <div className="grid items-stretch gap-6 rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-8 lg:p-10 md:grid-cols-[1.1fr_1fr]">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">
-                  Casual · No contract
-                </p>
-                <div className="mt-3 flex items-baseline gap-3">
-                  <span className="font-display text-5xl tracking-headline text-white sm:text-6xl">
-                    {fmtRand(pricing.dayPass.rand)}
-                  </span>
-                  <span className="text-sm text-ink-400">{pricing.dayPass.period}</span>
-                </div>
-                <p className="mt-5 text-ink-300 leading-relaxed max-w-md">
-                  Full access to the training floor — weights, cardio, functional, boxing. Ideal if
-                  you're visiting Centurion or want to experience the gym before going for a
-                  membership.
-                </p>
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <Button to={site.ctas.enquire.to + '?plan=day-pass'} data-track="Day Pass Inquiry — Pricing">
-                    Get a day pass
-                  </Button>
-                  <Button
-                    href={site.ctas.call.href}
-                    variant="ghost"
-                    iconNode={<Phone size={14} strokeWidth={2.5} />}
-                    data-track="Call — Pricing"
-                  >
-                    Call {site.phone.display}
-                  </Button>
-                </div>
-              </div>
-
-              <ul className="flex flex-col justify-center gap-3 border-t border-white/10 pt-6 md:border-l md:border-t-0 md:pl-10 md:pt-0">
-                <FeatureLi text="Full training floor (weights, cardio, functional)" />
-                <FeatureLi text="Access to the boxing area" />
-                <FeatureLi text="No sign-up or joining fee" />
-                <FeatureLi text="No booking required — just come in" />
-              </ul>
-            </div>
-          </Reveal>
         </Container>
       </section>
 
@@ -392,6 +341,58 @@ export default function Pricing() {
               </div>
             </div>
           </motion.div>
+        </Container>
+      </section>
+
+      {/* Day pass */}
+      <section className="section-tight">
+        <Container>
+          <SectionHeading
+            eyebrow="Day pass"
+            title="In town or just trying us out."
+            description="One-off visit, no sign-up, no contract, no joining fee. Walk in during opening hours, train, walk out."
+          />
+
+          <Reveal className="mt-10">
+            <div className="grid items-stretch gap-6 rounded-2xl border border-white/10 bg-ink-900 p-6 sm:p-8 lg:p-10 md:grid-cols-[1.1fr_1fr]">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">
+                  Casual · No contract
+                </p>
+                <div className="mt-3 flex items-baseline gap-3">
+                  <span className="font-display text-5xl tracking-headline text-white sm:text-6xl">
+                    {fmtRand(pricing.dayPass.rand)}
+                  </span>
+                  <span className="text-sm text-ink-400">{pricing.dayPass.period}</span>
+                </div>
+                <p className="mt-5 text-ink-300 leading-relaxed max-w-md">
+                  Full access to the training floor — weights, cardio, functional, boxing. Ideal if
+                  you're visiting Centurion or want to experience the gym before going for a
+                  membership.
+                </p>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <Button to={site.ctas.enquire.to + '?plan=day-pass'} data-track="Day Pass Inquiry — Pricing">
+                    Get a day pass
+                  </Button>
+                  <Button
+                    href={site.ctas.call.href}
+                    variant="ghost"
+                    iconNode={<Phone size={14} strokeWidth={2.5} />}
+                    data-track="Call — Pricing"
+                  >
+                    Call {site.phone.display}
+                  </Button>
+                </div>
+              </div>
+
+              <ul className="flex flex-col justify-center gap-3 border-t border-white/10 pt-6 md:border-l md:border-t-0 md:pl-10 md:pt-0">
+                <FeatureLi text="Full training floor (weights, cardio, functional)" />
+                <FeatureLi text="Access to the boxing area" />
+                <FeatureLi text="No sign-up or joining fee" />
+                <FeatureLi text="No booking required — just come in" />
+              </ul>
+            </div>
+          </Reveal>
         </Container>
       </section>
 

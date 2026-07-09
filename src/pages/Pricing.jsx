@@ -189,9 +189,9 @@ export default function Pricing() {
                 <GraduationCap size={18} />
               </div>
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">
-                  Student membership
-                </p>
+                <h3 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">
+                  Student & pensioner membership
+                </h3>
                 <div className="mt-1 flex flex-wrap items-baseline gap-2">
                   <span className="font-display text-3xl tracking-headline text-white sm:text-4xl">
                     {fmtRand(pricing.studentMembership.rand)}

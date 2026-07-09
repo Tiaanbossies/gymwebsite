@@ -70,13 +70,13 @@ export default function App() {
   useEffect(() => {
     const meta = {
       '/':           { title: "Bossie's Gym — Personal Training Studio in Centurion",              desc: "A family-run gym in Hennopspark, Centurion. Personal training, open gym access, nutrition coaching and body assessments." },
-      '/services':   { title: "Services — Personal Training & Open Gym | Bossie's Gym",             desc: "1-on-1 personal training, open gym access, nutrition coaching and body assessments at Bossie's Gym in Centurion." },
+      '/services':   { title: "Services — Personal Training & Open Gym in Centurion | Bossie's Gym", desc: "1-on-1 personal training, open gym access, nutrition coaching and body assessments at Bossie's Gym in Centurion.", image: `${SITE_ORIGIN}/images/gym/floor-hero.webp`, imageWidth: '1920', imageHeight: '1080' },
       '/membership': { title: "Gym Membership Centurion — Open Gym & Personal Training | Bossie's Gym", desc: "Personal training, monthly / 6-month / 12-month open gym contracts, R100 day passes, free trial and student & pensioner discounts." },
       '/onboarding': { title: "Onboarding — Membership Agreement | Bossie's Gym",                    desc: "Complete your Bossie's Gym membership agreement online. Choose your plan, add your details, confirm the essentials, and email the CSV agreement to the gym." },
       '/join':       { title: "Onboarding — Membership Agreement | Bossie's Gym",                    desc: "Complete your Bossie's Gym membership agreement online. Choose your plan, add your details, confirm the essentials, and email the CSV agreement to the gym." },
       '/pricing':    { title: "Pricing — Full Breakdown | Bossie's Gym, Centurion",                  desc: "Full pricing for Bossie's Gym: R100 day pass, open gym from R360/month, personal training from R2100/month, R200 joining fee, student & pensioner discount and free trial." },
-      '/team':       { title: "Our Team — Trainers at Bossie's Gym, Centurion",                      desc: "Meet the Boshoff-family team and the wider coaching crew behind Bossie's Gym in Centurion." },
-      '/gallery':    { title: "Gallery — Inside Bossie's Gym, Centurion",                           desc: "A look inside Bossie's Gym — weight training, cardio, functional and boxing areas in Hennopspark, Centurion." },
+      '/team':       { title: "Our Team — Trainers at Bossie's Gym, Centurion",                      desc: "Meet the Boshoff-family team and the wider coaching crew behind Bossie's Gym in Centurion.", image: `${SITE_ORIGIN}/images/gym/floor-hero.webp`, imageWidth: '1920', imageHeight: '1080' },
+      '/gallery':    { title: "Gallery — Inside Bossie's Gym, Centurion",                           desc: "A look inside Bossie's Gym — weight training, cardio, functional and boxing areas in Hennopspark, Centurion.", image: `${SITE_ORIGIN}/images/gym/floor-hero.webp`, imageWidth: '1920', imageHeight: '1080' },
       '/about':      { title: "About Bossie's Gym — A Family-Run Studio in Centurion",              desc: "Small, family-run commercial gym in Centurion focused on real coaching and real community." },
       '/contact':    { title: "Contact Bossie's Gym — Hennopspark, Centurion",                      desc: "Visit Bossie's Gym at 1st Floor, 207 Edison Crescent, Hennopspark, Centurion. Call 072 482 7922 or WhatsApp us." },
       '/faq':        { title: "FAQ — Membership, Pricing & Policies | Bossie's Gym",                 desc: "Answers on free trials, day passes, joining fees, student discounts, sign-up and policies at Bossie's Gym, Centurion." },
@@ -99,7 +99,7 @@ export default function App() {
     upsertLink('canonical', canonical);
 
     // Noindex — sign-up flows and internal tools should not appear in search results.
-    const NOINDEX_ROUTES = new Set(['/onboarding', '/dashboard']);
+    const NOINDEX_ROUTES = new Set(['/onboarding', '/dashboard', '/community']);
     if (NOINDEX_ROUTES.has(path)) {
       upsertMeta('meta[name="robots"]', 'name', 'robots', 'noindex, nofollow');
     } else {

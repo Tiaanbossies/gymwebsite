@@ -16,7 +16,7 @@ export default function About() {
       <PageHero
         eyebrow="About"
         title="A family-run gym. Small on purpose."
-        description="Bossie's is a family-run commercial gym in Hennopspark, Centurion — built for members who want real coaching and a place that actually knows them."
+        description="Bossie's is a family-run commercial gym in Hennopspark, Centurion — serving Centurion, Midstream and Lyttelton with real coaching and a place that actually knows them."
         breadcrumbs={[{ label: 'Home', to: '/' }, { label: 'About' }]}
       />
 

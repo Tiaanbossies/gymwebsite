@@ -117,7 +117,7 @@ export default function Services() {
     <PagePose>
       <PageHero
         eyebrow="Services"
-        title="Personal training, open gym, and the support around it."
+        title="Personal trainer in Centurion — 1-on-1 coaching, open gym, and the support around it."
         description="Everything we offer at Bossie's — built for working professionals in Centurion who want real coaching and a real training floor."
         imagePath="/images/gym/floor-main-aisle.webp"
         breadcrumbs={[{ label: 'Home', to: '/' }, { label: 'Services' }]}

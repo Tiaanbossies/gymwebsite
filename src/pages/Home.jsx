@@ -222,7 +222,7 @@ export default function Home() {
             <div>
               <span className="eyebrow">The people</span>
               <h2 className="mt-3 display-2 text-white text-balance">
-                Eight trainers. One family-run floor. A gym that actually knows you.
+                Eight trainers. One family-run floor. One of the gyms in Centurion that actually knows you.
               </h2>
               <p className="mt-5 body-lg text-balance">
                 Bossie's is run by Johan "Bossie" Boshoff with Rene and Debbie, alongside the wider

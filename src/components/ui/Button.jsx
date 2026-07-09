@@ -7,6 +7,7 @@ function PulseRing() {
   const ref = useRef(null);
 
   useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const anim = anime({
       targets: ref.current,
       scale: [1, 1.7],

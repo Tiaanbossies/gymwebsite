@@ -35,7 +35,7 @@ export default function PageHero({ eyebrow, title, description, imagePath, light
         <>
           <img
             src={imagePath}
-            alt={title}
+            alt=""
             className="absolute inset-0 z-0 h-full w-full object-cover object-center"
             loading="eager"
             decoding="async"
@@ -82,7 +82,7 @@ export default function PageHero({ eyebrow, title, description, imagePath, light
                     {b.label}
                   </Link>
                 ) : (
-                  <span className="text-ink-300">{b.label}</span>
+                  <span aria-current="page" className="text-ink-300">{b.label}</span>
                 )}
                 {i < breadcrumbs.length - 1 && <ChevronRight size={12} />}
               </span>

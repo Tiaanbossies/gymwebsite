@@ -1,13 +1,15 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
 import { X, Phone, MessageCircle } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import Button from '../ui/Button.jsx';
 import Logo from './Logo.jsx';
 import { site, waLink } from '../../lib/site.js';
 
 export default function MobileNav({ open, onClose }) {
+  const panelRef = useRef(null);
+
   // Lock body scroll when menu is open
   useEffect(() => {
     if (!open) return;
@@ -16,6 +18,28 @@ export default function MobileNav({ open, onClose }) {
     return () => {
       document.body.style.overflow = prev;
     };
+  }, [open]);
+
+  // Focus trap — keep Tab/Shift-Tab within the open panel
+  useEffect(() => {
+    if (!open || !panelRef.current) return;
+    const panel = panelRef.current;
+    const focusable = Array.from(
+      panel.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')
+    );
+    if (!focusable.length) return;
+    focusable[0]?.focus();
+    function onTab(e) {
+      if (e.key !== 'Tab') return;
+      e.preventDefault();
+      const idx = focusable.indexOf(document.activeElement);
+      const next = e.shiftKey
+        ? (idx - 1 + focusable.length) % focusable.length
+        : (idx + 1) % focusable.length;
+      focusable[next]?.focus();
+    }
+    document.addEventListener('keydown', onTab);
+    return () => document.removeEventListener('keydown', onTab);
   }, [open]);
 
   return (
@@ -29,6 +53,10 @@ export default function MobileNav({ open, onClose }) {
         >
           <div className="absolute inset-0 bg-ink-950/85 backdrop-blur-xl" onClick={onClose} />
           <motion.div
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
             className="absolute inset-x-0 top-0 bg-ink-900 border-b border-white/10 shadow-card"
             initial={{ y: -24, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -60,7 +88,7 @@ export default function MobileNav({ open, onClose }) {
                       }
                     >
                       {item.label}
-                      <span className="text-ink-500">→</span>
+                      <span aria-hidden="true" className="text-ink-500">→</span>
                     </NavLink>
                   </li>
                 ))}

@@ -24,7 +24,7 @@ const ShinyText = ({
   const delayDuration = delay * 1000;
 
   useAnimationFrame(time => {
-    if (disabled || isPaused) {
+    if (disabled || isPaused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       lastTimeRef.current = null;
       return;
     }

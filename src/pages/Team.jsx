@@ -266,6 +266,37 @@ export default function Team() {
         </Container>
       </section>
 
+      {/* Coaching philosophy */}
+      <section className="section-tight">
+        <Container>
+          <Reveal>
+            <div className="mx-auto max-w-3xl rounded-2xl border border-white/8 bg-ink-900/60 p-8 sm:p-12">
+              <span className="eyebrow">Our approach</span>
+              <h2 className="mt-3 font-display text-3xl sm:text-4xl tracking-headline text-white text-balance">
+                Coaching built around the individual, not the template.
+              </h2>
+              <div className="mt-6 space-y-4 text-ink-300 leading-relaxed">
+                <p>
+                  Every trainer at Bossie's Gym works with members one-on-one. That means your
+                  program is built around your schedule, your body and your goal, and it changes as
+                  you do. No rotating templates, no group circuits dressed up as personal training.
+                </p>
+                <p>
+                  Our coaching covers more than the floor: every personal training package includes
+                  a diet plan and body assessments, so you can track what's actually changing and
+                  adjust what you're eating to match what you're training for.
+                </p>
+                <p>
+                  The gym is small on purpose. A smaller space means every coach knows every member.
+                  Bossie is usually on the floor. When you ask a question, you get an answer from
+                  someone who knows your last session — not a script.
+                </p>
+              </div>
+            </div>
+          </Reveal>
+        </Container>
+      </section>
+
       {/* Stage story + values tile */}
       <section className="section-tight">
         <Container>

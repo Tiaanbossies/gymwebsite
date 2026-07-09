@@ -2,7 +2,8 @@
   "detector": {
     "ignoreRules": [],
     "ignoreFiles": [
-      "C:\\Users\\Abrie\\AppData\\Local\\Temp\\claude\\C--Gym-Website-Gym-Website\\0b0e01aa-600f-4a5f-9a88-078f26e9347c\\scratchpad\\report.css"
+      "C:\\Users\\Abrie\\AppData\\Local\\Temp\\claude\\C--Gym-Website-Gym-Website\\0b0e01aa-600f-4a5f-9a88-078f26e9347c\\scratchpad\\report.css",
+      "index.html"
     ],
     "ignoreValues": [
       {

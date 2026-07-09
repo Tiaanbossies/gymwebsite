@@ -59,7 +59,7 @@ export default function Pricing() {
     <PagePose>
       <PageHero
         eyebrow="Pricing"
-        title="Pricing"
+        title="Gym Pricing in Centurion — Full Breakdown"
         description="Real prices. No surprises. Full breakdown below. Day pass, open gym membership, personal training and what's included in each."
         imagePath="/images/gym/assessment-desk.webp"
         lightOverlay

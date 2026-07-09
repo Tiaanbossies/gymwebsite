@@ -515,7 +515,7 @@ function FilterTabs({ active, onChange }) {
             type="button"
             onClick={() => onChange(f.id)}
             aria-pressed={active === f.id}
-            className={`whitespace-nowrap px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] transition-colors duration-200 ${
+            className={`min-h-[44px] whitespace-nowrap px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] transition-colors duration-200 ${
               active === f.id ? 'text-white' : 'text-ink-500 hover:text-ink-300'
             }`}
           >
@@ -583,6 +583,7 @@ function PhotoTile({ tile, priority, onOpen, tileVariants }) {
       variants={tileVariants}
       role={onOpen ? 'button' : undefined}
       tabIndex={onOpen ? 0 : undefined}
+      aria-label={onOpen ? `View photo: ${tile.label}` : undefined}
       onClick={onOpen ? () => onOpen(tile) : undefined}
       onKeyDown={onOpen ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(tile); } } : undefined}
       className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-ink-900 hover-lift ${onOpen ? 'cursor-pointer' : ''} ${tile.span || ''}`}

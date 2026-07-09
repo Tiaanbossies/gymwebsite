@@ -33,7 +33,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Instagram (opens in new tab)"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-ink-200 transition hover:border-white/30 hover:text-white"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-ink-200 transition hover:border-white/30 hover:text-white"
               >
                 <Instagram size={16} />
               </a>
@@ -42,7 +42,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="WhatsApp (opens in new tab)"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[#25D366] transition hover:border-white/30"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[#25D366] transition hover:border-white/30"
               >
                 <MessageCircle size={16} />
               </a>

@@ -1029,6 +1029,7 @@ function ChoiceCard({ compact = false, name, value, checked, onChange, label, pr
 }
 
 function ConsentRow({ checked, name, onChange, error, children }) {
+  const errorId = `${name}-error`;
   return (
     <div>
       <label
@@ -1045,11 +1046,13 @@ function ConsentRow({ checked, name, onChange, error, children }) {
           name={name}
           checked={checked}
           onChange={onChange}
+          aria-invalid={error ? 'true' : undefined}
+          aria-describedby={error ? errorId : undefined}
           className="mt-1 h-4 w-4 accent-brand-500"
         />
         <span>{children}</span>
       </label>
-      {error && <ErrorText>{error}</ErrorText>}
+      {error && <ErrorText id={errorId}>{error}</ErrorText>}
     </div>
   );
 }

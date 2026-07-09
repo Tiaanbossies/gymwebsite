@@ -514,6 +514,7 @@ function FilterTabs({ active, onChange }) {
             ref={(el) => { tabsRef.current[idx] = el; }}
             type="button"
             onClick={() => onChange(f.id)}
+            aria-pressed={active === f.id}
             className={`whitespace-nowrap px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] transition-colors duration-200 ${
               active === f.id ? 'text-white' : 'text-ink-500 hover:text-ink-300'
             }`}
@@ -580,7 +581,10 @@ function PhotoTile({ tile, priority, onOpen, tileVariants }) {
     <motion.div
       data-tile
       variants={tileVariants}
+      role={onOpen ? 'button' : undefined}
+      tabIndex={onOpen ? 0 : undefined}
       onClick={onOpen ? () => onOpen(tile) : undefined}
+      onKeyDown={onOpen ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(tile); } } : undefined}
       className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-ink-900 hover-lift ${onOpen ? 'cursor-pointer' : ''} ${tile.span || ''}`}
     >
       <ClickSpark sparkColor="#f4535f" sparkRadius={26} sparkCount={6} sparkSize={8} duration={480}>
@@ -619,6 +623,8 @@ function Lightbox({ tiles, startIndex, onClose }) {
   const backdropRef = useRef(null);
   const contentRef = useRef(null);
   const closeBtnRef = useRef(null);
+  const prevBtnRef = useRef(null);
+  const nextBtnRef = useRef(null);
 
   // Body scroll lock + entrance animation
   useEffect(() => {
@@ -658,9 +664,19 @@ function Lightbox({ tiles, startIndex, onClose }) {
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') { onClose(); return; }
       if (e.key === 'ArrowRight') navigate(1);
       if (e.key === 'ArrowLeft') navigate(-1);
+      if (e.key === 'Tab') {
+        const focusable = [closeBtnRef.current, prevBtnRef.current, nextBtnRef.current].filter(Boolean);
+        if (!focusable.length) return;
+        e.preventDefault();
+        const idx = focusable.indexOf(document.activeElement);
+        const next = e.shiftKey
+          ? (idx - 1 + focusable.length) % focusable.length
+          : (idx + 1) % focusable.length;
+        focusable[next].focus();
+      }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
@@ -697,6 +713,7 @@ function Lightbox({ tiles, startIndex, onClose }) {
       {/* Prev */}
       {tiles.length > 1 && (
         <button
+          ref={prevBtnRef}
           type="button"
           onClick={(e) => { e.stopPropagation(); navigate(-1); }}
           aria-label="Previous photo"
@@ -725,6 +742,7 @@ function Lightbox({ tiles, startIndex, onClose }) {
       {/* Next */}
       {tiles.length > 1 && (
         <button
+          ref={nextBtnRef}
           type="button"
           onClick={(e) => { e.stopPropagation(); navigate(1); }}
           aria-label="Next photo"

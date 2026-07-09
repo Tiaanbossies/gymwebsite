@@ -113,7 +113,7 @@
   }
 
   .btn {
-    @apply inline-flex min-h-12 max-w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-center text-[13px] font-semibold uppercase leading-tight tracking-[0.12em] transition-all duration-200 focus-visible:outline-none sm:px-6 sm:text-sm sm:whitespace-nowrap;
+    @apply inline-flex min-h-12 max-w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-center text-[13px] font-semibold uppercase leading-tight tracking-[0.12em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 sm:px-6 sm:text-sm sm:whitespace-nowrap;
   }
 
   /* Compact variant for dense locations like the sticky header. */
@@ -180,7 +180,7 @@
     @apply border-white/20;
   }
   .input:focus {
-    @apply border-brand-500/60 bg-white/[0.06] outline-none ring-2 ring-brand-500/30;
+    @apply border-brand-500/60 bg-white/[0.06] outline-none ring-2 ring-brand-500/60;
   }
   textarea.input {
     @apply leading-relaxed;

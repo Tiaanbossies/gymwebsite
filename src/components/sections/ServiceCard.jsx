@@ -43,6 +43,7 @@ export default function ServiceCard({
 
       <Link
         to={to}
+        aria-label={`Learn more about ${title}`}
         className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-brand-400 transition-colors hover:text-brand-300"
       >
         Learn more

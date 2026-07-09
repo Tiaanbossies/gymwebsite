@@ -85,6 +85,7 @@ const ScrollVelocity = ({
 
     const directionFactor = useRef(1);
     useAnimationFrame((t, delta) => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       let moveBy = directionFactor.current * baseVelocity * (delta / 1000);
 
       if (velocityFactor.get() < 0) {
@@ -119,7 +120,7 @@ const ScrollVelocity = ({
   }
 
   return (
-    <section>
+    <div aria-hidden="true">
       {texts.map((text, index) => (
         <VelocityText
           key={index}
@@ -138,7 +139,7 @@ const ScrollVelocity = ({
           {text}
         </VelocityText>
       ))}
-    </section>
+    </div>
   );
 };
 

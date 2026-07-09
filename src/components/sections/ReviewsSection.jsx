@@ -32,7 +32,7 @@ export default function ReviewsSection({ featuredOnly = true }) {
             href={site.socials.googleBusinessProfile}
             target="_blank"
             rel="noreferrer"
-            aria-label={`${overallRating} stars — see all ${totalReviewCount} reviews on Google`}
+            aria-label={`${overallRating} stars — see all ${totalReviewCount} reviews on Google (opens in new tab)`}
             className="flex shrink-0 items-center gap-3 rounded-2xl border border-white/10 bg-ink-900 px-5 py-3 transition-colors hover:border-white/25"
           >
             <div className="flex items-center gap-0.5">
@@ -70,7 +70,8 @@ export default function ReviewsSection({ featuredOnly = true }) {
             className="btn-link inline-flex"
           >
             Read all {totalReviewCount} reviews on Google
-            <ExternalLink size={13} strokeWidth={2.5} />
+            <ExternalLink size={13} strokeWidth={2.5} aria-hidden="true" />
+            <span className="sr-only">(opens in new tab)</span>
           </a>
         </div>
       </Container>
@@ -107,11 +108,12 @@ function ReviewCard({ review }) {
         <span className="shrink-0 text-[11px] text-ink-500">{review.date}</span>
       </div>
 
-      <div className="flex items-center gap-0.5">
+      <div className="flex items-center gap-0.5" aria-hidden="true">
         {[...Array(review.rating)].map((_, i) => (
           <Star key={i} size={13} className="fill-amber-400 text-amber-400" />
         ))}
       </div>
+      <span className="sr-only">{review.rating} out of 5 stars</span>
 
       <p className="flex-1 text-sm leading-relaxed text-ink-300">{review.text}</p>
 

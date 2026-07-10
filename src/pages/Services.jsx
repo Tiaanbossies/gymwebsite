@@ -117,29 +117,29 @@ export default function Services() {
     <PagePose>
       <PageHero
         eyebrow="Services"
-        title="Personal training, open gym, and the support around it."
+        title="Personal trainer in Centurion — 1-on-1 coaching, open gym, and the support around it."
         description="Everything we offer at Bossie's — built for working professionals in Centurion who want real coaching and a real training floor."
         imagePath="/images/gym/floor-main-aisle.webp"
         breadcrumbs={[{ label: 'Home', to: '/' }, { label: 'Services' }]}
       />
 
       {/* Quick jump links */}
-      <section className="border-b border-white/10 bg-ink-900/60">
-        <Container className="overflow-x-auto py-4">
+      <nav aria-label="Jump to section" className="border-b border-white/10 bg-ink-900/60">
+        <Container className="overflow-x-auto py-4 no-scrollbar">
           <div className="flex min-w-max items-center gap-2">
-            <span className="text-xs uppercase tracking-[0.22em] text-ink-400">Jump to:</span>
+            <span className="text-xs uppercase tracking-[0.22em] text-ink-400" aria-hidden="true">Jump to:</span>
             {services.map((s) => (
               <a
                 key={s.id}
                 href={`#${s.id}`}
-                className="rounded-full border border-white/10 bg-ink-950 px-3 py-1.5 text-xs font-medium text-ink-200 transition hover:border-brand-500/50 hover:text-white"
+                className="rounded-full border border-white/10 bg-ink-950 px-3 py-2 text-xs font-medium text-ink-200 transition hover:border-brand-500/50 hover:text-white"
               >
                 {s.title}
               </a>
             ))}
           </div>
         </Container>
-      </section>
+      </nav>
 
       <section className="section">
         <Container>

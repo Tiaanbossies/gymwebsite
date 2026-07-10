@@ -22,12 +22,12 @@ export default function ServiceCard({
         <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-500/10 text-brand-400 ring-1 ring-brand-500/30 sm:h-12 sm:w-12">
           {Icon ? <Icon size={22} /> : null}
         </div>
-        {tag && <span className="tag text-[10px] sm:text-[11px]">{tag}</span>}
+        {tag && <span className="tag text-[11px]">{tag}</span>}
       </div>
 
       <div>
         <h3 className="display-3 text-white">{title}</h3>
-        <p className="mt-3 text-sm sm:text-[15px] text-ink-300 leading-relaxed">{description}</p>
+        <p className="mt-3 text-sm sm:text-base text-ink-300 leading-relaxed">{description}</p>
       </div>
 
       {bullets.length > 0 && (

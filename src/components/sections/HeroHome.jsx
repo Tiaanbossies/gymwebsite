@@ -122,26 +122,26 @@ export default function HeroHome() {
                     {site.ctas.join.label}
                   </Button>
                 </Magnet>
-                <Button href={site.ctas.call.href} variant="ghost" data-track="Call Gym — Hero">
-                  Call {site.phone.display}
-                </Button>
-                <Button to={site.ctas.trial.to} variant="link" data-track="Free Trial — Hero">
+                <Button to={site.ctas.trial.to} variant="ghost" data-track="Free Trial — Hero">
                   Start a free trial
+                </Button>
+                <Button href={site.ctas.call.href} variant="link" data-track="Call Gym — Hero">
+                  Call {site.phone.display}
                 </Button>
               </div>
             </ClickSpark>
 
             <div className="mt-10 pt-10 border-t border-white/10 grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div className="min-w-0">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-400 mb-1">Founded</p>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400 mb-1">Founded</p>
                 <p className="font-display text-sm text-white">Family-run from day one</p>
               </div>
               <div className="min-w-0">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-400 mb-1">Trainers</p>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400 mb-1">Trainers</p>
                 <p className="font-display text-sm text-white">Eight 1-on-1 coaches</p>
               </div>
               <div className="min-w-0">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-400 mb-1">Pricing</p>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400 mb-1">Pricing</p>
                 <p className="font-display text-sm text-white">R100 day pass · PT from R2,100</p>
               </div>
             </div>
@@ -225,7 +225,7 @@ function StatCard({ label, value, detail, accent = false }) {
         accent ? 'border-brand-500/40 bg-brand-500/15' : 'border-white/10 bg-ink-950/50'
       }`}
     >
-      <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-300">{label}</p>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-300">{label}</p>
       <p
         ref={valRef}
         className={`mt-2 font-display text-2xl tracking-headline ${accent ? 'text-brand-300' : 'text-white'}`}

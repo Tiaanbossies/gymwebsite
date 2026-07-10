@@ -99,7 +99,7 @@ function ReviewCard({ review }) {
           <div>
             <p className="text-sm font-semibold text-white leading-tight">{review.name}</p>
             {review.isLocalGuide && (
-              <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-ink-500">
+              <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-ink-500">
                 Local Guide
               </p>
             )}

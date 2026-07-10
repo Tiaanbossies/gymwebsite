@@ -602,7 +602,7 @@ function PhotoTile({ tile, priority, onOpen, tileVariants }) {
             {tile.label}
           </p>
           {onOpen && (
-            <p className="mt-0.5 translate-y-1 text-[10px] text-ink-400 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+            <p className="mt-0.5 translate-y-1 text-[11px] text-ink-400 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
               Click to view
             </p>
           )}

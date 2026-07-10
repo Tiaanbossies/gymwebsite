@@ -158,7 +158,7 @@ export default function Services() {
                 className="grid scroll-mt-28 gap-8 lg:grid-cols-[1.06fr_1fr] lg:gap-14"
               >
                 <div>
-                  <span className="eyebrow">{s.kicker}</span>
+                  <span className="inline-flex items-center rounded-full border border-brand-500/30 bg-brand-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-300">{s.kicker}</span>
                   <h2 className="mt-3 display-2 text-white text-balance">{s.title}</h2>
                   <p className="mt-5 body-lg max-w-xl text-balance">{s.lead}</p>
                   {s.note && (

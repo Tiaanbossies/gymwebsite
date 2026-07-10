@@ -184,7 +184,6 @@ export default function Contact() {
       <section className="section-tight">
         <Container>
           <SectionHeading
-            eyebrow="Area served"
             title="Bossie's Gym — Hennopspark, Centurion."
             description={`A short drive from ${site.areasServed.slice(0, 3).join(', ')} and surrounding Centurion suburbs.`}
           />
@@ -262,7 +261,7 @@ function InfoCell({ icon: Icon, title, body, href, external, trackLabel }) {
           <Icon size={16} />
         </div>
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-400">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">
             {title}
           </p>
           <p className="mt-1.5 text-sm text-ink-100 leading-relaxed">{body}</p>

@@ -145,11 +145,112 @@ export default function Team() {
         breadcrumbs={[{ label: 'Home', to: '/' }, { label: 'Team' }]}
       />
 
+      {/* Culture */}
+      <section className="section-tight">
+        <Container>
+          <SectionHeading
+            title="A small gym, with a big sense of ownership."
+            description="We're a family gym, not a franchise. That shapes how we coach, how we price, and how members feel when they walk in."
+          />
+
+          <motion.ul
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-60px' }}
+            className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/5 sm:grid-cols-2 lg:grid-cols-4"
+          >
+            {culturePillars.map((p) => (
+              <motion.li
+                key={p.title}
+                variants={fadeUp}
+                className="flex flex-col gap-4 bg-ink-900 p-7"
+              >
+                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-500/15 text-brand-300 ring-1 ring-brand-500/30">
+                  <p.icon size={20} />
+                </div>
+                <h3 className="font-display text-lg tracking-headline text-white">{p.title}</h3>
+                <p className="text-sm text-ink-300 leading-relaxed">{p.body}</p>
+              </motion.li>
+            ))}
+          </motion.ul>
+        </Container>
+      </section>
+
+      {/* Coaching philosophy */}
+      <section className="section-tight">
+        <Container>
+          <Reveal>
+            <div className="mx-auto max-w-3xl rounded-2xl border border-white/8 bg-ink-900/60 p-8 sm:p-12">
+              <h2 className="font-display text-3xl sm:text-4xl tracking-headline text-white text-balance">
+                Coaching built around the individual, not the template.
+              </h2>
+              <div className="mt-6 space-y-4 text-ink-300 leading-relaxed">
+                <p>
+                  Every trainer at Bossie's Gym works with members one-on-one. That means your
+                  program is built around your schedule, your body and your goal, and it changes as
+                  you do. No rotating templates, no group circuits dressed up as personal training.
+                </p>
+                <p>
+                  Our coaching covers more than the floor: every personal training package includes
+                  a diet plan and body assessments, so you can track what's actually changing and
+                  adjust what you're eating to match what you're training for.
+                </p>
+                <p>
+                  The gym is small on purpose. A smaller space means every coach knows every member.
+                  Bossie is usually on the floor. When you ask a question, you get an answer from
+                  someone who knows your last session — not a script.
+                </p>
+              </div>
+            </div>
+          </Reveal>
+        </Container>
+      </section>
+
+      {/* Stage story + values tile */}
+      <section className="section-tight">
+        <Container>
+          <div className="grid gap-6 lg:grid-cols-3">
+            <Reveal className="lg:col-span-2">
+              <div className="h-full rounded-2xl border border-white/10 bg-gradient-to-b from-ink-800 to-ink-900 p-8 sm:p-10">
+                <h2 className="font-display text-3xl sm:text-4xl tracking-headline text-white text-balance">
+                  From our floor to the stage.
+                </h2>
+                <p className="mt-5 text-ink-300 leading-relaxed max-w-2xl">
+                  If competition is your goal, we've got the floor, the coaches and the experience to
+                  help you get there. A handful of our members compete — and a few more who are
+                  thinking about it. We don't push it, but we're behind you if it's your path.
+                </p>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <Button
+                    to={site.ctas.enquire.to}
+                    iconNode={<ArrowUpRight size={14} strokeWidth={2.5} />}
+                  >
+                    Ask about competition prep
+                  </Button>
+                </div>
+              </div>
+            </Reveal>
+
+            <Reveal>
+              <div className="h-full rounded-2xl border border-accent-500/30 bg-gradient-to-b from-accent-500/10 to-ink-900 p-8 sm:p-10">
+                <h2 className="font-display text-3xl sm:text-4xl tracking-headline text-white text-balance">
+                  {site.values.join(' · ')}
+                </h2>
+                <p className="mt-5 text-ink-300 leading-relaxed">
+                  Three words, picked deliberately. They show up in how we coach, how we price, and
+                  how we talk to the people who walk through the door.
+                </p>
+              </div>
+            </Reveal>
+          </div>
+        </Container>
+      </section>
+
       {/* Trainer grid — "Our dream team" editorial layout */}
       <section className="section">
         <Container>
           <SectionHeading
-            eyebrow="The people"
             title="Three Boshoffs, five coaches alongside them, all on the floor."
             description="Bossie started the gym, and the family runs it with him — joined by a wider coaching team on the personal training roster. Full bios and portraits are on their way; we'd rather put up real photos than stock images."
           />
@@ -194,7 +295,7 @@ export default function Team() {
                       >
                         {initials(person.name)}
                       </span>
-                      <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-500">
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-500">
                         Photo coming soon
                       </span>
                     </div>
@@ -230,112 +331,6 @@ export default function Team() {
             Full trainer profiles and portraits will go up here as each coach shares their bio and
             photo with us.
           </p>
-        </Container>
-      </section>
-
-      {/* Culture */}
-      <section className="section-tight">
-        <Container>
-          <SectionHeading
-            eyebrow="Culture"
-            title="A small gym, with a big sense of ownership."
-            description="We're a family gym, not a franchise. That shapes how we coach, how we price, and how members feel when they walk in."
-          />
-
-          <motion.ul
-            variants={stagger}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: '-60px' }}
-            className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/5 sm:grid-cols-2 lg:grid-cols-4"
-          >
-            {culturePillars.map((p) => (
-              <motion.li
-                key={p.title}
-                variants={fadeUp}
-                className="flex flex-col gap-4 bg-ink-900 p-7"
-              >
-                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-500/15 text-brand-300 ring-1 ring-brand-500/30">
-                  <p.icon size={20} />
-                </div>
-                <h3 className="font-display text-lg tracking-headline text-white">{p.title}</h3>
-                <p className="text-sm text-ink-300 leading-relaxed">{p.body}</p>
-              </motion.li>
-            ))}
-          </motion.ul>
-        </Container>
-      </section>
-
-      {/* Coaching philosophy */}
-      <section className="section-tight">
-        <Container>
-          <Reveal>
-            <div className="mx-auto max-w-3xl rounded-2xl border border-white/8 bg-ink-900/60 p-8 sm:p-12">
-              <span className="eyebrow">Our approach</span>
-              <h2 className="mt-3 font-display text-3xl sm:text-4xl tracking-headline text-white text-balance">
-                Coaching built around the individual, not the template.
-              </h2>
-              <div className="mt-6 space-y-4 text-ink-300 leading-relaxed">
-                <p>
-                  Every trainer at Bossie's Gym works with members one-on-one. That means your
-                  program is built around your schedule, your body and your goal, and it changes as
-                  you do. No rotating templates, no group circuits dressed up as personal training.
-                </p>
-                <p>
-                  Our coaching covers more than the floor: every personal training package includes
-                  a diet plan and body assessments, so you can track what's actually changing and
-                  adjust what you're eating to match what you're training for.
-                </p>
-                <p>
-                  The gym is small on purpose. A smaller space means every coach knows every member.
-                  Bossie is usually on the floor. When you ask a question, you get an answer from
-                  someone who knows your last session — not a script.
-                </p>
-              </div>
-            </div>
-          </Reveal>
-        </Container>
-      </section>
-
-      {/* Stage story + values tile */}
-      <section className="section-tight">
-        <Container>
-          <div className="grid gap-6 lg:grid-cols-3">
-            <Reveal className="lg:col-span-2">
-              <div className="h-full rounded-2xl border border-white/10 bg-gradient-to-b from-ink-800 to-ink-900 p-8 sm:p-10">
-                <span className="eyebrow">The stage</span>
-                <h2 className="mt-3 font-display text-3xl sm:text-4xl tracking-headline text-white text-balance">
-                  From our floor to the stage.
-                </h2>
-                <p className="mt-5 text-ink-300 leading-relaxed max-w-2xl">
-                  If competition is your goal, we've got the floor, the coaches and the experience to
-                  help you get there. A handful of our members compete — and a few more who are
-                  thinking about it. We don't push it, but we're behind you if it's your path.
-                </p>
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <Button
-                    to={site.ctas.enquire.to}
-                    iconNode={<ArrowUpRight size={14} strokeWidth={2.5} />}
-                  >
-                    Ask about competition prep
-                  </Button>
-                </div>
-              </div>
-            </Reveal>
-
-            <Reveal>
-              <div className="h-full rounded-2xl border border-accent-500/30 bg-gradient-to-b from-accent-500/10 to-ink-900 p-8 sm:p-10">
-                <span className="eyebrow">Our values</span>
-                <h2 className="mt-3 font-display text-3xl sm:text-4xl tracking-headline text-white text-balance">
-                  {site.values.join(' · ')}
-                </h2>
-                <p className="mt-5 text-ink-300 leading-relaxed">
-                  Three words, picked deliberately. They show up in how we coach, how we price, and
-                  how we talk to the people who walk through the door.
-                </p>
-              </div>
-            </Reveal>
-          </div>
         </Container>
       </section>
 

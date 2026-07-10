@@ -334,7 +334,7 @@ export default function Dashboard() {
 
                 {/* Views over time */}
                 <div className="card-surface rounded-2xl p-6">
-                  <span className="eyebrow text-[10px]">Page Views Over Time</span>
+                  <span className="eyebrow text-[11px]">Page Views Over Time</span>
                   <div className="mt-4">
                     <LineChart
                       series={[{ label: 'Views', color: '#dc2b38', data: viewsOverTime }]}
@@ -345,7 +345,7 @@ export default function Dashboard() {
 
                 {/* Clicks over time */}
                 <div className="card-surface rounded-2xl p-6">
-                  <span className="eyebrow text-[10px]">Clicks Over Time</span>
+                  <span className="eyebrow text-[11px]">Clicks Over Time</span>
                   <div className="mt-4">
                     <LineChart
                       series={[{ label: 'Clicks', color: '#3d6479', data: clicksOverTime }]}
@@ -356,7 +356,7 @@ export default function Dashboard() {
 
                 {/* Views per page over time */}
                 <div className="card-surface rounded-2xl p-6">
-                  <span className="eyebrow text-[10px]">Views per Page Over Time</span>
+                  <span className="eyebrow text-[11px]">Views per Page Over Time</span>
                   <p className="text-xs text-ink-500 mt-1">Top {top5Pages.length} pages</p>
                   <div className="mt-4">
                     <LineChart
@@ -371,7 +371,7 @@ export default function Dashboard() {
 
                   {/* Top pages */}
                   <div className="card-surface rounded-2xl p-6">
-                    <span className="eyebrow text-[10px]">Top Pages</span>
+                    <span className="eyebrow text-[11px]">Top Pages</span>
                     <table className="mt-4 w-full text-sm">
                       <thead>
                         <tr className="text-left text-ink-500 text-xs border-b border-white/10">
@@ -394,7 +394,7 @@ export default function Dashboard() {
 
                   {/* Avg time on page */}
                   <div className="card-surface rounded-2xl p-6">
-                    <span className="eyebrow text-[10px]">Avg Time on Page</span>
+                    <span className="eyebrow text-[11px]">Avg Time on Page</span>
                     <table className="mt-4 w-full text-sm">
                       <thead>
                         <tr className="text-left text-ink-500 text-xs border-b border-white/10">
@@ -419,7 +419,7 @@ export default function Dashboard() {
 
                   {/* Click events */}
                   <div className="card-surface rounded-2xl p-6">
-                    <span className="eyebrow text-[10px]">Click Events</span>
+                    <span className="eyebrow text-[11px]">Click Events</span>
                     <table className="mt-4 w-full text-sm">
                       <thead>
                         <tr className="text-left text-ink-500 text-xs border-b border-white/10">
@@ -442,7 +442,7 @@ export default function Dashboard() {
 
                   {/* Scroll depth funnel */}
                   <div className="card-surface rounded-2xl p-6">
-                    <span className="eyebrow text-[10px]">Scroll Depth Funnel</span>
+                    <span className="eyebrow text-[11px]">Scroll Depth Funnel</span>
                     <div className="mt-4 flex flex-col gap-3">
                       {scrollMilestones.map(({ label, count }) => (
                         <div key={label} className="flex items-center gap-3">
@@ -466,12 +466,12 @@ export default function Dashboard() {
 
             {/* ── Business Insights ─────────────────────────────────────── */}
             <div>
-              <h2 className="eyebrow text-[10px]">Business Insights</h2>
+              <h2 className="eyebrow text-[11px]">Business Insights</h2>
               <div className="mt-4 grid md:grid-cols-2 gap-6">
 
                 {/* WhatsApp vs Call */}
                 <div className="card-surface rounded-2xl p-6">
-                  <span className="eyebrow text-[10px]">WhatsApp vs. Call Clicks</span>
+                  <span className="eyebrow text-[11px]">WhatsApp vs. Call Clicks</span>
                   <p className="mt-1 text-xs text-ink-500">Dictates whether to prioritise the phone desk or WhatsApp line</p>
                   <div className="mt-5 flex flex-col gap-4">
                     <div>
@@ -507,13 +507,13 @@ export default function Dashboard() {
                 {/* Student + Day Pass */}
                 <div className="card-surface rounded-2xl p-6 flex flex-col gap-6">
                   <div>
-                    <span className="eyebrow text-[10px]">Student Membership Clicks</span>
+                    <span className="eyebrow text-[11px]">Student Membership Clicks</span>
                     <p className="mt-1 text-xs text-ink-500">Validates demand for the R250/month student rate</p>
                     <p className="mt-3 font-display text-4xl tracking-headline text-white">{studentClicks}</p>
                     <p className="text-xs text-ink-400 mt-1">WhatsApp student card clicks in this period</p>
                   </div>
                   <div className="border-t border-white/10 pt-5">
-                    <span className="eyebrow text-[10px]">Day Pass Inquiries</span>
+                    <span className="eyebrow text-[11px]">Day Pass Inquiries</span>
                     <p className="mt-1 text-xs text-ink-500">Seasonal or out-of-town interest in the R100 drop-in</p>
                     <p className="mt-3 font-display text-4xl tracking-headline text-white">{dayPassClicks}</p>
                     <p className="text-xs text-ink-400 mt-1">Day pass CTA clicks in this period</p>
@@ -522,7 +522,7 @@ export default function Dashboard() {
 
                 {/* Local Traffic — Cities */}
                 <div className="card-surface rounded-2xl p-6">
-                  <span className="eyebrow text-[10px]">Local Traffic — Top Cities</span>
+                  <span className="eyebrow text-[11px]">Local Traffic — Top Cities</span>
                   <p className="mt-1 text-xs text-ink-500">Confirms if local SEO is hitting Centurion &amp; Midstream</p>
                   <table className="mt-4 w-full text-sm">
                     <thead>
@@ -546,7 +546,7 @@ export default function Dashboard() {
 
                 {/* Local Traffic — Countries */}
                 <div className="card-surface rounded-2xl p-6">
-                  <span className="eyebrow text-[10px]">Local Traffic — Countries</span>
+                  <span className="eyebrow text-[11px]">Local Traffic — Countries</span>
                   <p className="mt-1 text-xs text-ink-500">South Africa vs. international traffic split</p>
                   <div className="mt-4 flex flex-col gap-3">
                     {topCountries.length ? (() => {
@@ -571,7 +571,7 @@ export default function Dashboard() {
 
             {/* ── User Flow ────────────────────────────────────────────── */}
             <div>
-              <h2 className="eyebrow text-[10px]">User Navigation Flow</h2>
+              <h2 className="eyebrow text-[11px]">User Navigation Flow</h2>
               <p className="mt-1 text-xs text-ink-500">
                 How visitors move between pages — width of each band shows relative traffic volume.
                 Avg time on page and exit rate shown per node.
@@ -583,7 +583,7 @@ export default function Dashboard() {
 
             {/* ── Recent Activity ───────────────────────────────────────── */}
             <div>
-              <h2 className="eyebrow text-[10px]">Recent Activity</h2>
+              <h2 className="eyebrow text-[11px]">Recent Activity</h2>
               <p className="mt-1 text-xs text-ink-500">Last 100 entries — page views, clicks and scroll events, newest first</p>
               <div className="mt-4 card-surface rounded-2xl overflow-hidden">
                 <div className="overflow-x-auto">
@@ -606,9 +606,9 @@ export default function Dashboard() {
                         <tr key={i} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02] transition-colors">
                           <td className="px-4 py-2.5 text-ink-400 whitespace-nowrap font-mono">{fmtDateTime(row.time)}</td>
                           <td className="px-4 py-2.5 whitespace-nowrap">
-                            {row.type === 'view' && <span className="inline-flex items-center rounded-full bg-brand-500/15 text-brand-300 px-2 py-0.5 text-[10px] font-semibold">Page View</span>}
-                            {row.type === 'click' && <span className="inline-flex items-center rounded-full bg-accent-500/15 text-accent-300 px-2 py-0.5 text-[10px] font-semibold">Click</span>}
-                            {row.type === 'scroll_depth' && <span className="inline-flex items-center rounded-full bg-white/10 text-ink-300 px-2 py-0.5 text-[10px] font-semibold">Scroll</span>}
+                            {row.type === 'view' && <span className="inline-flex items-center rounded-full bg-brand-500/15 text-brand-300 px-2 py-0.5 text-[11px] font-semibold">Page View</span>}
+                            {row.type === 'click' && <span className="inline-flex items-center rounded-full bg-accent-500/15 text-accent-300 px-2 py-0.5 text-[11px] font-semibold">Click</span>}
+                            {row.type === 'scroll_depth' && <span className="inline-flex items-center rounded-full bg-white/10 text-ink-300 px-2 py-0.5 text-[11px] font-semibold">Scroll</span>}
                           </td>
                           <td className="px-4 py-2.5 text-ink-200 font-mono max-w-[140px] truncate">{row.page}</td>
                           <td className="px-4 py-2.5 text-ink-300 max-w-[160px] truncate">{row.label || '—'}</td>

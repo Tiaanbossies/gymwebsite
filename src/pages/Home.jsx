@@ -289,7 +289,7 @@ export default function Home() {
             <ValueTile
               icon={ShieldCheck}
               title="Honest pricing"
-              body="R100 day pass. PT from R2,100/month. No hidden fees."
+              body={<>R100 day pass. PT from R2,100/month. No hidden fees. <Link to="/pricing" className="text-brand-300 underline decoration-brand-500/40 underline-offset-2 hover:text-brand-200">Full breakdown →</Link></>}
             />
             <ValueTile
               icon={Sparkles}

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Compass, Users2, Target, HeartHandshake, ShieldCheck, Flame, Phone } from 'lucide-react';
 
@@ -47,9 +48,9 @@ export default function About() {
                   you'll talk to a Boshoff — not a 24-hour call centre.
                 </p>
                 <p>
-                  We serve Centurion, Midstream, Lyttelton and the surrounding suburbs with personal training,
-                  open gym access, nutrition and body assessments — and we offer a free trial so you
-                  can see whether it's the right fit before committing to anything.
+                  We serve Centurion, Midstream, Lyttelton and the surrounding suburbs with{' '}
+                  <Link to="/services" className="text-brand-300 underline decoration-brand-500/40 underline-offset-2 hover:text-brand-200">personal training, open gym access, nutrition and body assessments</Link>
+                  {' '}— and we offer a free trial so you can see whether it's the right fit before committing to anything.
                 </p>
               </div>
 

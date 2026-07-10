@@ -131,16 +131,16 @@ export default function HeroHome() {
               </div>
             </ClickSpark>
 
-            <div className="mt-10 pt-10 border-t border-white/10 grid gap-3 sm:flex sm:flex-wrap sm:gap-8">
-              <div>
+            <div className="mt-10 pt-10 border-t border-white/10 grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div className="min-w-0">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-400 mb-1">Founded</p>
                 <p className="font-display text-sm text-white">Family-run from day one</p>
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-400 mb-1">Trainers</p>
                 <p className="font-display text-sm text-white">Eight 1-on-1 coaches</p>
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-400 mb-1">Pricing</p>
                 <p className="font-display text-sm text-white">R100 day pass · PT from R2,100</p>
               </div>

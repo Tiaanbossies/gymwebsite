@@ -57,7 +57,7 @@ export default function MobileNav({ open, onClose }) {
             role="dialog"
             aria-modal="true"
             aria-label="Navigation menu"
-            className="absolute inset-x-0 top-0 bg-ink-900 border-b border-white/10 shadow-card"
+            className="absolute inset-x-0 top-0 max-h-screen overflow-y-auto bg-ink-900 border-b border-white/10 shadow-card"
             initial={{ y: -24, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -24, opacity: 0 }}

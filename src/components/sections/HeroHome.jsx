@@ -131,7 +131,7 @@ export default function HeroHome() {
               </div>
             </ClickSpark>
 
-            <div className="mt-10 pt-10 border-t border-white/10 flex flex-wrap gap-6 sm:gap-8">
+            <div className="mt-10 pt-10 border-t border-white/10 grid gap-3 sm:flex sm:flex-wrap sm:gap-8">
               <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-400 mb-1">Founded</p>
                 <p className="font-display text-sm text-white">Family-run from day one</p>

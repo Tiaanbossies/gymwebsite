@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /onboarding
+Disallow: /join
+Disallow: /dashboard
 
 Sitemap: https://bossiesgym.co.za/sitemap.xml

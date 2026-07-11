@@ -7,12 +7,19 @@ const { run } = require('react-snap');
 const opts = {
   source: 'dist',
   destination: 'dist',
+  // Explicitly list routes — avoids relying on package.json config merge
+  routes: ['/', '/services', '/membership', '/pricing', '/team', '/gallery', '/about', '/faq', '/contact'],
   puppeteerArgs: [
     '--no-sandbox',
     '--disable-setuid-sandbox',
     '--disable-gpu',
     '--disable-webgl',
   ],
+  // Without onError, react-snap aborts the entire crawl on the first page error
+  // (OGL WebGL crash on /). Providing a no-op lets all 9 routes be crawled.
+  onError: (msg) => {
+    console.warn('[prerender] page error (suppressed):', msg);
+  },
 };
 if (process.env.PUPPETEER_EXECUTABLE_PATH) {
   opts.puppeteerExecutablePath = process.env.PUPPETEER_EXECUTABLE_PATH;

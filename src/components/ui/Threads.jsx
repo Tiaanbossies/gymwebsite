@@ -131,8 +131,14 @@ const Threads = ({ color = [1, 1, 1], amplitude = 1, distance = 0, enableMouseIn
     const container = containerRef.current;
     if (!container) return;
 
-    const renderer = new Renderer({ alpha: true });
+    let renderer;
+    try {
+      renderer = new Renderer({ alpha: true });
+    } catch {
+      return; // WebGL unavailable (e.g. headless prerender) — skip silently
+    }
     const gl = renderer.gl;
+    if (!gl) return;
     gl.clearColor(0, 0, 0, 0);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);

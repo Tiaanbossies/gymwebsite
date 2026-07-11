@@ -7,7 +7,12 @@ const { run } = require('react-snap');
 const opts = {
   source: 'dist',
   destination: 'dist',
-  puppeteerArgs: ['--no-sandbox', '--disable-setuid-sandbox'],
+  puppeteerArgs: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-gpu',
+    '--disable-webgl',
+  ],
 };
 if (process.env.PUPPETEER_EXECUTABLE_PATH) {
   opts.puppeteerExecutablePath = process.env.PUPPETEER_EXECUTABLE_PATH;

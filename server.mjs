@@ -253,15 +253,24 @@ function handleDashboardLogout(req, res) {
 }
 
 async function fetchAnalyticsTable(table, dateColumn, sinceIso) {
-  const url = `${dashboardConfig.supabaseUrl}/rest/v1/${table}?select=*&${dateColumn}=gte.${encodeURIComponent(sinceIso)}`;
-  const r = await fetch(url, {
-    headers: {
-      apikey: dashboardConfig.serviceRoleKey,
-      Authorization: `Bearer ${dashboardConfig.serviceRoleKey}`,
-    },
-  });
-  if (!r.ok) throw new Error(`Supabase ${table} fetch failed: ${r.status}`);
-  return r.json();
+  const PAGE = 1000;
+  let offset = 0;
+  const rows = [];
+  while (true) {
+    const url = `${dashboardConfig.supabaseUrl}/rest/v1/${table}?select=*&${dateColumn}=gte.${encodeURIComponent(sinceIso)}&order=${dateColumn}.asc&limit=${PAGE}&offset=${offset}`;
+    const r = await fetch(url, {
+      headers: {
+        apikey: dashboardConfig.serviceRoleKey,
+        Authorization: `Bearer ${dashboardConfig.serviceRoleKey}`,
+      },
+    });
+    if (!r.ok) throw new Error(`Supabase ${table} fetch failed: ${r.status}`);
+    const page = await r.json();
+    rows.push(...page);
+    if (page.length < PAGE) break;
+    offset += PAGE;
+  }
+  return rows;
 }
 
 async function handleDashboardData(req, res) {

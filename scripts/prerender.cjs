@@ -7,6 +7,8 @@ const { run } = require('react-snap');
 const opts = {
   source: 'dist',
   destination: 'dist',
+  // Explicitly list routes — avoids relying on package.json config merge
+  routes: ['/', '/services', '/membership', '/pricing', '/team', '/gallery', '/about', '/faq', '/contact'],
   puppeteerArgs: [
     '--no-sandbox',
     '--disable-setuid-sandbox',

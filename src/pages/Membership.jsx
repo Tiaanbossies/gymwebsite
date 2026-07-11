@@ -14,7 +14,7 @@ export default function Membership() {
   return (
     <PagePose>
       <PageHero
-        eyebrow="Membership & Pricing"
+        eyebrow="Membership"
         title="Open gym & personal training in Centurion — real prices, no surprises."
         description="R100 day passes, monthly/6-month/12-month open gym membership, and personal training from R2,100/month. Students pay less. Everyone gets a free trial."
         imagePath="/images/gym/reception-lounge.webp"

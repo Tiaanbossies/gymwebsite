@@ -97,7 +97,7 @@ export default function MembershipOptions({ options = defaultOptions }) {
           }`}
         >
           {opt.badge && (
-            <span className="absolute -top-3 left-6 rounded-full bg-brand-500 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white">
+            <span className="absolute -top-3 left-6 rounded-full bg-brand-500 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white">
               {opt.badge}
             </span>
           )}

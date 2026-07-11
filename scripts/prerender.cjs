@@ -13,6 +13,11 @@ const opts = {
     '--disable-gpu',
     '--disable-webgl',
   ],
+  // Without onError, react-snap aborts the entire crawl on the first page error
+  // (OGL WebGL crash on /). Providing a no-op lets all 9 routes be crawled.
+  onError: (msg) => {
+    console.warn('[prerender] page error (suppressed):', msg);
+  },
 };
 if (process.env.PUPPETEER_EXECUTABLE_PATH) {
   opts.puppeteerExecutablePath = process.env.PUPPETEER_EXECUTABLE_PATH;

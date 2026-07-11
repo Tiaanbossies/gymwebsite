@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Compass, Users2, Target, HeartHandshake, ShieldCheck, Flame, Phone } from 'lucide-react';
 
@@ -30,8 +31,7 @@ export default function About() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <span className="eyebrow">Our story</span>
-              <h2 className="mt-3 display-2 text-white text-balance">
+              <h2 className="display-2 text-white text-balance">
                 A small gym, run by a family, for the people in it.
               </h2>
               <div className="mt-6 flex flex-col gap-5 text-ink-300 leading-relaxed">
@@ -47,9 +47,9 @@ export default function About() {
                   you'll talk to a Boshoff — not a 24-hour call centre.
                 </p>
                 <p>
-                  We serve Centurion, Midstream, Lyttelton and the surrounding suburbs with personal training,
-                  open gym access, nutrition and body assessments — and we offer a free trial so you
-                  can see whether it's the right fit before committing to anything.
+                  We serve Centurion, Midstream, Lyttelton and the surrounding suburbs with{' '}
+                  <Link to="/services" className="text-brand-300 underline decoration-brand-500/40 underline-offset-2 hover:text-brand-200">personal training, open gym access, nutrition and body assessments</Link>
+                  {' '}— and we offer a free trial so you can see whether it's the right fit before committing to anything.
                 </p>
               </div>
 
@@ -70,7 +70,7 @@ export default function About() {
                 <div className="absolute inset-0 noise opacity-50" />
                 <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-accent-500/15 blur-3xl" />
                 <div className="relative">
-                  <span className="eyebrow">Hennopspark, Centurion</span>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300 mb-2">Hennopspark, Centurion</p>
                   <h3 className="mt-3 font-display text-3xl sm:text-4xl tracking-headline text-white">
                     Local, on purpose.
                   </h3>
@@ -95,7 +95,6 @@ export default function About() {
       <section className="section-tight">
         <Container>
           <SectionHeading
-            eyebrow="Our values"
             title="Honesty. Commitment. Community."
             description="Three words, picked deliberately. They show up in how we price, how we coach and how we talk to the people who walk through the door."
           />
@@ -131,7 +130,6 @@ export default function About() {
       <section className="section-tight">
         <Container>
           <SectionHeading
-            eyebrow="Our coaching approach"
             title="Personal. Structured. Grounded."
             description="We don't pretend coaching is a dashboard or an app. It's watching you move, adjusting the plan, and showing up consistently."
           />
@@ -182,7 +180,7 @@ function Fact({ icon: Icon, label, value }) {
     <div className="rounded-xl border border-white/10 bg-ink-950/40 p-4 backdrop-blur-sm">
       <div className="flex items-center gap-2">
         <Icon size={14} className="text-brand-300" />
-        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-400">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">
           {label}
         </p>
       </div>

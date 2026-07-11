@@ -109,7 +109,6 @@ export default function Pricing() {
       <section className="section-tight">
         <Container>
           <SectionHeading
-            eyebrow="Open gym membership"
             title="Train on your own schedule."
             description="Full-access membership across our training floor and boxing area. Pick the contract length that fits — the longer the term, the better the monthly rate."
           />
@@ -132,7 +131,7 @@ export default function Pricing() {
                 } ${tier.bestValue ? 'md:col-span-2 xl:col-span-1' : ''}`}
               >
                 {tier.bestValue && (
-                  <span className="absolute -top-3 left-6 rounded-full bg-brand-500 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white">
+                  <span className="absolute -top-3 left-6 rounded-full bg-brand-500 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white">
                     Best value
                   </span>
                 )}
@@ -252,7 +251,6 @@ export default function Pricing() {
       <section className="section-tight">
         <Container>
           <SectionHeading
-            eyebrow="Personal training packages"
             title="1-on-1 coaching — every session, every week."
             description="Work directly with one of our trainers on a programme built around your goals, your schedule and your training history. Every package below includes a personalised diet plan and regular body assessments."
           />
@@ -348,7 +346,6 @@ export default function Pricing() {
       <section className="section-tight">
         <Container>
           <SectionHeading
-            eyebrow="Day pass"
             title="In town or just trying us out."
             description="One-off visit, no sign-up, no contract, no joining fee. Walk in during opening hours, train, walk out."
           />
@@ -400,7 +397,6 @@ export default function Pricing() {
       <section className="section-tight">
         <Container>
           <SectionHeading
-            eyebrow="Extras & policies"
             title="The small print — made small-and-clear."
           />
 
@@ -443,7 +439,6 @@ export default function Pricing() {
       <section className="section-tight">
         <Container>
           <SectionHeading
-            eyebrow="Compare"
             title="What's included in each option."
             description="Side-by-side breakdown across day pass, open gym membership and personal training — so you can pick the fit without guessing."
           />
@@ -483,7 +478,6 @@ export default function Pricing() {
       <section className="section-tight">
         <Container>
           <SectionHeading
-            eyebrow="Pricing FAQ"
             title="Common pricing questions — answered."
           />
           <div className="mt-10">

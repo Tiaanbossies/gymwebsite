@@ -98,9 +98,11 @@ export default function App() {
     // query strings (e.g. ?intent=join) are appended by CTAs.
     upsertLink('canonical', canonical);
 
-    // Noindex — sign-up flows and internal tools should not appear in search results.
+    // Noindex — sign-up flows, internal tools, and unknown routes (404s) should
+    // not appear in search results.
     const NOINDEX_ROUTES = new Set(['/onboarding', '/dashboard', '/community']);
-    if (NOINDEX_ROUTES.has(path)) {
+    const isUnknownRoute = !meta[path];
+    if (NOINDEX_ROUTES.has(path) || isUnknownRoute) {
       upsertMeta('meta[name="robots"]', 'name', 'robots', 'noindex, nofollow');
     } else {
       const robotsEl = document.head.querySelector('meta[name="robots"]');

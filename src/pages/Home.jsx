@@ -21,8 +21,30 @@ import ServiceCard from '../components/sections/ServiceCard.jsx';
 import TrustSection from '../components/sections/TrustSection.jsx';
 import ReviewsSection from '../components/sections/ReviewsSection.jsx';
 import CTASection from '../components/sections/CTASection.jsx';
-import Reveal from '../components/ui/Reveal.jsx';
 import { site, fadeUp, stagger } from '../lib/site.js';
+
+const VALUE_FEATURES = [
+  {
+    icon: Target,
+    title: '1-on-1 coaching',
+    body: "Eight trainers who know your name, your goals and where you're at in your training.",
+  },
+  {
+    icon: Salad,
+    title: 'Diet plans',
+    body: 'Nutrition coaching that supports your programme — included with personal training.',
+  },
+  {
+    icon: LineChart,
+    title: 'Body assessments',
+    body: 'Regular measurements so you can see progress instead of just hoping for it.',
+  },
+  {
+    icon: Sparkles,
+    title: 'Free trial',
+    body: "Come train with us first. If it's the right fit, then we talk memberships.",
+  },
+];
 
 export default function Home() {
   return (
@@ -36,7 +58,6 @@ export default function Home() {
         <Container>
           <div className="flex items-end justify-between gap-6 flex-wrap">
             <SectionHeading
-              eyebrow="What we offer"
               title="Two ways to train with Bossie's."
               description="A fully kitted training floor in Centurion, and hands-on 1-on-1 coaching with the team that runs it."
             />
@@ -80,37 +101,26 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* Value props — built around you */}
+      {/* Value props — split layout */}
       <section className="section-tight">
         <Container>
-          <SectionHeading
-            eyebrow="Built around you"
-            title="Real coaching, real structure, real progress."
-            description="We pair the training with the bits that make it stick — nutrition, assessments and a community that shows up."
-          />
-
-          <Reveal.Group className="mt-14 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-            <ValueCard
-              icon={Target}
-              title="1-on-1 coaching"
-              body="Eight trainers who know your name, your goals and where you're at in your training."
-            />
-            <ValueCard
-              icon={Salad}
-              title="Diet plans"
-              body="Nutrition coaching that supports your programme — included with personal training."
-            />
-            <ValueCard
-              icon={LineChart}
-              title="Body assessments"
-              body="Regular measurements so you can see progress instead of just hoping for it."
-            />
-            <ValueCard
-              icon={Sparkles}
-              title="Free trial"
-              body="Come train with us first. If it's the right fit, then we talk memberships."
-            />
-          </Reveal.Group>
+          <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:items-start">
+            <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-80px' }}>
+              <h2 className="display-2 text-white text-balance">Real coaching, real structure, real progress.</h2>
+              <p className="mt-5 body-lg text-balance">We pair the training with the bits that make it stick — nutrition, assessments and a community that shows up.</p>
+            </motion.div>
+            <motion.ul variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-60px' }} className="flex flex-col">
+              {VALUE_FEATURES.map(({ icon: Icon, title, body }, i) => (
+                <motion.li key={title} variants={fadeUp} className={`flex items-start gap-4 py-5${i > 0 ? ' border-t border-white/10' : ''}`}>
+                  <Icon size={16} className="mt-[3px] shrink-0 text-brand-400" aria-hidden="true" />
+                  <div>
+                    <p className="font-display text-base tracking-headline text-white">{title}</p>
+                    <p className="mt-1 text-sm text-ink-300 leading-relaxed">{body}</p>
+                  </div>
+                </motion.li>
+              ))}
+            </motion.ul>
+          </div>
         </Container>
       </section>
 
@@ -123,7 +133,6 @@ export default function Home() {
         <Container>
           <div className="flex items-end justify-between gap-6 flex-wrap">
             <SectionHeading
-              eyebrow="Inside Bossie's"
               title="The training environment."
               description="A look at the spaces you'll train in — weights, cardio, functional and boxing, all in one floor."
             />
@@ -153,7 +162,7 @@ export default function Home() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-ink-950/85 via-ink-950/20 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 px-6 pb-5 pt-10">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-300">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">
                   Free Weights & Racks
                 </p>
                 <h3 className="mt-1 font-display text-xl tracking-headline text-white">
@@ -177,7 +186,7 @@ export default function Home() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-ink-950/85 via-ink-950/20 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 px-6 pb-5 pt-10">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-300">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">
                   Conditioning Equipment
                 </p>
                 <h3 className="mt-1 font-display text-xl tracking-headline text-white">
@@ -201,7 +210,7 @@ export default function Home() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-ink-950/85 via-ink-950/20 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 px-6 pb-5 pt-10">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-300">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">
                   Mobility & Compound Work
                 </p>
                 <h3 className="mt-1 font-display text-xl tracking-headline text-white">
@@ -220,9 +229,8 @@ export default function Home() {
           <div className="grid gap-10 rounded-3xl border border-white/10 bg-ink-900 p-6 sm:p-10 lg:grid-cols-[1.15fr_1fr] lg:items-center lg:p-12">
             {/* Text side */}
             <div>
-              <span className="eyebrow">The people</span>
-              <h2 className="mt-3 display-2 text-white text-balance">
-                Eight trainers. One family-run floor. One of the gyms in Centurion that actually knows you.
+              <h2 className="display-2 text-white text-balance">
+                Eight trainers. One family-run floor. A gym in Centurion that actually knows you.
               </h2>
               <p className="mt-5 body-lg text-balance">
                 Bossie's is run by Johan "Bossie" Boshoff with Rene and Debbie, alongside the wider
@@ -283,13 +291,13 @@ export default function Home() {
             />
             <ValueTile
               icon={Users2}
-              title="8 trainers"
+              title="Eight trainers"
               body="1-on-1 sessions available every day we're open."
             />
             <ValueTile
               icon={ShieldCheck}
               title="Honest pricing"
-              body="R100 day pass. PT from R2,100/month. No hidden fees."
+              body={<>R100 day pass. PT from R2,100/month. No hidden fees. <Link to="/pricing" className="text-brand-300 underline decoration-brand-500/40 underline-offset-2 hover:text-brand-200">Full breakdown →</Link></>}
             />
             <ValueTile
               icon={Sparkles}
@@ -314,20 +322,6 @@ export default function Home() {
         tertiary={{ label: 'Start a Free Trial', to: site.ctas.trial.to, variant: 'link' }}
       />
     </PagePose>
-  );
-}
-
-function ValueCard({ icon: Icon, title, body }) {
-  return (
-    <Reveal.Item>
-      <div className="hover-lift flex h-full flex-col gap-4 rounded-2xl border border-white/10 bg-ink-900 p-6 transition-colors hover:border-brand-500/40">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-500/15 text-brand-300 ring-1 ring-brand-500/30">
-          <Icon size={18} />
-        </div>
-        <h3 className="font-display text-lg tracking-headline text-white">{title}</h3>
-        <p className="text-sm text-ink-300 leading-relaxed">{body}</p>
-      </div>
-    </Reveal.Item>
   );
 }
 

@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 import PagePose from '../components/ui/PagePose.jsx';
 import PageHero from '../components/sections/PageHero.jsx';
 import Container from '../components/ui/Container.jsx';
@@ -24,8 +26,13 @@ const faqGroups = [
       },
       {
         question: 'How do I sign up?',
-        answer:
-          "Three options, pick the one that suits you best:\n• Fill in the form on our Contact page.\n• Send a WhatsApp to " + site.phone.display + ".\n• Call the gym — we answer during opening hours.",
+        answer: (
+          <>
+            {'Three options, pick the one that suits you best:\n• Fill in the form on our '}
+            <Link to="/contact" className="text-brand-300 underline decoration-brand-500/40 underline-offset-2 hover:text-brand-200">Contact page</Link>
+            {'.\n• Send a WhatsApp to '}{site.phone.display}{'.\n• Call the gym — we answer during opening hours.'}
+          </>
+        ),
       },
       {
         question: 'Is there a joining fee?',
@@ -50,7 +57,11 @@ const faqGroups = [
       {
         question: 'What does an open-gym membership cost?',
         answer:
-          "Three contract lengths:\n• Month-to-month — R450 / month (cancel any time)\n• 6-month — R380 / month\n• 12-month — R360 / month (best value)\n\nA once-off R200 joining fee applies on new sign-ups. See the Pricing page for the full breakdown.",
+          <>
+            {'Three contract lengths:\n• Month-to-month — R450 / month (cancel any time)\n• 6-month — R380 / month\n• 12-month — R360 / month (best value)\n\nA once-off R200 joining fee applies on new sign-ups. See the '}
+            <Link to="/pricing" className="text-brand-300 underline decoration-brand-500/40 underline-offset-2 hover:text-brand-200">Pricing page</Link>
+            {' for the full breakdown.'}
+          </>,
       },
       {
         question: 'What does personal training cost?',

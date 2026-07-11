@@ -16,6 +16,8 @@
 		"dev:api": "NODE_ENV=development node server.mjs"
 	},
 	"reactSnap": {
+		"source": "dist",
+		"destination": "dist",
 		"routes": [
 			"/", "/services", "/membership", "/pricing",
 			"/team", "/gallery", "/about", "/faq", "/contact"

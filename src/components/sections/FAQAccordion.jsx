@@ -49,7 +49,7 @@ export default function FAQAccordion({ items = [] }) {
                     id={panelId}
                     role="region"
                     aria-labelledby={triggerId}
-                    className="whitespace-pre-line px-5 pb-5 pt-1 text-sm text-ink-300 leading-relaxed sm:px-6 sm:pb-6 sm:text-[15px]"
+                    className="whitespace-pre-line px-5 pb-5 pt-1 text-sm text-ink-300 leading-relaxed sm:px-6 sm:pb-6 sm:text-base"
                   >
                     {item.answer}
                   </div>

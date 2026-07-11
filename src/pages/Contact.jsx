@@ -62,7 +62,7 @@ export default function Contact() {
               transition={{ duration: 0.5 }}
               className="rounded-2xl border border-white/10 bg-ink-900 p-7 sm:p-10"
             >
-              <span className="eyebrow">Send us an enquiry</span>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400 mb-1">Send us an enquiry</p>
               <h2 className="mt-3 font-display text-3xl sm:text-4xl tracking-headline text-white">
                 Tell us what you're looking for.
               </h2>
@@ -85,7 +85,7 @@ export default function Contact() {
             >
               {/* Address block */}
               <div className="rounded-2xl border border-white/10 bg-ink-900 p-7">
-                <span className="eyebrow">Visit the gym</span>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400 mb-1">Visit the gym</p>
                 <h3 className="mt-3 font-display text-2xl tracking-headline text-white">
                   {site.location.line2}, {site.location.city}
                 </h3>
@@ -111,7 +111,7 @@ export default function Contact() {
 
               {/* Hours block */}
               <div className="rounded-2xl border border-white/10 bg-ink-900 p-7">
-                <span className="eyebrow">Opening hours</span>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400 mb-1">Opening hours</p>
                 <h3 className="mt-3 flex items-center gap-2 font-display text-2xl tracking-headline text-white">
                   <Clock size={18} className="text-brand-300" />
                   When we're open
@@ -163,7 +163,7 @@ export default function Contact() {
 
               {/* Free trial card */}
               <div className="rounded-2xl border border-accent-500/30 bg-gradient-to-b from-accent-500/10 to-ink-900 p-7">
-                <span className="eyebrow">Free trial</span>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400 mb-1">Free trial</p>
                 <h3 className="mt-3 font-display text-2xl tracking-headline text-white">
                   Train with us first.
                 </h3>
@@ -293,7 +293,7 @@ function QuickContact({ icon: Icon, label, body, href, external, accent, trackLa
         <Icon size={18} />
       </div>
       <div>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-400">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">
           {label}
         </p>
         <p className="mt-0.5 text-sm font-semibold text-white">{body}</p>

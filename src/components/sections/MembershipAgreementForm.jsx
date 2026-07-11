@@ -568,7 +568,7 @@ function StepIndicator({ currentStep }) {
                 {isDone ? <CheckCircle2 size={16} strokeWidth={2.5} /> : s.id}
               </div>
               <span
-                className={`text-[9px] font-semibold uppercase tracking-[0.15em] sm:text-[10px] sm:tracking-[0.18em] ${
+                className={`text-[11px] font-semibold uppercase tracking-[0.15em] sm:tracking-[0.18em] ${
                   isActive ? 'text-brand-300' : isDone ? 'text-ink-300' : 'text-ink-600'
                 }`}
               >
@@ -1060,7 +1060,7 @@ function ConsentRow({ checked, name, onChange, error, children }) {
 function ReviewRow({ label, value }) {
   return (
     <div>
-      <dt className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-500">{label}</dt>
+      <dt className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-500">{label}</dt>
       <dd className="mt-1 text-sm text-ink-100">{value}</dd>
     </div>
   );

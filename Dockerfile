@@ -7,6 +7,10 @@ RUN npm ci --ignore-scripts
 # ── Stage 2: build the Vite SPA ──────────────────────────────────────────────
 FROM node:20-alpine AS build
 WORKDIR /app
+# Chromium for react-snap prerendering — puppeteer skips download when --ignore-scripts is used
+RUN apk add --no-cache chromium nss freetype harfbuzz ca-certificates ttf-freefont
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ARG VITE_SUPABASE_URL

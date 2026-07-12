@@ -302,7 +302,7 @@ export default function Pricing() {
 
                 <div className="mt-7 flex flex-wrap gap-3">
                   <Button
-                    to={site.ctas.enquire.to + `?plan=pt-${i === 0 ? '3x' : '5x'}`}
+                    to={site.ctas.enquire.to + `?plan=pt-${['3x', '4x', '5x'][i] ?? '3x'}`}
                     iconNode={<ArrowUpRight size={14} strokeWidth={2.5} />}
                   >
                     Enquire about {tier.sessions}
@@ -400,12 +400,12 @@ export default function Pricing() {
             title="The small print — made small-and-clear."
           />
 
-          <motion.div
+          <motion.ul
             variants={stagger}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: '-60px' }}
-            className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3"
+            className="mt-10 overflow-hidden rounded-2xl border border-white/10 bg-white/5 grid gap-px md:grid-cols-2 xl:grid-cols-3"
           >
             <PerkCard
               icon={Sparkles}
@@ -431,7 +431,7 @@ export default function Pricing() {
               body="A once-off R200 joining fee applies on open gym memberships. No admin charges, no monthly surcharges, no hidden extras."
               accent
             />
-          </motion.div>
+          </motion.ul>
         </Container>
       </section>
 
@@ -653,12 +653,10 @@ function PTIncluded({ icon: Icon, text }) {
 
 function PerkCard({ icon: Icon, title, body, cta, accent = false }) {
   return (
-    <motion.div
+    <motion.li
       variants={fadeUp}
-      className={`flex h-full flex-col rounded-2xl border p-6 transition-transform duration-300 hover:-translate-y-1 ${
-        accent
-          ? 'border-accent-500/30 bg-gradient-to-b from-accent-500/10 to-ink-900'
-          : 'border-white/10 bg-ink-900'
+      className={`flex flex-col gap-4 p-6 ${
+        accent ? 'bg-accent-500/[0.07]' : 'bg-ink-900'
       }`}
     >
       <div
@@ -670,10 +668,10 @@ function PerkCard({ icon: Icon, title, body, cta, accent = false }) {
       >
         <Icon size={18} />
       </div>
-      <p className="mt-4 font-display text-lg tracking-headline text-white">{title}</p>
-      <p className="mt-2 flex-1 text-sm text-ink-300 leading-relaxed">{body}</p>
+      <p className="font-display text-lg tracking-headline text-white">{title}</p>
+      <p className="flex-1 text-sm text-ink-300 leading-relaxed">{body}</p>
       {cta && (
-        <div className="mt-5">
+        <div>
           {cta.href ? (
             <Button href={cta.href} variant="link">
               {cta.label}
@@ -685,7 +683,7 @@ function PerkCard({ icon: Icon, title, body, cta, accent = false }) {
           )}
         </div>
       )}
-    </motion.div>
+    </motion.li>
   );
 }
 

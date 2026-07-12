@@ -99,12 +99,12 @@ export default function About() {
             description="Three words, picked deliberately. They show up in how we price, how we coach and how we talk to the people who walk through the door."
           />
 
-          <motion.div
+          <motion.ul
             variants={stagger}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: '-60px' }}
-            className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3"
+            className="mt-12 overflow-hidden rounded-2xl border border-white/10 bg-white/5 grid gap-px sm:grid-cols-3"
           >
             <ValueColumn
               icon={ShieldCheck}
@@ -122,7 +122,7 @@ export default function About() {
               title="Community"
               body="Small gym energy — people know your name, notice when you're missing, cheer when you hit a PR. That's not marketing; it's who we are."
             />
-          </motion.div>
+          </motion.ul>
         </Container>
       </section>
 
@@ -141,17 +141,14 @@ export default function About() {
             className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-3"
           >
             <Principle
-              index="01"
               title="Build the plan around you"
               body="No templates. Your goals, training history and lifestyle shape the programme and the diet plan."
             />
             <Principle
-              index="02"
               title="Measure what matters"
               body="Regular body assessments keep us honest about what's working and what needs to change."
             />
             <Principle
-              index="03"
               title="Adjust as you go"
               body="Progress is rarely linear. Your coach watches, listens and tweaks the plan so the work keeps paying off."
             />
@@ -191,12 +188,10 @@ function Fact({ icon: Icon, label, value }) {
 
 function ValueColumn({ icon: Icon, title, body, accent }) {
   return (
-    <motion.div
+    <motion.li
       variants={fadeUp}
-      className={`rounded-2xl border p-7 ${
-        accent
-          ? 'border-accent-500/40 bg-gradient-to-b from-accent-500/10 to-ink-900'
-          : 'border-white/10 bg-ink-900'
+      className={`flex flex-col gap-4 p-7 ${
+        accent ? 'bg-accent-500/[0.07]' : 'bg-ink-900'
       }`}
     >
       <div
@@ -208,20 +203,20 @@ function ValueColumn({ icon: Icon, title, body, accent }) {
       >
         <Icon size={20} />
       </div>
-      <h3 className="mt-5 font-display text-xl tracking-headline text-white">{title}</h3>
-      <p className="mt-3 text-sm text-ink-300 leading-relaxed">{body}</p>
-    </motion.div>
+      <h3 className="font-display text-xl tracking-headline text-white">{title}</h3>
+      <p className="text-sm text-ink-300 leading-relaxed">{body}</p>
+    </motion.li>
   );
 }
 
-function Principle({ index, title, body }) {
+function Principle({ title, body }) {
   return (
     <motion.div
       variants={fadeUp}
       className="rounded-2xl border border-white/10 bg-ink-900 p-7"
     >
-      <p className="font-display text-5xl tracking-mega text-brand-500/60">{index}</p>
-      <h3 className="mt-4 font-display text-xl tracking-headline text-white">{title}</h3>
+      <span className="block h-0.5 w-8 rounded-full bg-brand-500/60" />
+      <h3 className="mt-5 font-display text-xl tracking-headline text-white">{title}</h3>
       <p className="mt-3 text-sm text-ink-300 leading-relaxed">{body}</p>
     </motion.div>
   );

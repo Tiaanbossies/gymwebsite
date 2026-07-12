@@ -247,87 +247,53 @@ export default function Team() {
         </Container>
       </section>
 
-      {/* Trainer grid — "Our dream team" editorial layout */}
+      {/* Trainer roster */}
       <section className="section">
         <Container>
           <SectionHeading
             title="Three Boshoffs, five coaches alongside them, all on the floor."
-            description="Bossie started the gym, and the family runs it with him — joined by a wider coaching team on the personal training roster. Full bios and portraits are on their way; we'd rather put up real photos than stock images."
+            description="Bossie started the gym and the family runs it with him — joined by a wider coaching team on the personal training roster."
           />
 
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: '-60px' }}
-            className="mt-12 -mx-4 flex snap-x snap-mandatory overflow-x-auto px-4 gap-5 pb-4 sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:snap-none sm:overflow-x-visible sm:grid-cols-2 sm:gap-x-6 sm:gap-y-14 lg:grid-cols-3 md:mt-20"
-          >
-            {team.map((person, idx) => (
-              <motion.div
-                key={person.name}
-                variants={fadeUp}
-                className="group shrink-0 min-w-[72vw] xs:min-w-[60vw] sm:min-w-0 snap-start overflow-hidden"
-              >
-                {/* Photo or initials placeholder — fixed height, no layout-property animation */}
-                <div className="relative h-[22rem] w-full overflow-hidden rounded-xl">
-                  {person.photo ? (
-                    <img
-                      className="h-full w-full object-cover object-top grayscale transition-[filter] duration-500 group-hover:grayscale-0"
-                      src={person.photo}
-                      alt={person.name}
-                      width="826"
-                      height="1239"
-                    />
-                  ) : (
-                    <div
-                      className={`h-full w-full flex flex-col items-center justify-center gap-4 ${
-                        person.family
-                          ? 'bg-gradient-to-br from-brand-500/25 via-ink-900 to-accent-500/10'
-                          : 'bg-gradient-to-br from-accent-500/20 via-ink-900 to-brand-500/10'
-                      }`}
-                    >
-                      <span
-                        className={`font-display text-6xl font-bold tracking-tight transition-[color,opacity] duration-500 ${
-                          person.family
-                            ? 'text-brand-500/40 group-hover:text-brand-500/60'
-                            : 'text-accent-500/40 group-hover:text-accent-500/60'
-                        }`}
-                      >
-                        {initials(person.name)}
-                      </span>
-                      <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-500">
-                        Photo coming soon
-                      </span>
-                    </div>
-                  )}
-                </div>
+          <div className="mt-12 grid gap-6 lg:grid-cols-2">
+            <motion.div
+              variants={stagger}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, margin: '-60px' }}
+            >
+              <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">
+                The Boshoff family
+              </p>
+              <ul className="overflow-hidden rounded-2xl border border-brand-500/25 bg-white/[0.02] divide-y divide-white/5">
+                {team.filter((p) => p.family).map((person) => (
+                  <motion.li key={person.name} variants={fadeUp}>
+                    <TrainerRow person={person} />
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
 
-                {/* Name, number, role */}
-                <div className="px-1 pt-3">
-                  <div className="flex items-baseline justify-between">
-                    <h3 className="font-display text-base font-medium tracking-wide text-white transition-[letter-spacing] duration-300 group-hover:tracking-wider">
-                      {person.name}
-                    </h3>
-                    <span className="text-xs text-ink-500">
-                      _{String(idx + 1).padStart(2, '0')}
-                    </span>
-                  </div>
-                  {/* Role visible on mobile; slides up from below on pointer hover at sm+ */}
-                  <div className="mt-1 h-5 overflow-hidden">
-                    <span
-                      className={`inline-block text-sm transition-transform duration-300 sm:translate-y-5 sm:group-hover:translate-y-0 ${
-                        person.family ? 'text-brand-300' : 'text-accent-300'
-                      }`}
-                    >
-                      {person.role}
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+            <motion.div
+              variants={stagger}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, margin: '-60px' }}
+            >
+              <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-300">
+                Coaching team
+              </p>
+              <ul className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] divide-y divide-white/5">
+                {team.filter((p) => !p.family).map((person) => (
+                  <motion.li key={person.name} variants={fadeUp}>
+                    <TrainerRow person={person} />
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
+          </div>
 
-          <p className="mt-10 text-xs text-ink-400">
+          <p className="mt-8 text-xs text-ink-500">
             Full trainer profiles and portraits will go up here as each coach shares their bio and
             photo with us.
           </p>
@@ -347,5 +313,37 @@ export default function Team() {
         tertiary={{ label: 'Start a Free Trial', to: site.ctas.trial.to, variant: 'link' }}
       />
     </PagePose>
+  );
+}
+
+function TrainerRow({ person }) {
+  return (
+    <div className="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-white/[0.03]">
+      <div
+        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
+          person.photo
+            ? 'overflow-hidden'
+            : person.family
+              ? 'bg-brand-500/20 text-brand-400'
+              : 'bg-accent-500/15 text-accent-400'
+        }`}
+      >
+        {person.photo ? (
+          <img
+            src={person.photo}
+            alt={person.name}
+            className="h-full w-full object-cover object-top"
+          />
+        ) : (
+          initials(person.name)
+        )}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="font-display text-base tracking-wide text-white">{person.name}</p>
+        <p className={`text-xs mt-0.5 ${person.family ? 'text-brand-300' : 'text-accent-300'}`}>
+          {person.role}
+        </p>
+      </div>
+    </div>
   );
 }

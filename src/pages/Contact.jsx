@@ -21,36 +21,6 @@ export default function Contact() {
         breadcrumbs={[{ label: 'Home', to: '/' }, { label: 'Contact' }]}
       />
 
-      {/* Quick-contact strip */}
-      <section className="border-b border-white/10 bg-ink-900/60">
-        <Container>
-          <div className="grid gap-3 py-6 sm:grid-cols-3">
-            <QuickContact
-              icon={Phone}
-              label="Call the gym"
-              body={site.phone.display}
-              href={site.ctas.call.href}
-              trackLabel="Call — Contact"
-            />
-            <QuickContact
-              icon={MessageCircle}
-              label="WhatsApp"
-              body="Fastest reply"
-              href={waLink("Hi Bossie's Gym, I'd like to know more about joining.")}
-              external
-              accent
-              trackLabel="WhatsApp — Contact"
-            />
-            <QuickContact
-              icon={Mail}
-              label="Email"
-              body={site.email}
-              href={`mailto:${site.email}`}
-            />
-          </div>
-        </Container>
-      </section>
-
       <section className="section">
         <Container>
           <div className="grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
@@ -271,33 +241,3 @@ function InfoCell({ icon: Icon, title, body, href, external, trackLabel }) {
   );
 }
 
-function QuickContact({ icon: Icon, label, body, href, external, accent, trackLabel }) {
-  return (
-    <a
-      href={href}
-      {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
-      {...(trackLabel ? { 'data-track': trackLabel } : {})}
-      className={`flex items-center gap-4 rounded-2xl border p-4 transition-colors hover-lift sm:p-5 ${
-        accent
-          ? 'border-[#25D366]/40 bg-[#25D366]/10 hover:border-[#25D366]/70'
-          : 'border-white/10 bg-ink-900 hover:border-brand-500/40'
-      }`}
-    >
-      <div
-        className={`flex h-11 w-11 items-center justify-center rounded-lg ring-1 ${
-          accent
-            ? 'bg-[#25D366]/20 text-[#25D366] ring-[#25D366]/40'
-            : 'bg-brand-500/15 text-brand-300 ring-brand-500/30'
-        }`}
-      >
-        <Icon size={18} />
-      </div>
-      <div>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">
-          {label}
-        </p>
-        <p className="mt-0.5 text-sm font-semibold text-white">{body}</p>
-      </div>
-    </a>
-  );
-}

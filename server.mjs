@@ -117,6 +117,15 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    if (req.method === 'GET' && req.url === '/api/dashboard/members') {
+      if (!requireDashboardSession(req)) {
+        sendJson(res, 401, { ok: false, error: 'Not authenticated' });
+        return;
+      }
+      await handleDashboardMembers(req, res);
+      return;
+    }
+
     if (isDev) {
       sendJson(res, 404, { ok: false, error: 'Not found' });
       return;
@@ -273,6 +282,21 @@ async function fetchAnalyticsTable(table, dateColumn, sinceIso) {
   return rows;
 }
 
+async function insertToSupabase(table, data) {
+  const url = `${dashboardConfig.supabaseUrl}/rest/v1/${table}`;
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: {
+      apikey: dashboardConfig.serviceRoleKey,
+      Authorization: `Bearer ${dashboardConfig.serviceRoleKey}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=minimal',
+    },
+    body: JSON.stringify(data),
+  });
+  if (!r.ok) throw new Error(`Supabase insert into ${table} failed: ${r.status}`);
+}
+
 async function handleDashboardData(req, res) {
   if (!dashboardConfig.supabaseUrl || !dashboardConfig.serviceRoleKey) {
     sendJson(res, 500, { ok: false, error: 'Analytics backend is not configured.' });
@@ -288,6 +312,33 @@ async function handleDashboardData(req, res) {
   ]);
 
   sendJson(res, 200, { views, events });
+}
+
+async function handleDashboardMembers(req, res) {
+  if (!dashboardConfig.supabaseUrl || !dashboardConfig.serviceRoleKey) {
+    sendJson(res, 500, { ok: false, error: 'Analytics backend is not configured.' });
+    return;
+  }
+
+  const PAGE = 1000;
+  let offset = 0;
+  const rows = [];
+  while (true) {
+    const url = `${dashboardConfig.supabaseUrl}/rest/v1/onboarded_members?select=*&order=onboarded_at.desc&limit=${PAGE}&offset=${offset}`;
+    const r = await fetch(url, {
+      headers: {
+        apikey: dashboardConfig.serviceRoleKey,
+        Authorization: `Bearer ${dashboardConfig.serviceRoleKey}`,
+      },
+    });
+    if (!r.ok) throw new Error(`Supabase onboarded_members fetch failed: ${r.status}`);
+    const page = await r.json();
+    rows.push(...page);
+    if (page.length < PAGE) break;
+    offset += PAGE;
+  }
+
+  sendJson(res, 200, { members: rows });
 }
 
 async function handleSendAgreement(req, res) {
@@ -325,6 +376,28 @@ async function handleSendAgreement(req, res) {
   });
 
   await sendSmtpMail(smtpConfig, message);
+
+  if (dashboardConfig.supabaseUrl && dashboardConfig.serviceRoleKey) {
+    insertToSupabase('onboarded_members', {
+      name: memberName,
+      email: memberEmail || null,
+      phone: formData.phone || null,
+      plan_label: formData.planLabel || null,
+      price_line: formData.priceLine || null,
+      terms_line: formData.termsLine || null,
+      start_date: formData.startDate || null,
+      id_number: formData.idNumber || null,
+      birth_date: formData.birthDate || null,
+      address: formData.address || null,
+      emergency_name: formData.emergencyName || null,
+      emergency_phone: formData.emergencyPhone || null,
+      health_flags: Array.isArray(formData.healthFlags) && formData.healthFlags.length ? formData.healthFlags : null,
+      goals: formData.goals || null,
+      medical_notes: formData.medicalNotes || null,
+      signature_date: formData.signatureDate || null,
+    }).catch((err) => console.error('Supabase member insert failed:', err));
+  }
+
   sendJson(res, 200, { ok: true });
 }
 

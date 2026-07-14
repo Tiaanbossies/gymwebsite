@@ -135,6 +135,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [views, setViews] = useState([]);
   const [events, setEvents] = useState([]);
+  const [members, setMembers] = useState([]);
 
   const load = useCallback(async () => {
     // ProtectedDashboard hasn't confirmed a session yet — fetching now would
@@ -144,22 +145,27 @@ export default function Dashboard() {
     setLoading(true);
     const start = rangeStart(range);
 
-    const res = await fetch(`/api/dashboard/data?start=${encodeURIComponent(start)}`, {
-      credentials: 'include',
-    });
+    const [analyticsRes, membersRes] = await Promise.all([
+      fetch(`/api/dashboard/data?start=${encodeURIComponent(start)}`, { credentials: 'include' }),
+      fetch('/api/dashboard/members', { credentials: 'include' }),
+    ]);
 
-    if (res.status === 401) {
-      // Session expired — reload to fall back to the login screen.
+    if (analyticsRes.status === 401) {
       window.location.reload();
       return;
     }
 
-    const { views: pvData, events: evData } = res.ok
-      ? await res.json()
+    const { views: pvData, events: evData } = analyticsRes.ok
+      ? await analyticsRes.json()
       : { views: [], events: [] };
+
+    const { members: membersData } = membersRes.ok
+      ? await membersRes.json()
+      : { members: [] };
 
     setViews(pvData || []);
     setEvents(evData || []);
+    setMembers(membersData || []);
     setLoading(false);
   }, [range, authed]);
 
@@ -321,7 +327,7 @@ export default function Dashboard() {
               <div className="flex flex-col gap-10">
 
                 {/* Stat cards */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
                   <StatCard label="Page Views" value={totalViews.toLocaleString()} />
                   <StatCard label="Unique Sessions" value={uniqueSessions.toLocaleString()} />
                   <StatCard
@@ -330,6 +336,12 @@ export default function Dashboard() {
                     sub="excluding bounces"
                   />
                   <StatCard label="Total Events" value={totalEvents.toLocaleString()} />
+                  <StatCard
+                    label="Onboarded Members"
+                    value={members.length.toLocaleString()}
+                    sub="completed agreements"
+                    highlight
+                  />
                 </div>
 
                 {/* Views over time */}
@@ -578,6 +590,48 @@ export default function Dashboard() {
               </p>
               <div className="mt-4 card-surface rounded-2xl p-6">
                 <SankeyChart views={views} />
+              </div>
+            </div>
+
+            {/* ── Onboarded Members ────────────────────────────────────── */}
+            <div>
+              <h2 className="eyebrow text-[11px]">Onboarded Members</h2>
+              <p className="mt-1 text-xs text-ink-500">Clients who completed and submitted a membership agreement — all time</p>
+              <div className="mt-4 card-surface rounded-2xl overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="text-left text-ink-500 border-b border-white/10 bg-white/[0.02]">
+                        <th className="px-4 py-3 font-medium whitespace-nowrap">Date Onboarded</th>
+                        <th className="px-4 py-3 font-medium">Name</th>
+                        <th className="px-4 py-3 font-medium">Email</th>
+                        <th className="px-4 py-3 font-medium whitespace-nowrap">Phone</th>
+                        <th className="px-4 py-3 font-medium">Plan</th>
+                        <th className="px-4 py-3 font-medium whitespace-nowrap">Rate</th>
+                        <th className="px-4 py-3 font-medium whitespace-nowrap">Start Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {members.length ? members.map((m) => (
+                        <tr key={m.id} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02] transition-colors">
+                          <td className="px-4 py-2.5 text-ink-400 whitespace-nowrap font-mono">{fmtDateTime(m.onboarded_at)}</td>
+                          <td className="px-4 py-2.5 text-white font-semibold whitespace-nowrap">{m.name}</td>
+                          <td className="px-4 py-2.5 text-ink-200">{m.email || '—'}</td>
+                          <td className="px-4 py-2.5 text-ink-200 whitespace-nowrap">{m.phone || '—'}</td>
+                          <td className="px-4 py-2.5 text-ink-300 max-w-[180px] truncate">{m.plan_label || '—'}</td>
+                          <td className="px-4 py-2.5 text-brand-300 whitespace-nowrap font-medium">{m.price_line || '—'}</td>
+                          <td className="px-4 py-2.5 text-ink-400 whitespace-nowrap">{m.start_date || '—'}</td>
+                        </tr>
+                      )) : (
+                        <tr>
+                          <td colSpan={7} className="px-4 py-8 text-ink-500">
+                            No onboarded members yet — completed agreements will appear here.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
 

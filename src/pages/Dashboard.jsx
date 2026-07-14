@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 
 import PagePose from '../components/ui/PagePose.jsx';
 import Container from '../components/ui/Container.jsx';
@@ -179,7 +179,7 @@ export default function Dashboard() {
 
   // ── Derived stats — ordered so every variable is declared before use ────────
   const totalViews = views.length;
-  const uniqueSessions = new Set(views.map((v) => v.session_id)).size;
+  const uniqueSessions = useMemo(() => new Set(views.map((v) => v.session_id)).size, [views]);
   const durViews = views.filter((v) => v.duration_ms != null);
   const avgDuration = durViews.length
     ? durViews.reduce((s, v) => s + v.duration_ms, 0) / durViews.length
@@ -261,7 +261,7 @@ export default function Dashboard() {
   const dayPassClicks = clicks.filter((e) => e.label?.includes('Day Pass')).length;
 
   // Recent activity feed — last 100 entries across page views and events, newest first
-  const recentActivity = [
+  const recentActivity = useMemo(() => [
     ...views.map((v) => ({
       type: 'view',
       time: v.entered_at,
@@ -286,7 +286,7 @@ export default function Dashboard() {
     })),
   ]
     .sort((a, b) => new Date(b.time) - new Date(a.time))
-    .slice(0, 100);
+    .slice(0, 100), [views, events]);
 
   return (
     <PagePose>

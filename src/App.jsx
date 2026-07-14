@@ -10,18 +10,18 @@ import ScrollToTop from './components/layout/ScrollToTop.jsx';
 import StickyWhatsApp from './components/layout/StickyWhatsApp.jsx';
 
 import Home from './pages/Home.jsx';
-import Services from './pages/Services.jsx';
-import Membership from './pages/Membership.jsx';
-import Onboarding from './pages/Join.jsx';
-import Pricing from './pages/Pricing.jsx';
-import Team from './pages/Team.jsx';
-import Contact from './pages/Contact.jsx';
 
-const Gallery = lazy(() => import('./pages/Gallery.jsx'));
-const About = lazy(() => import('./pages/About.jsx'));
-const FAQ = lazy(() => import('./pages/FAQ.jsx'));
-const Dashboard = lazy(() => import('./pages/Dashboard.jsx'));
-const NotFound = lazy(() => import('./pages/NotFound.jsx'));
+const Services   = lazy(() => import('./pages/Services.jsx'));
+const Membership = lazy(() => import('./pages/Membership.jsx'));
+const Onboarding = lazy(() => import('./pages/Join.jsx'));
+const Pricing    = lazy(() => import('./pages/Pricing.jsx'));
+const Team       = lazy(() => import('./pages/Team.jsx'));
+const Contact    = lazy(() => import('./pages/Contact.jsx'));
+const Gallery    = lazy(() => import('./pages/Gallery.jsx'));
+const About      = lazy(() => import('./pages/About.jsx'));
+const FAQ        = lazy(() => import('./pages/FAQ.jsx'));
+const Dashboard  = lazy(() => import('./pages/Dashboard.jsx'));
+const NotFound   = lazy(() => import('./pages/NotFound.jsx'));
 
 // Site origin used for canonical + OG URLs. Kept at module scope so the meta
 // effect below has a single source of truth alongside the route map.

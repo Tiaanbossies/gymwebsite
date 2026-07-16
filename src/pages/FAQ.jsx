@@ -33,6 +33,10 @@ const faqGroups = [
             {'.\n• Send a WhatsApp to '}{site.phone.display}{'.\n• Call the gym — we answer during opening hours.'}
           </>
         ),
+        // Plain-text mirror for FAQPage JSON-LD — acceptedAnswer.text must be a
+        // string; JSON.stringify on the JSX answer above serializes React
+        // element internals instead of readable text.
+        answerText: `Three options, pick the one that suits you best:\n• Fill in the form on our Contact page.\n• Send a WhatsApp to ${site.phone.display}.\n• Call the gym — we answer during opening hours.`,
       },
       {
         question: 'Is there a joining fee?',
@@ -62,6 +66,7 @@ const faqGroups = [
             <Link to="/pricing" className="text-brand-300 underline decoration-brand-500/40 underline-offset-2 hover:text-brand-200">Pricing page</Link>
             {' for the full breakdown.'}
           </>,
+        answerText: 'Three contract lengths:\n• Month-to-month — R450 / month (cancel any time)\n• 6-month — R380 / month\n• 12-month — R360 / month (best value)\n\nA once-off R200 joining fee applies on new sign-ups. See the Pricing page for the full breakdown.',
       },
       {
         question: 'What does personal training cost?',
@@ -167,7 +172,10 @@ export default function FAQ() {
       g.items.map((item) => ({
         '@type': 'Question',
         name: item.question,
-        acceptedAnswer: { '@type': 'Answer', text: item.answer },
+        // answerText covers the two entries whose rendered answer is JSX
+        // (contains a <Link>) — JSON.stringify on a React element doesn't
+        // produce readable text, so those entries need a plain-string mirror.
+        acceptedAnswer: { '@type': 'Answer', text: item.answerText || item.answer },
       }))
     ),
   });
@@ -178,7 +186,7 @@ export default function FAQ() {
         eyebrow="FAQ"
         title="The practical stuff — answered."
         description="The questions we get asked most. If something isn't covered here, send a WhatsApp and we'll come back to you."
-        imagePath="/images/gym/assessment-desk.webp"
+        imagePath="/images/gym/reception-lounge.webp"
         breadcrumbs={[{ label: 'Home', to: '/' }, { label: 'FAQ' }]}
       />
 

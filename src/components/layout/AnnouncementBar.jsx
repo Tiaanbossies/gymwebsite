@@ -38,7 +38,7 @@ export default function AnnouncementBar() {
 
   return (
     <div className="relative isolate border-b border-white/5 bg-gradient-to-r from-brand-600/30 via-ink-900 to-accent-600/30">
-      <div className="container-x flex flex-wrap items-center justify-center gap-x-3 gap-y-1 py-2 pr-10 text-center text-[11px] font-medium text-ink-100 sm:text-[13px]">
+      <div className="container-x flex flex-wrap items-center justify-center gap-x-3 gap-y-1 py-2 pr-10 text-center text-[11px] font-medium text-ink-100">
         <span className="inline-flex items-center gap-1.5 text-brand-200">
           <Sparkles size={13} strokeWidth={2.5} />
           Free Trial available

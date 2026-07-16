@@ -1,4 +1,6 @@
+import { useEffect, useRef } from 'react';
 import { MessageCircle } from 'lucide-react';
+import anime from 'animejs';
 import { waLink } from '../../lib/site.js';
 
 /**
@@ -12,8 +14,31 @@ import { waLink } from '../../lib/site.js';
  * compact on phones (icon only) and pill-shaped on md+ (icon + label).
  */
 export default function StickyWhatsApp() {
+  const btnRef = useRef(null);
+
+  useEffect(() => {
+    const el = btnRef.current;
+    if (!el) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    // One-shot "notification" pulse, distinct from the continuous ambient
+    // pulseRing — fires once on mount (the FAB is `fixed`, so "first
+    // viewport entry" is effectively page load) to draw the eye without
+    // adding a second permanent ambient loop.
+    const timer = setTimeout(() => {
+      anime({
+        targets: el,
+        scale: [1, 1.15, 1],
+        duration: 600,
+        easing: 'easeOutExpo',
+      });
+    }, 900);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <a
+      ref={btnRef}
       href={waLink("Hi Bossie's Gym, I'm interested in joining. Can you share more info?")}
       target="_blank"
       rel="noreferrer"

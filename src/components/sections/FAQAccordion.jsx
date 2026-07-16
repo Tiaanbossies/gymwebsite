@@ -40,9 +40,8 @@ export default function FAQAccordion({ items = [] }) {
               {isOpen && (
                 <motion.div
                   initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.25, ease: 'easeOut' }}
+                  animate={{ height: 'auto', opacity: 1, transition: { height: { type: 'spring', stiffness: 380, damping: 32 }, opacity: { duration: 0.2 } } }}
+                  exit={{ height: 0, opacity: 0, transition: { duration: 0.2, ease: 'easeIn' } }}
                   className="overflow-hidden"
                 >
                   <div

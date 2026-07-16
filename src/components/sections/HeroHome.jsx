@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useRef } from 'react';
+import { Fragment, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -10,6 +10,7 @@ import ClickSpark from '../ui/ClickSpark.jsx';
 import Container from '../ui/Container.jsx';
 import Button from '../ui/Button.jsx';
 import { site, fadeUp, stagger } from '../../lib/site.js';
+import { useCountUp } from '../../hooks/useCountUp.js';
 
 // ─── Headline word map ────────────────────────────────────────────────────────
 
@@ -178,45 +179,8 @@ export default function HeroHome() {
 
 // ─── StatCard with count-up ───────────────────────────────────────────────────
 
-function parseStatValue(raw) {
-  const match = raw.match(/^(.*?R)([\d,]+)(.*)$/);
-  if (!match) return null;
-  return {
-    before: match[1],
-    num: parseInt(match[2].replace(/,/g, ''), 10),
-    after: match[3],
-  };
-}
-
 function StatCard({ label, value, detail, accent = false }) {
-  const valRef = useRef(null);
-  const parsed = useMemo(() => parseStatValue(value), [value]);
-
-  useEffect(() => {
-    const el = valRef.current;
-    if (!el || !parsed) return;
-
-    const obj = { val: 0 };
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        observer.disconnect();
-        anime({
-          targets: obj,
-          val: parsed.num,
-          round: 1,
-          duration: 1400,
-          easing: 'easeOutExpo',
-          update() {
-            el.textContent = `${parsed.before}${obj.val.toLocaleString('en-ZA')}${parsed.after}`;
-          },
-        });
-      },
-      { threshold: 0.5 },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [parsed]);
+  const valRef = useCountUp(value);
 
   return (
     <motion.div

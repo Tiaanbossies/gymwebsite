@@ -28,26 +28,38 @@ const PLAN_OPTIONS = [
     helper: 'Choose month-to-month, 6-month, or 12-month access to the full training floor.',
   },
   {
+    value: 'personal-training',
+    label: 'Personal Training · 3 sessions/week',
+    priceLine: 'From R2,100/month',
+    helper: '1-on-1 coaching, diet plan, and regular body assessments.',
+  },
+  {
     value: 'student',
     label: 'Student / Pensioner Membership',
     priceLine: 'R250/month',
     helper: 'Open-gym access at the reduced rate. Valid card or proof required.',
   },
+];
+
+const PT_OPTIONS = [
   {
-    value: 'pt-3x',
-    label: 'Personal Training · 3 sessions / week',
+    value: '3x',
+    shortLabel: '3 sessions/week',
+    label: 'Personal Training · 3 sessions/week',
     priceLine: 'R2,100/month',
     helper: '1-on-1 coaching, diet plan, and regular body assessments.',
   },
   {
-    value: 'pt-4x',
-    label: 'Personal Training · 4 sessions / week',
+    value: '4x',
+    shortLabel: '4 sessions/week',
+    label: 'Personal Training · 4 sessions/week',
     priceLine: 'R2,400/month',
     helper: 'Structured 1-on-1 coaching across four weekly sessions.',
   },
   {
-    value: 'pt-5x',
-    label: 'Personal Training · 5 sessions / week',
+    value: '5x',
+    shortLabel: '5 sessions/week',
+    label: 'Personal Training · 5 sessions/week',
     priceLine: 'R2,700/month',
     helper: 'Full-time coaching structure for members who want close oversight.',
   },
@@ -89,18 +101,23 @@ const STEPS = [
   { id: 4, label: 'Sign',      icon: ShieldCheck },
 ];
 
-const PT_PLANS = new Set(['pt-3x', 'pt-4x', 'pt-5x']);
-
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const planFromQuery = (value) => {
-  if (['pt-3x', 'pt-4x', 'pt-5x', 'student', 'open-gym'].includes(value)) return value;
+  if (['personal-training', 'pt-3x', 'pt-4x', 'pt-5x'].includes(value)) return 'personal-training';
+  if (['student', 'open-gym'].includes(value)) return value;
   return 'open-gym';
 };
 
 const openGymDefaultFromQuery = (value) => {
   if (['m2m', '6-month', '12-month'].includes(value)) return value;
   return 'm2m';
+};
+
+const ptPlanFromQuery = (value) => {
+  if (value === 'pt-4x') return '4x';
+  if (value === 'pt-5x') return '5x';
+  return '3x';
 };
 
 const slideVariants = {
@@ -116,6 +133,7 @@ const SS_KEY = 'bossies-onboarding';
 const defaultForm = (queryPlan) => ({
   planType: planFromQuery(queryPlan),
   openGymPlan: openGymDefaultFromQuery(queryPlan),
+  ptPlan: ptPlanFromQuery(queryPlan),
   startDate: new Date().toISOString().slice(0, 10),
   fullName: '',
   idNumber: '',
@@ -179,6 +197,11 @@ export default function MembershipAgreementForm() {
     [form.openGymPlan],
   );
 
+  const selectedPtPlan = useMemo(
+    () => PT_OPTIONS.find((o) => o.value === form.ptPlan) ?? PT_OPTIONS[0],
+    [form.ptPlan],
+  );
+
   const planSummary = useMemo(() => {
     if (form.planType === 'open-gym') {
       return {
@@ -198,13 +221,27 @@ export default function MembershipAgreementForm() {
           'Reduced-rate open-gym access. Valid student card or pensioner proof required. R200 once-off joining fee applies on first sign-up.',
       };
     }
+    if (form.planType === 'personal-training') {
+      return {
+        label: selectedPtPlan.label,
+        priceLine: selectedPtPlan.priceLine,
+        termsLine:
+          'Monthly coaching package including a personalised diet plan and regular body assessments. Sessions require 24 hours’ notice to cancel — late cancellations and no-shows are forfeited from your monthly package.',
+      };
+    }
     return {
       label: selectedPlan.label,
       priceLine: selectedPlan.priceLine,
-      termsLine:
-        'Monthly coaching package including a personalised diet plan and regular body assessments. Sessions require 24 hours’ notice to cancel — late cancellations and no-shows are forfeited from your monthly package.',
+      termsLine: '',
     };
-  }, [form.openGymPlan, form.planType, selectedOpenGymPlan, selectedPlan.label, selectedPlan.priceLine]);
+  }, [
+    form.openGymPlan,
+    form.planType,
+    selectedOpenGymPlan,
+    selectedPtPlan,
+    selectedPlan.label,
+    selectedPlan.priceLine,
+  ]);
 
   const applicationCsv = useMemo(() => buildCsv(form, planSummary), [form, planSummary]);
 
@@ -229,6 +266,9 @@ export default function MembershipAgreementForm() {
       const next = { ...current, [name]: type === 'checkbox' ? checked : value };
       if (name === 'planType' && value === 'open-gym' && !current.openGymPlan) {
         next.openGymPlan = 'm2m';
+      }
+      if (name === 'planType' && value === 'personal-training' && !current.ptPlan) {
+        next.ptPlan = '3x';
       }
       if (name === 'signatureName' && !current.fullName) {
         next.fullName = value;
@@ -255,6 +295,8 @@ export default function MembershipAgreementForm() {
       if (!form.planType) next.planType = 'Please choose a membership option.';
       if (form.planType === 'open-gym' && !form.openGymPlan)
         next.openGymPlan = 'Please choose an open-gym term.';
+      if (form.planType === 'personal-training' && !form.ptPlan)
+        next.ptPlan = 'Please choose a session frequency.';
     }
     if (s === 2) {
       if (!form.fullName.trim()) next.fullName = 'Please enter your full name.';
@@ -609,7 +651,7 @@ function StepPlan({ form, errors, onChange, planSummary }) {
 
       <fieldset>
         <legend className="sr-only">Membership option</legend>
-        <div className="grid gap-3 lg:grid-cols-2">
+        <div className="grid gap-3">
           {PLAN_OPTIONS.map((option) => (
             <ChoiceCard
               key={option.value}
@@ -647,6 +689,30 @@ function StepPlan({ form, errors, onChange, planSummary }) {
             ))}
           </div>
           {errors.openGymPlan && <ErrorText>{errors.openGymPlan}</ErrorText>}
+        </fieldset>
+      )}
+
+      {form.planType === 'personal-training' && (
+        <fieldset>
+          <legend className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">
+            Personal training sessions
+          </legend>
+          <div className="mt-3 grid gap-3 md:grid-cols-3">
+            {PT_OPTIONS.map((option) => (
+              <ChoiceCard
+                key={option.value}
+                compact
+                name="ptPlan"
+                checked={form.ptPlan === option.value}
+                onChange={onChange}
+                value={option.value}
+                label={option.shortLabel}
+                priceLine={option.priceLine}
+                helper={option.helper}
+              />
+            ))}
+          </div>
+          {errors.ptPlan && <ErrorText>{errors.ptPlan}</ErrorText>}
         </fieldset>
       )}
 

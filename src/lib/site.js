@@ -139,6 +139,14 @@ export const stagger = {
   },
 };
 
+// Fade + rise + subtle scale-up. Used for cards that should settle with more
+// visual weight than a plain fadeUp — e.g. a "best value" pricing tier that
+// should read as the option asking for the most attention.
+export const fadeUpScale = {
+  hidden: { opacity: 0, y: 24, scale: 0.97 },
+  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+};
+
 
 export const pageVariants = {
   initial: { opacity: 0, y: 12 },

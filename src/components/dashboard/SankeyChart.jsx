@@ -253,7 +253,7 @@ export default function SankeyChart({ views }) {
           );
         })}
       </svg>
-      <p className="mt-2 text-[10px] text-ink-600">
+      <p className="mt-2 text-[11px] text-ink-600">
         Based on {data.sessionCount} session{data.sessionCount !== 1 ? 's' : ''} ·
         link width = relative transition volume · exit % = sessions that left from this page
       </p>

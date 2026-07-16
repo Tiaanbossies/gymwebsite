@@ -25,7 +25,8 @@ import Button from '../components/ui/Button.jsx';
 import FAQAccordion from '../components/sections/FAQAccordion.jsx';
 import CTASection from '../components/sections/CTASection.jsx';
 import Reveal from '../components/ui/Reveal.jsx';
-import { site, fadeUp, stagger, waLink } from '../lib/site.js';
+import { site, fadeUp, fadeUpScale, stagger, waLink } from '../lib/site.js';
+import { useCountUp } from '../hooks/useCountUp.js';
 
 /**
  * Pricing page — comprehensive rate card for Bossie's Gym.
@@ -54,6 +55,8 @@ const waPricingMsg = waLink(
 export default function Pricing() {
   const { pricing } = site;
   const m2mRand = pricing.openGym.find((t) => t.contract === 'Month-to-month').rand;
+  const dayPassRef = useCountUp(fmtRand(pricing.dayPass.rand));
+  const studentRef = useCountUp(fmtRand(pricing.studentMembership.rand));
 
   return (
     <PagePose>
@@ -121,57 +124,7 @@ export default function Pricing() {
             className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3"
           >
             {pricing.openGym.map((tier) => (
-              <motion.article
-                key={tier.contract}
-                variants={fadeUp}
-                className={`relative flex flex-col rounded-2xl border p-7 ${
-                  tier.bestValue
-                    ? 'border-brand-500/50 bg-gradient-to-b from-brand-500/15 to-ink-900 shadow-glow'
-                    : 'border-white/10 bg-ink-900'
-                } ${tier.bestValue ? 'md:col-span-2 xl:col-span-1' : ''}`}
-              >
-                {tier.bestValue && (
-                  <span className="absolute -top-3 left-6 rounded-full bg-brand-500 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white">
-                    Best value
-                  </span>
-                )}
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">
-                  {tier.contract}
-                </p>
-                <div className="mt-3 flex items-baseline gap-2">
-                  <span className="font-display text-4xl tracking-headline text-white sm:text-5xl">
-                    {fmtRand(tier.rand)}
-                  </span>
-                  <span className="text-xs text-ink-400">/ month</span>
-                </div>
-                <p className="mt-2 text-xs text-ink-400">{tier.commitment}</p>
-
-                <ul className="mt-6 flex flex-col gap-2.5">
-                  <FeatureLi text="Full training floor access" small />
-                  <FeatureLi text="Weights · cardio · functional · boxing" small />
-                  <FeatureLi
-                    text={
-                      tier.contract === 'Month-to-month'
-                        ? 'Cancel at the end of any paid month'
-                        : 'Locked monthly rate for the full term'
-                    }
-                    small
-                  />
-                  <FeatureLi text="Free trial before you commit" small />
-                </ul>
-
-                <div className="mt-6 border-t border-white/10 pt-5">
-                  <p className="text-[11px] text-ink-400">
-                    Works out to <span className="text-ink-200">{fmtRand(tier.rand)} × 12 = {fmtRand(tier.rand * 12)}/yr</span>
-                    {tier.contract === '12-month contract' && (
-                      <span className="text-brand-300"> · save {fmtRand((m2mRand - tier.rand) * 12)} vs month-to-month</span>
-                    )}
-                    {tier.contract === '6-month contract' && (
-                      <span className="text-brand-300"> · save {fmtRand((m2mRand - tier.rand) * 12)}/yr vs month-to-month</span>
-                    )}
-                  </p>
-                </div>
-              </motion.article>
+              <OpenGymTierCard key={tier.contract} tier={tier} m2mRand={m2mRand} fmtRand={fmtRand} />
             ))}
           </motion.div>
 
@@ -192,7 +145,7 @@ export default function Pricing() {
                   Student & pensioner membership
                 </h3>
                 <div className="mt-1 flex flex-wrap items-baseline gap-2">
-                  <span className="font-display text-3xl tracking-headline text-white sm:text-4xl">
+                  <span ref={studentRef} className="font-display text-3xl tracking-headline text-white sm:text-4xl">
                     {fmtRand(pricing.studentMembership.rand)}
                   </span>
                   <span className="text-xs text-ink-400">
@@ -263,52 +216,7 @@ export default function Pricing() {
             className="mt-10 grid gap-5 md:grid-cols-2"
           >
             {pricing.personalTraining.map((tier, i) => (
-              <motion.article
-                key={tier.sessions}
-                variants={fadeUp}
-                className={`relative flex flex-col overflow-hidden rounded-2xl border p-8 ${
-                  i === 1
-                    ? 'border-accent-500/40 bg-gradient-to-b from-accent-500/10 to-ink-900'
-                    : 'border-brand-500/40 bg-gradient-to-b from-brand-500/10 to-ink-900'
-                }`}
-              >
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">
-                  {i === 0 ? 'Starter PT' : 'Full-time PT'}
-                </p>
-                <h3 className="mt-2 font-display text-[clamp(1.65rem,3vw,2.2rem)] tracking-headline text-white">
-                  {tier.sessions}
-                </h3>
-                <div className="mt-4 flex items-baseline gap-2">
-                  <span className="font-display text-4xl tracking-headline text-white sm:text-5xl">
-                    {fmtRand(tier.rand)}
-                  </span>
-                  <span className="text-xs text-ink-400">/ month</span>
-                </div>
-                <p className="mt-4 text-sm text-ink-300 leading-relaxed">
-                  {i === 0
-                    ? 'Three coached 1-on-1 sessions per week. Enough training stimulus to build real momentum, plus room in your week for recovery and your own lifts.'
-                    : i === 1
-                      ? 'Four coached 1-on-1 sessions per week. A step up in frequency for members who want more structure and faster progress without going full-time.'
-                      : 'Five coached 1-on-1 sessions per week. For members who want their training fully structured and their week fully accounted for — serious commitment, serious progress.'}
-                </p>
-
-                <ul className="mt-6 flex flex-col gap-2.5">
-                  <FeatureLi text={`${tier.sessions} with a dedicated trainer`} small />
-                  <FeatureLi text="Personalised diet plan" small />
-                  <FeatureLi text="Regular body assessments" small />
-                  <FeatureLi text="Programme built around your goals" small />
-                  <FeatureLi text="Full training floor access on off days" small />
-                </ul>
-
-                <div className="mt-7 flex flex-wrap gap-3">
-                  <Button
-                    to={site.ctas.enquire.to + `?plan=pt-${['3x', '4x', '5x'][i] ?? '3x'}`}
-                    iconNode={<ArrowUpRight size={14} strokeWidth={2.5} />}
-                  >
-                    Enquire about {tier.sessions}
-                  </Button>
-                </div>
-              </motion.article>
+              <PTTierCard key={tier.sessions} tier={tier} i={i} fmtRand={fmtRand} />
             ))}
           </motion.div>
 
@@ -357,7 +265,7 @@ export default function Pricing() {
                   Casual · No contract
                 </p>
                 <div className="mt-3 flex items-baseline gap-3">
-                  <span className="font-display text-5xl tracking-headline text-white sm:text-6xl">
+                  <span ref={dayPassRef} className="font-display text-5xl tracking-headline text-white sm:text-6xl">
                     {fmtRand(pricing.dayPass.rand)}
                   </span>
                   <span className="text-sm text-ink-400">{pricing.dayPass.period}</span>
@@ -601,7 +509,115 @@ const pricingFaq = [
 // Small presentational helpers (scoped to this page)
 // ---------------------------------------------------------------------------
 
+function PTTierCard({ tier, i, fmtRand }) {
+  const priceRef = useCountUp(fmtRand(tier.rand));
+  return (
+    <motion.article
+      variants={fadeUp}
+      className={`relative flex flex-col overflow-hidden rounded-2xl border p-8 hover-lift ${
+        i === 1
+          ? 'border-accent-500/40 bg-gradient-to-b from-accent-500/10 to-ink-900'
+          : 'border-brand-500/40 bg-gradient-to-b from-brand-500/10 to-ink-900'
+      }`}
+    >
+      <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">
+        {i === 0 ? 'Starter PT' : 'Full-time PT'}
+      </p>
+      <h3 className="mt-2 font-display text-[clamp(1.65rem,3vw,2.2rem)] tracking-headline text-white">
+        {tier.sessions}
+      </h3>
+      <div className="mt-4 flex items-baseline gap-2">
+        <span ref={priceRef} className="font-display text-4xl tracking-headline text-white sm:text-5xl">
+          {fmtRand(tier.rand)}
+        </span>
+        <span className="text-xs text-ink-400">/ month</span>
+      </div>
+      <p className="mt-4 text-sm text-ink-300 leading-relaxed">
+        {i === 0
+          ? 'Three coached 1-on-1 sessions per week. Enough training stimulus to build real momentum, plus room in your week for recovery and your own lifts.'
+          : i === 1
+            ? 'Four coached 1-on-1 sessions per week. A step up in frequency for members who want more structure and faster progress without going full-time.'
+            : 'Five coached 1-on-1 sessions per week. For members who want their training fully structured and their week fully accounted for — serious commitment, serious progress.'}
+      </p>
+
+      <ul className="mt-6 flex flex-col gap-2.5">
+        <FeatureLi text={`${tier.sessions} with a dedicated trainer`} small />
+        <FeatureLi text="Personalised diet plan" small />
+        <FeatureLi text="Regular body assessments" small />
+        <FeatureLi text="Programme built around your goals" small />
+        <FeatureLi text="Full training floor access on off days" small />
+      </ul>
+
+      <div className="mt-7 flex flex-wrap gap-3">
+        <Button
+          to={site.ctas.enquire.to + `?plan=pt-${['3x', '4x', '5x'][i] ?? '3x'}`}
+          iconNode={<ArrowUpRight size={14} strokeWidth={2.5} />}
+        >
+          Enquire about {tier.sessions}
+        </Button>
+      </div>
+    </motion.article>
+  );
+}
+
+function OpenGymTierCard({ tier, m2mRand, fmtRand }) {
+  const priceRef = useCountUp(fmtRand(tier.rand));
+  return (
+    <motion.article
+      variants={tier.bestValue ? fadeUpScale : fadeUp}
+      className={`relative flex flex-col rounded-2xl border p-7 hover-lift ${
+        tier.bestValue
+          ? 'border-brand-500/50 bg-gradient-to-b from-brand-500/15 to-ink-900 shadow-glow hover:shadow-glow-lg hover:!duration-500'
+          : 'border-white/10 bg-ink-900'
+      } ${tier.bestValue ? 'md:col-span-2 xl:col-span-1' : ''}`}
+    >
+      {tier.bestValue && (
+        <span className="absolute -top-3 left-6 rounded-full bg-brand-500 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white">
+          Best value
+        </span>
+      )}
+      <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">
+        {tier.contract}
+      </p>
+      <div className="mt-3 flex items-baseline gap-2">
+        <span ref={priceRef} className="font-display text-4xl tracking-headline text-white sm:text-5xl">
+          {fmtRand(tier.rand)}
+        </span>
+        <span className="text-xs text-ink-400">/ month</span>
+      </div>
+      <p className="mt-2 text-xs text-ink-400">{tier.commitment}</p>
+
+      <ul className="mt-6 flex flex-col gap-2.5">
+        <FeatureLi text="Full training floor access" small />
+        <FeatureLi text="Weights · cardio · functional · boxing" small />
+        <FeatureLi
+          text={
+            tier.contract === 'Month-to-month'
+              ? 'Cancel at the end of any paid month'
+              : 'Locked monthly rate for the full term'
+          }
+          small
+        />
+        <FeatureLi text="Free trial before you commit" small />
+      </ul>
+
+      <div className="mt-6 border-t border-white/10 pt-5">
+        <p className="text-[11px] text-ink-400">
+          Works out to <span className="text-ink-200">{fmtRand(tier.rand)} × 12 = {fmtRand(tier.rand * 12)}/yr</span>
+          {tier.contract === '12-month contract' && (
+            <span className="text-brand-300"> · save {fmtRand((m2mRand - tier.rand) * 12)} vs month-to-month</span>
+          )}
+          {tier.contract === '6-month contract' && (
+            <span className="text-brand-300"> · save {fmtRand((m2mRand - tier.rand) * 12)}/yr vs month-to-month</span>
+          )}
+        </p>
+      </div>
+    </motion.article>
+  );
+}
+
 function GlanceChip({ icon: Icon, label, value, suffix, accent = false }) {
+  const valRef = useCountUp(value);
   return (
     <motion.div
       variants={fadeUp}
@@ -624,7 +640,7 @@ function GlanceChip({ icon: Icon, label, value, suffix, accent = false }) {
         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">
           {label}
         </p>
-        <p className="mt-1 font-display text-lg tracking-headline text-white sm:text-xl">{value}</p>
+        <p ref={valRef} className="mt-1 font-display text-lg tracking-headline text-white sm:text-xl">{value}</p>
         <p className="mt-0.5 text-xs text-ink-400">{suffix}</p>
       </div>
     </motion.div>

@@ -129,7 +129,7 @@ export default function LineChart({ series = [], dates = [], height = 180 }) {
           {series.map((s) => (
             <div key={s.label} className="flex items-center gap-1.5">
               <span className="inline-block w-3 h-0.5 rounded" style={{ backgroundColor: s.color }} />
-              <span className="text-[10px] text-ink-400 truncate max-w-[120px]">{s.label}</span>
+              <span className="text-[11px] text-ink-400 truncate max-w-[120px]">{s.label}</span>
             </div>
           ))}
         </div>

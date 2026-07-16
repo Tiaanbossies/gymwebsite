@@ -10,6 +10,13 @@ import Button from '../components/ui/Button.jsx';
 import Reveal from '../components/ui/Reveal.jsx';
 import { site, fadeUp, stagger } from '../lib/site.js';
 
+// Slower per-row cadence than the shared `stagger` — the trainer roster should
+// read as the team being introduced one-by-one, not revealed as a single block.
+const teamStagger = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.14, delayChildren: 0.05 } },
+};
+
 /**
  * Team page — real names pulled directly from the questionnaire, plus the
  * trainers confirmed by the client in follow-up reviews.
@@ -257,7 +264,7 @@ export default function Team() {
 
           <div className="mt-12 grid gap-6 lg:grid-cols-2">
             <motion.div
-              variants={stagger}
+              variants={teamStagger}
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, margin: '-60px' }}
@@ -275,7 +282,7 @@ export default function Team() {
             </motion.div>
 
             <motion.div
-              variants={stagger}
+              variants={teamStagger}
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, margin: '-60px' }}

@@ -28,26 +28,38 @@ const PLAN_OPTIONS = [
     helper: 'Choose month-to-month, 6-month, or 12-month access to the full training floor.',
   },
   {
+    value: 'personal-training',
+    label: 'Personal Training · 3 sessions/week',
+    priceLine: 'From R2,100/month',
+    helper: '1-on-1 coaching, diet plan, and regular body assessments.',
+  },
+  {
     value: 'student',
     label: 'Student / Pensioner Membership',
     priceLine: 'R250/month',
     helper: 'Open-gym access at the reduced rate. Valid card or proof required.',
   },
+];
+
+const PT_OPTIONS = [
   {
-    value: 'pt-3x',
-    label: 'Personal Training · 3 sessions / week',
+    value: '3x',
+    shortLabel: '3 sessions/week',
+    label: 'Personal Training · 3 sessions/week',
     priceLine: 'R2,100/month',
     helper: '1-on-1 coaching, diet plan, and regular body assessments.',
   },
   {
-    value: 'pt-4x',
-    label: 'Personal Training · 4 sessions / week',
+    value: '4x',
+    shortLabel: '4 sessions/week',
+    label: 'Personal Training · 4 sessions/week',
     priceLine: 'R2,400/month',
     helper: 'Structured 1-on-1 coaching across four weekly sessions.',
   },
   {
-    value: 'pt-5x',
-    label: 'Personal Training · 5 sessions / week',
+    value: '5x',
+    shortLabel: '5 sessions/week',
+    label: 'Personal Training · 5 sessions/week',
     priceLine: 'R2,700/month',
     helper: 'Full-time coaching structure for members who want close oversight.',
   },
@@ -89,18 +101,23 @@ const STEPS = [
   { id: 4, label: 'Sign',      icon: ShieldCheck },
 ];
 
-const PT_PLANS = new Set(['pt-3x', 'pt-4x', 'pt-5x']);
-
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const planFromQuery = (value) => {
-  if (['pt-3x', 'pt-4x', 'pt-5x', 'student', 'open-gym'].includes(value)) return value;
+  if (['personal-training', 'pt-3x', 'pt-4x', 'pt-5x'].includes(value)) return 'personal-training';
+  if (['student', 'open-gym'].includes(value)) return value;
   return 'open-gym';
 };
 
 const openGymDefaultFromQuery = (value) => {
   if (['m2m', '6-month', '12-month'].includes(value)) return value;
   return 'm2m';
+};
+
+const ptPlanFromQuery = (value) => {
+  if (value === 'pt-4x') return '4x';
+  if (value === 'pt-5x') return '5x';
+  return '3x';
 };
 
 const slideVariants = {
@@ -116,6 +133,7 @@ const SS_KEY = 'bossies-onboarding';
 const defaultForm = (queryPlan) => ({
   planType: planFromQuery(queryPlan),
   openGymPlan: openGymDefaultFromQuery(queryPlan),
+  ptPlan: ptPlanFromQuery(queryPlan),
   startDate: new Date().toISOString().slice(0, 10),
   fullName: '',
   idNumber: '',
@@ -145,6 +163,10 @@ export default function MembershipAgreementForm() {
 
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(1);
+  // Personal Training needs a second Step-1 screen: PT package first, then
+  // the accompanying open-gym membership term (PT runs alongside full
+  // training-floor access). Only meaningful while step === 1.
+  const [planSubStep, setPlanSubStep] = useState(1);
 
   const [form, setForm] = useState(() => {
     if (!queryPlan) {
@@ -179,6 +201,11 @@ export default function MembershipAgreementForm() {
     [form.openGymPlan],
   );
 
+  const selectedPtPlan = useMemo(
+    () => PT_OPTIONS.find((o) => o.value === form.ptPlan) ?? PT_OPTIONS[0],
+    [form.ptPlan],
+  );
+
   const planSummary = useMemo(() => {
     if (form.planType === 'open-gym') {
       return {
@@ -198,13 +225,27 @@ export default function MembershipAgreementForm() {
           'Reduced-rate open-gym access. Valid student card or pensioner proof required. R200 once-off joining fee applies on first sign-up.',
       };
     }
+    if (form.planType === 'personal-training') {
+      return {
+        label: `${selectedPtPlan.label} + ${selectedOpenGymPlan.label} membership`,
+        priceLine: `${selectedPtPlan.priceLine} + ${selectedOpenGymPlan.priceLine} membership`,
+        termsLine:
+          `Monthly coaching package including a personalised diet plan and regular body assessments. Sessions require 24 hours’ notice to cancel — late cancellations and no-shows are forfeited from your monthly package. Personal training runs alongside a ${selectedOpenGymPlan.label.toLowerCase()} open-gym membership for full training-floor access — R200 once-off joining fee applies on first sign-up.`,
+      };
+    }
     return {
       label: selectedPlan.label,
       priceLine: selectedPlan.priceLine,
-      termsLine:
-        'Monthly coaching package including a personalised diet plan and regular body assessments. Sessions require 24 hours’ notice to cancel — late cancellations and no-shows are forfeited from your monthly package.',
+      termsLine: '',
     };
-  }, [form.openGymPlan, form.planType, selectedOpenGymPlan, selectedPlan.label, selectedPlan.priceLine]);
+  }, [
+    form.openGymPlan,
+    form.planType,
+    selectedOpenGymPlan,
+    selectedPtPlan,
+    selectedPlan.label,
+    selectedPlan.priceLine,
+  ]);
 
   const applicationCsv = useMemo(() => buildCsv(form, planSummary), [form, planSummary]);
 
@@ -225,10 +266,16 @@ export default function MembershipAgreementForm() {
 
   const onChange = (e) => {
     const { name, value, type, checked } = e.target;
+    if (name === 'planType') {
+      setPlanSubStep(1);
+    }
     setForm((current) => {
       const next = { ...current, [name]: type === 'checkbox' ? checked : value };
       if (name === 'planType' && value === 'open-gym' && !current.openGymPlan) {
         next.openGymPlan = 'm2m';
+      }
+      if (name === 'planType' && value === 'personal-training' && !current.ptPlan) {
+        next.ptPlan = '3x';
       }
       if (name === 'signatureName' && !current.fullName) {
         next.fullName = value;
@@ -255,6 +302,10 @@ export default function MembershipAgreementForm() {
       if (!form.planType) next.planType = 'Please choose a membership option.';
       if (form.planType === 'open-gym' && !form.openGymPlan)
         next.openGymPlan = 'Please choose an open-gym term.';
+      if (form.planType === 'personal-training' && planSubStep === 1 && !form.ptPlan)
+        next.ptPlan = 'Please choose a session frequency.';
+      if (form.planType === 'personal-training' && planSubStep === 2 && !form.openGymPlan)
+        next.openGymPlan = 'Please choose a membership term.';
     }
     if (s === 2) {
       if (!form.fullName.trim()) next.fullName = 'Please enter your full name.';
@@ -291,6 +342,15 @@ export default function MembershipAgreementForm() {
     const errs = validateStep(step);
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
+    // Personal Training has a second Step-1 screen (membership term) before
+    // advancing to Step 2 — "Next" from the PT-package screen moves to it
+    // instead of leaving Step 1.
+    if (step === 1 && form.planType === 'personal-training' && planSubStep === 1) {
+      setDirection(1);
+      setPlanSubStep(2);
+      scrollToForm();
+      return;
+    }
     setDirection(1);
     setStep((s) => Math.min(s + 1, 4));
     scrollToForm();
@@ -298,6 +358,12 @@ export default function MembershipAgreementForm() {
 
   const goBack = () => {
     setErrors({});
+    if (step === 1 && form.planType === 'personal-training' && planSubStep === 2) {
+      setDirection(-1);
+      setPlanSubStep(1);
+      scrollToForm();
+      return;
+    }
     setDirection(-1);
     setStep((s) => Math.max(s - 1, 1));
     scrollToForm();
@@ -442,7 +508,7 @@ export default function MembershipAgreementForm() {
       <div className="mt-8 overflow-hidden">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
-            key={step}
+            key={`${step}-${planSubStep}`}
             custom={direction}
             variants={slideVariants}
             initial="enter"
@@ -455,6 +521,7 @@ export default function MembershipAgreementForm() {
                 errors={errors}
                 onChange={onChange}
                 planSummary={planSummary}
+                planSubStep={planSubStep}
               />
             )}
             {step === 2 && (
@@ -485,7 +552,7 @@ export default function MembershipAgreementForm() {
         <button
           type="button"
           onClick={goBack}
-          disabled={step === 1}
+          disabled={step === 1 && !(form.planType === 'personal-training' && planSubStep === 2)}
           className="btn-ghost disabled:pointer-events-none disabled:opacity-0"
         >
           <ArrowLeft size={15} strokeWidth={2.5} />
@@ -593,7 +660,52 @@ function StepIndicator({ currentStep }) {
 
 // ─── Step 1: Plan ─────────────────────────────────────────────────────────────
 
-function StepPlan({ form, errors, onChange, planSummary }) {
+function StepPlan({ form, errors, onChange, planSummary, planSubStep }) {
+  if (form.planType === 'personal-training' && planSubStep === 2) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div>
+          <p className="eyebrow">Step 1 of 4 · Membership package</p>
+          <h3 className="mt-2 font-display text-3xl tracking-headline text-white">
+            Choose your membership
+          </h3>
+          <p className="mt-2 text-sm leading-relaxed text-ink-300">
+            Personal training runs alongside full training-floor access. Pick the open-gym term
+            that goes with your coaching package — the gym will confirm the final fit with you.
+          </p>
+        </div>
+
+        <fieldset>
+          <legend className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">
+            Open-gym term
+          </legend>
+          <div className="mt-3 grid gap-3 md:grid-cols-3">
+            {OPEN_GYM_OPTIONS.map((option) => (
+              <ChoiceCard
+                key={option.value}
+                compact
+                name="openGymPlan"
+                checked={form.openGymPlan === option.value}
+                onChange={onChange}
+                value={option.value}
+                label={option.label}
+                priceLine={option.priceLine}
+                helper={option.helper}
+              />
+            ))}
+          </div>
+          {errors.openGymPlan && <ErrorText>{errors.openGymPlan}</ErrorText>}
+        </fieldset>
+
+        <div className="rounded-2xl border border-brand-500/25 bg-brand-500/5 p-4 text-sm leading-relaxed">
+          <p className="font-medium text-white">{planSummary.label}</p>
+          <p className="mt-1 text-brand-200">{planSummary.priceLine}</p>
+          <p className="mt-2 text-ink-300">{planSummary.termsLine}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -609,7 +721,7 @@ function StepPlan({ form, errors, onChange, planSummary }) {
 
       <fieldset>
         <legend className="sr-only">Membership option</legend>
-        <div className="grid gap-3 lg:grid-cols-2">
+        <div className="grid gap-3">
           {PLAN_OPTIONS.map((option) => (
             <ChoiceCard
               key={option.value}
@@ -647,6 +759,30 @@ function StepPlan({ form, errors, onChange, planSummary }) {
             ))}
           </div>
           {errors.openGymPlan && <ErrorText>{errors.openGymPlan}</ErrorText>}
+        </fieldset>
+      )}
+
+      {form.planType === 'personal-training' && (
+        <fieldset>
+          <legend className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">
+            Personal training sessions
+          </legend>
+          <div className="mt-3 grid gap-3 md:grid-cols-3">
+            {PT_OPTIONS.map((option) => (
+              <ChoiceCard
+                key={option.value}
+                compact
+                name="ptPlan"
+                checked={form.ptPlan === option.value}
+                onChange={onChange}
+                value={option.value}
+                label={option.shortLabel}
+                priceLine={option.priceLine}
+                helper={option.helper}
+              />
+            ))}
+          </div>
+          {errors.ptPlan && <ErrorText>{errors.ptPlan}</ErrorText>}
         </fieldset>
       )}
 

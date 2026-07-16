@@ -34,7 +34,7 @@ export default function Logo({ compact = false, className = '' }) {
       {!compact && (
         <span className="flex flex-col leading-none">
           <span className="font-display text-base tracking-headline text-white">BOSSIE'S GYM</span>
-          <span className="mt-1 text-[10px] font-medium uppercase tracking-[0.22em] text-ink-400">
+          <span className="mt-1 text-[11px] font-medium uppercase tracking-[0.22em] text-ink-400">
             Centurion · Personal Training
           </span>
         </span>

@@ -18,7 +18,7 @@ const smtpConfig = {
   user: process.env.SMTP_USER || '',
   pass: process.env.SMTP_PASS || '',
   from: process.env.MAIL_FROM || process.env.SMTP_USER || '',
-  to: process.env.MAIL_TO || 'tiaan374@gmail.com',
+  to: process.env.MAIL_TO || 'bossiesgym@gmail.com',
   to2: process.env.MAIL_TO_2 || '',
 };
 

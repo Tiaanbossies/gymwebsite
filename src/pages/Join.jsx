@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import PagePose from '../components/ui/PagePose.jsx';
 import PageHero from '../components/sections/PageHero.jsx';
 import Container from '../components/ui/Container.jsx';
-import MembershipAgreementForm from '../components/sections/MembershipAgreementForm.jsx';
+import MembershipAgreementForm from '../components/sections/membership-agreement/index.jsx';
 import Button from '../components/ui/Button.jsx';
 import { site, waLink } from '../lib/site.js';
 
@@ -14,7 +14,7 @@ export default function Onboarding() {
       <PageHero
         eyebrow="Onboarding"
         title="Complete your membership agreement online."
-        description="Choose your plan, add your details, review the essentials, and email a CSV-ready agreement straight through to Bossie’s team."
+        description="Three steps — choose your plan, add your details, sign. It takes about two minutes and goes straight through to Bossie’s team."
         breadcrumbs={[{ label: 'Home', to: '/' }, { label: 'Onboarding' }]}
       />
 

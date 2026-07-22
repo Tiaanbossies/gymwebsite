@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowUpRight, Phone } from 'lucide-react';
 
@@ -5,8 +6,11 @@ import Container from '../ui/Container.jsx';
 import Button from '../ui/Button.jsx';
 import ShinyText from '../ui/ShinyText.jsx';
 import ClickSpark from '../ui/ClickSpark.jsx';
-import Threads from '../ui/Threads.jsx';
 import { fadeUp, site } from '../../lib/site.js';
+
+// Purely decorative WebGL backdrop. Loading `ogl` lazily keeps it out of the
+// main bundle; the band reads correctly without it while it loads.
+const Threads = lazy(() => import('../ui/Threads.jsx'));
 
 /**
  * CTASection — high-emphasis conversion band.
@@ -47,7 +51,9 @@ export default function CTASection({
           {isBrand && (
             <>
               <div className="pointer-events-none absolute inset-0 opacity-25">
-                <Threads color={[0.863, 0.169, 0.22]} amplitude={1.4} distance={0.25} />
+                <Suspense fallback={null}>
+                  <Threads color={[0.863, 0.169, 0.22]} amplitude={1.4} distance={0.25} />
+                </Suspense>
               </div>
               <div className="pointer-events-none absolute -right-20 -top-20 h-80 w-80 rounded-full bg-brand-500/30 blur-3xl" />
               <div className="pointer-events-none absolute -left-20 bottom-0 h-64 w-64 rounded-full bg-accent-500/15 blur-3xl" />

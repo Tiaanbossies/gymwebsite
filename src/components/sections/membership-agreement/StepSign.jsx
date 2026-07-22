@@ -74,13 +74,22 @@ export default function StepSign({
         )}
 
         <ConsentRow
-          name="consentDetailsHealth"
-          checked={form.consentDetailsHealth}
+          name="consentAccuracy"
+          checked={form.consentAccuracy}
           onChange={onChange}
-          error={errors.consentDetailsHealth}
+          error={errors.consentAccuracy}
         >
-          The details above are true and belong to me, and I'll tell the gym about any injury,
-          medical condition, or limitation that may affect exercise — including if it changes later.
+          I confirm the details in this membership agreement are true and belong to me.
+        </ConsentRow>
+
+        <ConsentRow
+          name="consentHealth"
+          checked={form.consentHealth}
+          onChange={onChange}
+          error={errors.consentHealth}
+        >
+          I understand I should disclose any injury, medical condition, or limitation that may
+          affect exercise, and I'll let the gym know if anything changes.
         </ConsentRow>
 
         <ConsentRow

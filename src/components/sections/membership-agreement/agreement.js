@@ -64,17 +64,9 @@ export function buildPlanSummary(form) {
  * written so the gym's export keeps a consistent shape.
  */
 const cancellationValue = (form) =>
-  isPersonalTraining(form)
-    ? form.consentCancellationPolicy
-      ? 'Yes'
-      : 'No'
-    : 'N/A (no PT sessions)';
+  isPersonalTraining(form) ? yesNo(form.consentCancellationPolicy) : 'N/A (no PT sessions)';
 
-/**
- * One tick covers both "my details are true" and "I'll disclose relevant health
- * conditions"; both recorded columns are driven from it.
- */
-const detailsHealthValue = (form) => (form.consentDetailsHealth ? 'Yes' : 'No');
+const yesNo = (value) => (value ? 'Yes' : 'No');
 
 /** Payload for POST /api/send-agreement. Keys are consumed by server.mjs. */
 export function buildFormData(form, planSummary) {
@@ -92,8 +84,8 @@ export function buildFormData(form, planSummary) {
     healthFlags: form.healthFlags,
     goals: form.goals,
     medicalNotes: form.medicalNotes,
-    consentAccuracy: form.consentDetailsHealth,
-    consentHealth: form.consentDetailsHealth,
+    consentAccuracy: form.consentAccuracy,
+    consentHealth: form.consentHealth,
     consentTerms: form.consentTerms,
     consentContact: form.consentContact,
     signatureName: form.signatureName,
@@ -129,10 +121,10 @@ export function buildCsv(form, planSummary) {
       form.healthFlags.length ? form.healthFlags.join('; ') : 'None selected',
       form.goals || '',
       form.medicalNotes || '',
-      detailsHealthValue(form),
-      detailsHealthValue(form),
-      form.consentTerms ? 'Yes' : 'No',
-      form.consentContact ? 'Yes' : 'No',
+      yesNo(form.consentAccuracy),
+      yesNo(form.consentHealth),
+      yesNo(form.consentTerms),
+      yesNo(form.consentContact),
       cancellationValue(form),
       form.signatureName,
       form.signatureDate,

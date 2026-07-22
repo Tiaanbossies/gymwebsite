@@ -25,7 +25,13 @@ const STEP_SETTLE_MS = 500;
 const FIELD_ORDER = {
   1: ['planType', 'ptPlan', 'openGymPlan'],
   2: ['fullName', 'phone', 'email', 'startDate', 'emergencyName', 'emergencyPhone'],
-  3: ['consentDetailsHealth', 'consentTerms', 'consentCancellationPolicy', 'signatureName'],
+  3: [
+    'consentCancellationPolicy',
+    'consentAccuracy',
+    'consentHealth',
+    'consentTerms',
+    'signatureName',
+  ],
 };
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -46,7 +52,8 @@ export const defaultForm = (queryPlan) => ({
   goals: '',
   medicalNotes: '',
   healthFlags: [],
-  consentDetailsHealth: false,
+  consentAccuracy: false,
+  consentHealth: false,
   consentTerms: false,
   consentContact: false,
   consentCancellationPolicy: false,
@@ -185,8 +192,10 @@ export function useAgreementForm() {
       }
 
       if (target === 3) {
-        if (!form.consentDetailsHealth)
-          next.consentDetailsHealth = 'Please confirm your details and health disclosure.';
+        if (!form.consentAccuracy)
+          next.consentAccuracy = 'Please confirm your details are correct.';
+        if (!form.consentHealth)
+          next.consentHealth = 'Please confirm your health disclosure acknowledgement.';
         if (!form.consentTerms) next.consentTerms = 'Please accept the plan summary.';
         if (isPt && !form.consentCancellationPolicy)
           next.consentCancellationPolicy = 'Please acknowledge the cancellation policy.';

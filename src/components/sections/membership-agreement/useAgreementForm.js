@@ -13,6 +13,9 @@ import { openGymDefaultFromQuery, planFromQuery, ptPlanFromQuery, STEPS } from '
 const SS_KEY = 'bossies-onboarding';
 const LAST_STEP = STEPS.length;
 const MIN_PHONE_DIGITS = 9;
+// Slightly longer than the 300ms step transition, so a click cannot carry
+// through the swap from "Next" to "Complete agreement".
+const STEP_SETTLE_MS = 500;
 
 /**
  * Field order per step. Drives which input gets focused when a step fails
@@ -74,6 +77,11 @@ export function useAgreementForm() {
   const queryPlan = params.get('plan');
 
   const formRef = useRef(null);
+  // Timestamp of the last step change. The nav button lives outside the
+  // animated region, so advancing to the final step swaps "Next" into the
+  // submit button underneath the cursor — the same physical click could then
+  // land on submit and flag every consent red before the member has read them.
+  const stepEnteredAt = useRef(0);
 
   const [initialState] = useState(() => {
     const saved = readSaved(queryPlan);
@@ -218,6 +226,7 @@ export function useAgreementForm() {
     }
     setShowResumeNotice(false);
     const target = Math.min(step + 1, LAST_STEP);
+    stepEnteredAt.current = Date.now();
     setDirection(1);
     setStep(target);
     setMaxStep((furthest) => Math.max(furthest, target));
@@ -235,6 +244,7 @@ export function useAgreementForm() {
   const goToStep = useCallback(
     (target) => {
       if (target === step || target > maxStep) return;
+      stepEnteredAt.current = Date.now();
       setErrors({});
       setDirection(target > step ? 1 : -1);
       setStep(target);
@@ -249,6 +259,9 @@ export function useAgreementForm() {
     async (e) => {
       e.preventDefault();
       if (sendState.status === 'sending') return;
+      // Ignore a submit that arrives with the step transition itself — it is
+      // the "Next" click landing on the button that replaced it, not intent.
+      if (Date.now() - stepEnteredAt.current < STEP_SETTLE_MS) return;
 
       const errs = validateStep(LAST_STEP);
       setErrors(errs);

@@ -19,12 +19,25 @@
 		"source": "dist",
 		"destination": "dist",
 		"routes": [
-			"/", "/services", "/membership", "/pricing",
-			"/team", "/gallery", "/about", "/faq", "/contact"
+			"/",
+			"/services",
+			"/membership",
+			"/pricing",
+			"/team",
+			"/gallery",
+			"/about",
+			"/faq",
+			"/contact"
 		],
-		"puppeteerArgs": ["--no-sandbox", "--disable-setuid-sandbox"],
+		"puppeteerArgs": [
+			"--no-sandbox",
+			"--disable-setuid-sandbox"
+		],
 		"headless": true,
-		"minifyHtml": { "collapseWhitespace": false, "removeComments": false }
+		"minifyHtml": {
+			"collapseWhitespace": false,
+			"removeComments": false
+		}
 	},
 	"dependencies": {
 		"@supabase/supabase-js": "^2.108.2",
@@ -32,7 +45,6 @@
 		"d3-sankey": "^0.12.3",
 		"framer-motion": "^11.2.10",
 		"lucide-react": "^0.408.0",
-		"motion": "^12.42.0",
 		"ogl": "^1.0.11",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",

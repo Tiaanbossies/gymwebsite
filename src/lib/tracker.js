@@ -1,6 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
-
 let client = null;
+let clientPromise = null;
 let sessionId = null;
 let listenersAttached = false;
 let firedMilestones = new Set();
@@ -32,14 +31,23 @@ function refreshSession() {
 
 let geoPromise = null;
 
+/**
+ * Loads the Supabase SDK on first use rather than at import time. Analytics is
+ * never on the critical path, and eagerly importing it put the whole SDK in the
+ * main bundle for every visitor.
+ */
 function getClient() {
-  if (!client) {
-    client = createClient(
-      import.meta.env.VITE_SUPABASE_URL,
-      import.meta.env.VITE_SUPABASE_ANON_KEY,
-    );
+  if (client) return Promise.resolve(client);
+  if (!clientPromise) {
+    clientPromise = import('@supabase/supabase-js').then(({ createClient }) => {
+      client = createClient(
+        import.meta.env.VITE_SUPABASE_URL,
+        import.meta.env.VITE_SUPABASE_ANON_KEY,
+      );
+      return client;
+    });
   }
-  return client;
+  return clientPromise;
 }
 
 function detectDevice() {
@@ -63,7 +71,8 @@ async function commitPending() {
   const snap = pending;
   pending = null;
   const durationMs = Date.now() - snap.enteredAt;
-  const { error } = await getClient()
+  const supabase = await getClient();
+  const { error } = await supabase
     .from('page_views')
     .insert({
       id: snap.id,
@@ -107,6 +116,14 @@ export function initTracker() {
 
   if (listenersAttached) return;
   listenersAttached = true;
+
+  // Warm the Supabase client once the page is idle. The import is deliberately
+  // lazy to keep the SDK out of the main bundle, but `beforeunload` cannot wait
+  // on a module load — without this, a visitor who lands and immediately closes
+  // the tab would be lost.
+  const warm = () => getClient().catch(() => {});
+  if ('requestIdleCallback' in window) requestIdleCallback(warm, { timeout: 3000 });
+  else setTimeout(warm, 1500);
 
   document.addEventListener('visibilitychange', handleVisibilityChange);
   window.addEventListener('beforeunload', commitPending);
@@ -155,9 +172,13 @@ export async function trackPageView(pathname) {
 
 function trackEvent(eventType, label, pathname) {
   getClient()
-    .from('events')
-    .insert({ session_id: sessionId, page: pathname, event_type: eventType, label })
+    .then((supabase) =>
+      supabase
+        .from('events')
+        .insert({ session_id: sessionId, page: pathname, event_type: eventType, label }),
+    )
     .then(({ error }) => {
       if (error) console.error('[tracker] event insert failed:', error.message);
-    });
+    })
+    .catch((err) => console.error('[tracker] event insert failed:', err.message));
 }

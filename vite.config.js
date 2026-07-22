@@ -19,7 +19,7 @@ export default defineConfig({
         // change does not invalidate the React/animation runtime in cache.
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          'vendor-motion': ['framer-motion', 'motion', 'animejs'],
+          'vendor-motion': ['framer-motion', 'animejs'],
         },
       },
     },

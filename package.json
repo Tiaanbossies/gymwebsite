@@ -19,12 +19,25 @@
 		"source": "dist",
 		"destination": "dist",
 		"routes": [
-			"/", "/services", "/membership", "/pricing",
-			"/team", "/gallery", "/about", "/faq", "/contact"
+			"/",
+			"/services",
+			"/membership",
+			"/pricing",
+			"/team",
+			"/gallery",
+			"/about",
+			"/faq",
+			"/contact"
 		],
-		"puppeteerArgs": ["--no-sandbox", "--disable-setuid-sandbox"],
+		"puppeteerArgs": [
+			"--no-sandbox",
+			"--disable-setuid-sandbox"
+		],
 		"headless": true,
-		"minifyHtml": { "collapseWhitespace": false, "removeComments": false }
+		"minifyHtml": {
+			"collapseWhitespace": false,
+			"removeComments": false
+		}
 	},
 	"dependencies": {
 		"@supabase/supabase-js": "^2.108.2",

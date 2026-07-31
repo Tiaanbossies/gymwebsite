@@ -281,6 +281,35 @@
       }
     </script>
 
+    <!-- Structured data — WebSite.
+         Kept separate from the HealthClub node above on purpose: the gym is the
+         business, this is the site about it. "creator"/"maintainer" credit the
+         agency that designed, built and maintains the site. These must NOT hang
+         off the HealthClub node — there they would read as the agency having
+         created the gym itself. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "@id": "https://bossiesgym.co.za/#website",
+        "url": "https://bossiesgym.co.za",
+        "name": "Bossie's Gym & Personal Training Studio",
+        "inLanguage": "en-ZA",
+        "publisher": { "@id": "https://bossiesgym.co.za/#gym" },
+        "about": { "@id": "https://bossiesgym.co.za/#gym" },
+        "creator": {
+          "@type": "Organization",
+          "name": "Fynbos Creative",
+          "url": "https://fynboscreative.co.za"
+        },
+        "maintainer": {
+          "@type": "Organization",
+          "name": "Fynbos Creative",
+          "url": "https://fynboscreative.co.za"
+        }
+      }
+    </script>
+
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-W3MX7HZKCW"></script>
     <script>
       window.dataLayer = window.dataLayer || [];

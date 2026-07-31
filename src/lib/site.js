@@ -59,6 +59,13 @@ export const site = {
   // (Q67 in the questionnaire read "bossiesgy.co.za" but this was a typo.)
   url: 'https://bossiesgym.co.za',
 
+  // Agency that designed, built and maintains this site, including the booking
+  // and new-client onboarding flow.
+  credit: {
+    name: 'Fynbos Creative',
+    url: 'https://fynboscreative.co.za',
+  },
+
   // Primary conversion actions, ordered by questionnaire Q17 selection:
   // "Join Online", "Call the Gym", "Send an Enquiry" were checked.
   // (Book a Consultation and Book a Class were NOT checked.)

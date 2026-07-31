@@ -156,6 +156,33 @@ export default function About() {
         </Container>
       </section>
 
+      {/* Site credit — deliberately low-key. It belongs on About as a matter of
+          record, but it should never compete with the gym's own story. */}
+      <section className="section-tight">
+        <Container>
+          <Reveal>
+            <div className="rounded-2xl border border-white/10 bg-ink-900 px-7 py-6">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">
+                Behind the site
+              </p>
+              <p className="mt-3 max-w-2xl text-sm text-ink-300 leading-relaxed">
+                This website — along with our online booking and new-client onboarding system —
+                was designed and built by{' '}
+                <a
+                  href={site.credit.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-medium text-brand-300 underline decoration-brand-500/40 underline-offset-2 transition hover:text-brand-200"
+                >
+                  {site.credit.name}
+                </a>
+                , who also maintain it for us.
+              </p>
+            </div>
+          </Reveal>
+        </Container>
+      </section>
+
       <CTASection
         eyebrow="Train with Bossie's"
         title="A family gym that actually helps you progress."

@@ -18,7 +18,7 @@
 	"reactSnap": {
 		"source": "dist",
 		"destination": "dist",
-		"routes": [
+		"include": [
 			"/",
 			"/services",
 			"/membership",

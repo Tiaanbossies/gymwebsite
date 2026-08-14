@@ -9,13 +9,12 @@ const { run } = require('react-snap');
 function findChrome() {
   if (process.env.PUPPETEER_EXECUTABLE_PATH) return process.env.PUPPETEER_EXECUTABLE_PATH;
 
-  try {
-    const bundled = require('puppeteer').executablePath();
-    if (bundled && fs.existsSync(bundled)) return bundled;
-  } catch {
-    // puppeteer missing or too old to expose executablePath — keep looking.
-  }
-
+  // Prefer a real, modern system browser over react-snap's bundled puppeteer@1.x
+  // Chromium (~2018-era) — that ancient build can't parse modern syntax (optional
+  // chaining, nullish coalescing) present in current dependency bundles, which
+  // throws a page error before React ever mounts and silently truncates the crawl
+  // to a single route. Only fall back to the bundled Chromium if no system browser
+  // is found.
   const { LOCALAPPDATA, PROGRAMFILES, ProgramW6432 } = process.env;
   const candidates = {
     win32: [
@@ -39,7 +38,17 @@ function findChrome() {
     ],
   };
 
-  return (candidates[process.platform] || []).filter(Boolean).find((p) => fs.existsSync(p));
+  const system = (candidates[process.platform] || []).filter(Boolean).find((p) => fs.existsSync(p));
+  if (system) return system;
+
+  try {
+    const bundled = require('puppeteer').executablePath();
+    if (bundled && fs.existsSync(bundled)) return bundled;
+  } catch {
+    // puppeteer missing or too old to expose executablePath — nothing left to try.
+  }
+
+  return undefined;
 }
 
 // react-snap defaults to CRA's "build/" dir; Vite outputs to "dist/".
@@ -49,8 +58,10 @@ function findChrome() {
 const opts = {
   source: 'dist',
   destination: 'dist',
-  // Explicitly list routes — avoids relying on package.json config merge
-  routes: ['/', '/services', '/membership', '/pricing', '/team', '/gallery', '/about', '/faq', '/contact'],
+  // react-snap's real option is `include` (default ["/"]) — not `routes`, which
+  // is silently dropped by react-snap's option merge and was truncating every
+  // build to a single prerendered page regardless of this list's contents.
+  include: ['/', '/services', '/membership', '/pricing', '/team', '/gallery', '/about', '/faq', '/contact'],
   puppeteerArgs: [
     '--no-sandbox',
     '--disable-setuid-sandbox',

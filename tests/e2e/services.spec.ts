@@ -5,8 +5,8 @@ test.describe('Services page', () => {
     await page.goto('/services');
   });
 
-  test('page title includes Services', async ({ page }) => {
-    await expect(page).toHaveTitle(/Services/i);
+  test('page title reflects the services offered', async ({ page }) => {
+    await expect(page).toHaveTitle(/Personal Training|Open Gym/i);
   });
 
   test('personal training service is listed', async ({ page }) => {

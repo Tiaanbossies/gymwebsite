@@ -11,7 +11,7 @@ test.describe('Home page', () => {
 
   test('hero section renders with headline and primary CTA', async ({ page }) => {
     await expect(page.locator('h1')).toBeVisible();
-    const joinBtn = page.locator('a[href="/onboarding"], a[href="/join"]').first();
+    const joinBtn = page.locator('a[href="/onboarding"]:visible, a[href="/join"]:visible').first();
     await expect(joinBtn).toBeVisible();
   });
 

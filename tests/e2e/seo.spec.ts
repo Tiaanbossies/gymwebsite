@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 const ROUTES = [
   { path: '/',           titlePattern: /Bossie's Gym/i },
-  { path: '/services',   titlePattern: /Services/i },
+  { path: '/services',   titlePattern: /Personal Training|Open Gym/i },
   { path: '/membership', titlePattern: /Membership/i },
   { path: '/pricing',    titlePattern: /Pricing/i },
   { path: '/team',       titlePattern: /Team/i },

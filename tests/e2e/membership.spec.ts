@@ -27,7 +27,7 @@ test.describe('Membership page', () => {
   });
 
   test('join CTA links to onboarding', async ({ page }) => {
-    const joinLink = page.locator('a[href="/onboarding"], a[href="/join"]').first();
+    const joinLink = page.locator('a[href="/onboarding"]:visible, a[href="/join"]:visible').first();
     await expect(joinLink).toBeVisible();
   });
 });

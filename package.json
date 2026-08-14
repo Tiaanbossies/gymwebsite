@@ -8,12 +8,13 @@
 		"node": ">=20 <26"
 	},
 	"scripts": {
-		"dev": "vite",
+		"dev": "concurrently -k -n vite,api -c blue,green \"npm:dev:web\" \"npm:dev:api\"",
+		"dev:web": "vite",
+		"dev:api": "cross-env NODE_ENV=development node server.mjs",
 		"build": "vite build",
 		"postbuild": "node scripts/prerender.cjs",
 		"preview": "vite preview",
-		"serve": "node server.mjs",
-		"dev:api": "NODE_ENV=development node server.mjs"
+		"serve": "node server.mjs"
 	},
 	"reactSnap": {
 		"source": "dist",
@@ -54,6 +55,8 @@
 		"@playwright/test": "^1.60.0",
 		"@vitejs/plugin-react": "^4.3.1",
 		"autoprefixer": "^10.4.19",
+		"concurrently": "^10.0.4",
+		"cross-env": "^10.1.0",
 		"postcss": "^8.4.39",
 		"react-snap": "^1.23.0",
 		"tailwindcss": "^3.4.7",

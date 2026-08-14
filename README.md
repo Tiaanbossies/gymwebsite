@@ -12,10 +12,12 @@ All business facts on the site (address, phone, hours, pricing, trainer names, f
 
 - **React 18** (functional components + hooks)
 - **Vite 5** (dev server + production build)
-- **React Router v6** (client-side routing, 9 pages + 404 + legacy `/community` → `/team` alias)
+- **React Router v6** (client-side routing, 10 pages + 404 + legacy `/community` → `/team` alias)
 - **Framer Motion 11** (tasteful reveals, page transitions, WhatsApp pulse ring, accordion, CTA emphasis)
 - **Tailwind CSS 3** (design tokens in `tailwind.config.js`, utilities + component layer in `src/styles/globals.css`)
 - **Lucide React** (icon system)
+- **`server.mjs`** — a hand-rolled Node `http` server (no framework). Sends the contact form and the online membership agreement by email over SMTP, does IP geolocation for analytics, and serves the password-gated `/dashboard`'s data endpoints. In production it also serves `dist/` directly (see "Run with Docker" below).
+- **Supabase** (`@supabase/supabase-js`) — page-view / event analytics only, lazy-loaded client-side so the SDK never ships to a visitor who doesn't trigger it. Schema in `supabase/migrations/`.
 
 No third-party UI kit — all components are custom so the design system stays cohesive.
 
@@ -27,17 +29,22 @@ No third-party UI kit — all components are custom so the design system stays c
 # 1. install
 npm install
 
-# 2. start the dev server (http://localhost:5173)
+# 2. copy the env template and fill in SMTP + Supabase values
+cp .env.example .env
+
+# 3. start Vite AND the API server together (http://localhost:5173)
 npm run dev
 
-# 3. build for production
+# 4. build for production
 npm run build
 
-# 4. preview the production build
+# 5. preview the production build (static only — no /api/* routes)
 npm run preview
 ```
 
-Requires Node 18+. Recommended: Node 20.
+`npm run dev` runs `vite` (`dev:web`) and `server.mjs` (`dev:api`) concurrently under one process, so `/api/*` calls made by the frontend (contact form, onboarding form, analytics, dashboard) work out of the box in dev — Vite proxies them to the API server per `vite.config.js`. Run `npm run dev:web` or `npm run dev:api` alone if you only need one half. `npm run preview` only serves the static build with no backend — use `npm run serve` (or Docker) to preview with the API included.
+
+Requires Node 18+. Recommended: Node 20. Without a `.env`, the dev server still runs but the contact/onboarding forms and analytics will fail silently (missing SMTP/Supabase credentials).
 
 ---
 
@@ -51,7 +58,7 @@ docker compose up --build
 docker compose down
 ```
 
-The Docker setup serves the production build with `vite preview` and disables browser auto-open inside the container.
+The Docker image builds the static site (`vite build` + prerender), then runs `server.mjs` in production mode, which serves `dist/` and the `/api/*` routes from the same Node process on one port. This is different from local `npm run preview`, which is static-only.
 
 ---
 
@@ -60,21 +67,31 @@ The Docker setup serves the production build with `vite preview` and disables br
 ```
 gym-website/
 ├── index.html                   # Page shell, meta, OG, fonts, favicon, LocalBusiness JSON-LD
+├── server.mjs                   # Node API server — SMTP email, geo lookup, dashboard auth + data; serves dist/ in production
+├── scripts/prerender.cjs        # postbuild — react-snap prerender with its own Chromium-discovery fallback
+├── supabase/migrations/         # Analytics schema (page_views, events)
 ├── ASSETS_NEEDED.md             # Photography + bios to collect from the client
 ├── NOTES.md                     # Grounded facts, assumptions, open TODOs
+├── DESIGN.md                    # Design tokens (colors, type scale, component tokens)
 ├── package.json
 ├── vite.config.js
 ├── tailwind.config.js
 ├── postcss.config.js
 ├── public/
-│   └── favicon.svg              # Blue barbell w/ red accent dot
+│   └── favicon.svg
 └── src/
     ├── main.jsx                 # React entry — mounts <App/> inside <BrowserRouter>
     ├── App.jsx                  # Routing + route-aware <title>/meta + layout shell
     ├── styles/
     │   └── globals.css          # Tailwind layers + component classes (.btn-primary, .btn-whatsapp, .eyebrow…)
     ├── lib/
-    │   └── site.js              # Source of truth: name, contact, hours, address, CTAs, helpers, motion variants
+    │   ├── site.js              # Source of truth: name, contact, hours, address, CTAs, pricing, motion variants
+    │   └── tracker.js           # Lazy-loaded Supabase analytics client — page views, scroll depth, click events
+    ├── hooks/
+    │   ├── useTracker.js        # Wires tracker.js to route changes
+    │   └── useStructuredData.js
+    ├── data/
+    │   └── reviews.js
     ├── components/
     │   ├── layout/
     │   │   ├── Header.jsx                 # Sticky top bar, desktop phone CTA, "Join Online" primary
@@ -82,37 +99,36 @@ gym-website/
     │   │   ├── AnnouncementBar.jsx        # Free-trial strip (Q52)
     │   │   ├── StickyWhatsApp.jsx         # Floating click-to-chat (wa.me)
     │   │   ├── Footer.jsx                 # Real address, hours, Instagram, WhatsApp, email
-    │   │   ├── Logo.jsx                   # Blue mark w/ red accent dot
-    │   │   ├── PageHero.jsx               # Shared page-header strip
+    │   │   ├── Logo.jsx
     │   │   └── ScrollToTop.jsx
-    │   ├── ui/
-    │   │   ├── Button.jsx                 # primary / ghost / link / accent / whatsapp variants
-    │   │   ├── Container.jsx
-    │   │   ├── SectionHeading.jsx
-    │   │   ├── Reveal.jsx                 # Framer Motion reveal helpers
-    │   │   └── PagePose.jsx               # Page transition wrapper
+    │   ├── ui/                            # Button, Container, SectionHeading, Reveal, PagePose + motion/decorative primitives
+    │   ├── dashboard/                      # DashboardLogin, StatCard, LineChart, SankeyChart — internal analytics UI, not part of the public site
     │   └── sections/
     │       ├── HeroHome.jsx               # Who/What/Why/Value (Q30)
     │       ├── ServiceCard.jsx
     │       ├── MembershipOptions.jsx      # Day pass / Open gym / PT — real prices
-    │       ├── GalleryGrid.jsx            # Facility tiles (Q33/Q34)
+    │       ├── membership-agreement/      # Multi-step onboarding form (plan → details → sign) used by pages/Join.jsx
     │       ├── FAQAccordion.jsx
-    │       ├── ContactForm.jsx            # Client-side — hands off to WhatsApp + mailto on submit
+    │       ├── ContactForm.jsx            # Posts to /api/send-enquiry (server.mjs), emailed via SMTP
     │       ├── CTASection.jsx             # Primary (Join) + Ghost (Call) + Link (Free Trial)
+    │       ├── PageHero.jsx               # Shared page-header strip
     │       └── TrustSection.jsx           # Family-run / Honesty / Members first / Local
     └── pages/
         ├── Home.jsx
         ├── Services.jsx
         ├── Membership.jsx
-        ├── Pricing.jsx                    # NEW — Full rate card (day pass, open gym, student, PT) + FAQ
+        ├── Pricing.jsx                    # Full rate card (day pass, open gym, student, PT) + FAQ
         ├── Gallery.jsx
         ├── Team.jsx                       # Eight-trainer grid (3 Boshoff family + 5 coaches) w/ TBD placeholders
-        ├── Community.jsx                  # Legacy re-export of Team
         ├── About.jsx
         ├── Contact.jsx                    # Real address, hours, Google Maps embed, QuickContact strip
         ├── FAQ.jsx
+        ├── Join.jsx                       # /join and /onboarding — membership agreement form, emails a CSV via /api/send-agreement
+        ├── Dashboard.jsx                  # /dashboard — password-gated internal analytics view
         └── NotFound.jsx
 ```
+
+`/community` has no dedicated page file — `App.jsx` routes it directly to the `Team` component as a legacy alias.
 
 ### Conventions
 
@@ -120,7 +136,7 @@ gym-website/
   - `brand.*` — Red palette (primary, #dc2b38) — pulled from the BOSSIE'S logo wordmark / ring
   - `accent.*` — Steel-blue palette (#3d6479) — pulled from the figures in the logo crest
   - `ink.*` — Near-black neutrals
-  - Custom shadows, `display` font (Archivo Black), `pulseRing` animation.
+  - Custom shadows, `display` font (Barlow Condensed, falls back to Archivo Black — see `DESIGN.md`), `pulseRing` animation.
 - **Reusable classes** (`.btn-primary`, `.btn-whatsapp`, `.eyebrow`, `.section`, `.container-x`, `.card-surface`, `.tag`, `.chip-live`, `.nav-link`…) live in `globals.css`.
 - Every page composes from shared `sections/*` components — no page fabricates its own card / CTA styling.
 - **Every business fact lives in `src/lib/site.js`** — name, phone, address, hours, email, socials, CTAs. Edit once, the whole site updates.
@@ -147,9 +163,10 @@ gym-website/
 | `MobileNav.jsx` | Slide-down menu with `AnimatePresence` |
 | `StickyWhatsApp.jsx` | Pulse-ring animation around the FAB |
 | `FAQAccordion.jsx` | Height + opacity animation of accordion body |
-| `CTASection.jsx`, `TrustSection.jsx`, `GalleryGrid.jsx`, `MembershipOptions.jsx`, `Services.jsx`, `Team.jsx`, `Membership.jsx`, `Pricing.jsx` | Staggered card entrances + viewport reveals |
+| `CTASection.jsx`, `TrustSection.jsx`, `Gallery.jsx`, `MembershipOptions.jsx`, `Services.jsx`, `Team.jsx`, `Membership.jsx`, `Pricing.jsx` | Staggered card entrances + viewport reveals |
 | `ContactForm.jsx` | Animated success state on submit |
 | `PageHero.jsx` | Breadcrumb / eyebrow / heading / description staggered fade-up |
+| `membership-agreement/*` | Step transitions in the `/join` onboarding form |
 
 Motion values live in `src/lib/site.js` (`fadeUp`, `stagger`, `fadeIn`, `pageVariants`) so timing and easing stay consistent, and `prefers-reduced-motion` is respected globally in `globals.css`.
 
@@ -168,8 +185,10 @@ Motion values live in `src/lib/site.js` (`fadeUp`, `stagger`, `fadeIn`, `pageVar
 | `/about` | About | Family-run story, values (Honesty / Commitment / Community), coaching approach |
 | `/contact` | Contact | Real address, hours, Google Maps embed, QuickContact strip (Call / WhatsApp / Email), enquiry form |
 | `/faq` | FAQ | Joining, pricing, training, visiting — grounded in questionnaire policies |
+| `/join`, `/onboarding` | Join (aliased) | Multi-step membership agreement form (plan → details → sign); emails a CSV to the gym. `noindex`. |
+| `/dashboard` | Dashboard | Password-gated internal analytics view (page views, events) for the gym owner — not part of the public site. `noindex`. |
 
-Plus `/community` → redirects to `/team` for anyone linking the old route.
+Plus `/community` → routes straight to `/team` for anyone linking the old route.
 
 ---
 
@@ -193,6 +212,6 @@ Plus `/community` → redirects to `/team` for anyone linking the old route.
 - **Trainer bios and portraits are TBD** — see `ASSETS_NEEDED.md`. Don't invent them.
 - **No group-class content** — Q36 = No. We don't run classes.
 - **CTAs are centralised** in `src/lib/site.js`. Update the label once, the whole site updates.
-- **Form handler is not wired.** `ContactForm.jsx` pipes the typed message into WhatsApp and mailto links on success so no enquiry is lost while a backend is set up.
+- **Form handlers are wired.** `ContactForm.jsx` posts to `/api/send-enquiry` and `Join.jsx`'s onboarding form posts to `/api/send-agreement` — both handled by `server.mjs` over SMTP (see `.env.example`). Both also surface WhatsApp + mailto links on success as a backup channel, not as the primary path.
 
 See `NOTES.md` for the full set of grounded facts, assumptions, and open TODOs, and `ASSETS_NEEDED.md` for the shot list.

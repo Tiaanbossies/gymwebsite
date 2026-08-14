@@ -129,10 +129,19 @@ These were flagged as open items during initial build and confirmed by the clien
 
 - **Trainer bios + portraits (all eight)** — see `ASSETS_NEEDED.md`. Currently "Bio coming soon" + "Portrait — TBD" placeholders.
 - **Gym photography** — see `ASSETS_NEEDED.md`. Currently abstract SVG gallery tiles.
-- **Google Analytics measurement ID** — Q79 = Google Analytics. Stub placeholder is in `index.html`, commented out. Replace `G-XXXXXXX` when provided.
-- **Form handler** — currently client-side; wire to Formspree / Resend / a serverless function when ready. Messages are piped into WhatsApp + mailto in the meantime.
+- **Google Analytics measurement ID** — Q79 = Google Analytics. Stub placeholder is in `index.html`, commented out. Replace `G-XXXXXXX` when provided. (Note: separately, page-view/event analytics is now handled by the Supabase pipeline described below — GA4 would be additive, not a replacement.)
 
 ---
+
+## Backend, analytics & onboarding
+
+These are operational infrastructure, not client-facing copy — not grounded in the questionnaire the way the marketing content is, but worth documenting since they're substantial:
+
+- **`server.mjs`** — a Node API server. `/api/send-enquiry` and `/api/send-agreement` email the contact form and the `/join` membership agreement over SMTP (Gmail, per `.env.example`); `/api/geo` does IP geolocation for analytics; `/api/dashboard/*` powers the password-gated `/dashboard`. In production it also serves the built site, replacing plain `vite preview`.
+- **`/join` (aliased `/onboarding`)** — a multi-step membership agreement form (`src/components/sections/membership-agreement/`) that builds a CSV and emails it to the gym as an attachment. It is a sign-up-intent capture form, not a payment or contract system — no money moves through it.
+- **Supabase-backed analytics + `/dashboard`** — `src/lib/tracker.js` records page views, scroll depth, and click events to Supabase (schema in `supabase/migrations/`); `/dashboard` is the gym owner's internal, `noindex`'d view of that data, separate from the GA4 measurement-ID placeholder mentioned above.
+
+See `README.md`'s "Stack" and "Project structure" sections for where each of these lives in the codebase.
 
 ## Conflicts with the questionnaire
 

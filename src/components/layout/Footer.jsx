@@ -116,15 +116,15 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-16 border-t border-white/10 pt-8 text-xs text-ink-500">
+        <div className="mt-16 border-t border-white/10 pt-8 text-xs text-ink-300">
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <p>© {year} {site.fullName}. All rights reserved.</p>
-            <p className="text-ink-500">
+            <p className="text-ink-300">
               Family-run in {site.location.city}, serving {site.areasServed.slice(0, 2).join(' & ')}.
             </p>
           </div>
 
-          <p className="mt-6 text-ink-500">
+          <p className="mt-6 text-ink-300">
             Designed, built &amp; maintained by{' '}
             <a
               href={site.credit.url}

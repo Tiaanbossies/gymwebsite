@@ -1,7 +1,6 @@
 import { Fragment, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import anime from 'animejs';
 import ShinyText from '../ui/ShinyText.jsx';
 import Magnet from '../ui/Magnet.jsx';
@@ -10,7 +9,6 @@ import ClickSpark from '../ui/ClickSpark.jsx';
 import Container from '../ui/Container.jsx';
 import Button from '../ui/Button.jsx';
 import { site, fadeUp, stagger } from '../../lib/site.js';
-import { useCountUp } from '../../hooks/useCountUp.js';
 
 // ─── Headline word map ────────────────────────────────────────────────────────
 
@@ -70,7 +68,7 @@ export default function HeroHome() {
           variants={stagger}
           initial="hidden"
           animate="show"
-          className="grid gap-12 lg:grid-cols-[1fr_auto] lg:items-center xl:gap-20"
+          className="grid gap-12"
         >
           {/* Left: Copy stack */}
           <motion.div variants={fadeUp} className="max-w-2xl">
@@ -78,7 +76,7 @@ export default function HeroHome() {
               <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">
                 <span aria-hidden="true">● </span>Hennopspark · Centurion &amp; Midstream
               </span>
-              <span aria-hidden="true" className="text-ink-500">·</span>
+              <span aria-hidden="true" className="text-ink-300">·</span>
               <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">
                 Family-run since day one
               </span>
@@ -143,60 +141,12 @@ export default function HeroHome() {
               </div>
               <div className="min-w-0">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400 mb-1">Pricing</p>
-                <p className="font-display text-sm text-white">R100 day pass · PT from R2,100</p>
+                <p className="font-display text-sm text-white">R100 day pass · Open gym from R360 · PT from R2,100</p>
               </div>
-            </div>
-          </motion.div>
-
-          {/* Right: Stat cards */}
-          <motion.div
-            variants={fadeUp}
-            className="grid gap-3 grid-cols-1 sm:grid-cols-3 lg:flex lg:flex-col lg:w-[320px]"
-          >
-            <StatCard label="Open gym"          value="From R360" detail="per month (12-month)" accent />
-            <StatCard label="Personal training" value="R2,100"    detail="3 sessions/week" />
-            <StatCard label="Day pass"          value="R100"      detail="no contract" />
-
-            <div className="hidden lg:flex flex-col mt-4 rounded-2xl border border-accent-500/30 bg-gradient-to-br from-accent-500/10 to-brand-500/10 p-6 backdrop-blur-md">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-300 mb-2">Next step</p>
-              <p className="font-display text-base tracking-headline text-white mb-3">Try it first</p>
-              <p className="text-xs text-ink-200 mb-5 leading-relaxed">
-                Book a free trial session and come see the floor. No sign-up, no pressure.
-              </p>
-              <Link
-                to={site.ctas.trial.to}
-                className="mt-auto inline-block text-xs font-semibold text-accent-300 hover:text-accent-200 transition-colors"
-              >
-                Start your trial →
-              </Link>
             </div>
           </motion.div>
         </motion.div>
       </Container>
     </section>
-  );
-}
-
-// ─── StatCard with count-up ───────────────────────────────────────────────────
-
-function StatCard({ label, value, detail, accent = false }) {
-  const valRef = useCountUp(value);
-
-  return (
-    <motion.div
-      variants={fadeUp}
-      className={`flex flex-col justify-center rounded-2xl border p-5 backdrop-blur-md transition-colors ${
-        accent ? 'border-brand-500/40 bg-brand-500/15' : 'border-white/10 bg-ink-950/50'
-      }`}
-    >
-      <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-300">{label}</p>
-      <p
-        ref={valRef}
-        className={`mt-2 font-display text-2xl tracking-headline ${accent ? 'text-brand-300' : 'text-white'}`}
-      >
-        {value}
-      </p>
-      <p className="mt-1 text-xs text-ink-300">{detail}</p>
-    </motion.div>
   );
 }

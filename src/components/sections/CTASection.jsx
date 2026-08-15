@@ -62,9 +62,32 @@ export default function CTASection({
           )}
           <div className="relative flex flex-col items-start gap-8 xl:flex-row xl:items-end xl:justify-between">
             <div className="max-w-2xl">
-              <ShinyText text={eyebrow} color="#ff8d96" shineColor="#ffffff" speed={4} className="eyebrow" />
+              {isBrand ? (
+                // Plain solid text, not ShinyText's gradient-clip shimmer: Soft
+                // Rose is calibrated for eyebrows on neutral dark backgrounds,
+                // and against this card's red glow it drops well under WCAG AA
+                // contrast. A gradient-clipped fill also can't be reasoned
+                // about as a single contrast-checkable color, so Mist White as
+                // plain text is both the accessible and the simplest fix.
+                <span className="eyebrow text-[#f5f6fa]">{eyebrow}</span>
+              ) : (
+                <ShinyText
+                  text={eyebrow}
+                  color="#ff8d96"
+                  shineColor="#ffffff"
+                  speed={4}
+                  className="eyebrow"
+                />
+              )}
               <h2 className="mt-3 display-2 text-white text-balance">{title}</h2>
-              {description && <p className="mt-5 body-lg text-balance">{description}</p>}
+              {description && (
+                // Cool Slate (.body-lg's default) is calibrated against a
+                // near-black background, same issue as the eyebrow above —
+                // this card's red-tinted gradient needs a lighter override.
+                <p className={`mt-5 body-lg text-balance ${isBrand ? 'text-white' : ''}`}>
+                  {description}
+                </p>
+              )}
             </div>
             <ClickSpark sparkColor="#dc2b38" sparkCount={8} sparkSize={9} sparkRadius={28} duration={500}>
             <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap xl:w-auto xl:justify-end">

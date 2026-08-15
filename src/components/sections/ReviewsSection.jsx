@@ -46,7 +46,7 @@ export default function ReviewsSection({ featuredOnly = true }) {
               </p>
               <p className="text-[11px] text-ink-400">See all on Google</p>
             </div>
-            <ExternalLink size={14} className="text-ink-500" />
+            <ExternalLink size={14} className="text-ink-300" />
           </a>
         </div>
 
@@ -99,13 +99,13 @@ function ReviewCard({ review }) {
           <div>
             <p className="text-sm font-semibold text-white leading-tight">{review.name}</p>
             {review.isLocalGuide && (
-              <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-ink-500">
+              <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-ink-300">
                 Local Guide
               </p>
             )}
           </div>
         </div>
-        <span className="shrink-0 text-[11px] text-ink-500">{review.date}</span>
+        <span className="shrink-0 text-[11px] text-ink-300">{review.date}</span>
       </div>
 
       <div className="flex items-center gap-0.5" aria-hidden="true">
@@ -119,7 +119,7 @@ function ReviewCard({ review }) {
 
       <div className="flex items-center gap-2 border-t border-white/5 pt-3">
         <GoogleColourLogo />
-        <span className="text-[11px] text-ink-500">Posted on Google</span>
+        <span className="text-[11px] text-ink-300">Posted on Google</span>
       </div>
     </motion.li>
   );

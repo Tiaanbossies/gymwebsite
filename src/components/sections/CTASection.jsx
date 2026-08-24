@@ -4,8 +4,6 @@ import { ArrowUpRight, Phone } from 'lucide-react';
 
 import Container from '../ui/Container.jsx';
 import Button from '../ui/Button.jsx';
-import ShinyText from '../ui/ShinyText.jsx';
-import ClickSpark from '../ui/ClickSpark.jsx';
 import { fadeUp, site } from '../../lib/site.js';
 
 // Purely decorative WebGL backdrop. Loading `ogl` lazily keeps it out of the
@@ -71,13 +69,10 @@ export default function CTASection({
                 // plain text is both the accessible and the simplest fix.
                 <span className="eyebrow text-[#f5f6fa]">{eyebrow}</span>
               ) : (
-                <ShinyText
-                  text={eyebrow}
-                  color="#ff8d96"
-                  shineColor="#ffffff"
-                  speed={4}
-                  className="eyebrow"
-                />
+                // Same reasoning as the brand-variant eyebrow above: plain
+                // solid text, not ShinyText's background-clip:text shimmer,
+                // which DESIGN.md's Don'ts ban outright regardless of color.
+                <span className="eyebrow">{eyebrow}</span>
               )}
               <h2 className="mt-3 display-2 text-white text-balance">{title}</h2>
               {description && (
@@ -89,7 +84,9 @@ export default function CTASection({
                 </p>
               )}
             </div>
-            <ClickSpark sparkColor="#dc2b38" sparkCount={8} sparkSize={9} sparkRadius={28} duration={500}>
+            {/* Plain button row — Button.jsx's own hover-glow already
+                satisfies Hover-Earns-It; the click-particle burst was a
+                redundant flourish on top of it. */}
             <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap xl:w-auto xl:justify-end">
               {primary && (
                 <Button
@@ -126,7 +123,6 @@ export default function CTASection({
                 </Button>
               )}
             </div>
-            </ClickSpark>
           </div>
         </motion.div>
       </Container>

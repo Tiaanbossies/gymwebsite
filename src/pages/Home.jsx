@@ -308,7 +308,10 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* Global call to action footer */}
+      {/* Global call to action footer — two buttons only (Join Online + Call).
+          The Free Trial link and the sticky WhatsApp FAB are already reachable
+          everywhere else on the page, so a third/fourth CTA here was just
+          diluting which action this band is actually asking for. */}
       <CTASection
         eyebrow="Ready to start?"
         title="Come see the place before you commit."
@@ -319,7 +322,7 @@ export default function Home() {
           href: site.ctas.call.href,
           variant: 'ghost',
         }}
-        tertiary={{ label: 'Start a Free Trial', to: site.ctas.trial.to, variant: 'link' }}
+        tertiary={null}
       />
     </PagePose>
   );

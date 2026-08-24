@@ -71,9 +71,13 @@ export default function Footer() {
           />
 
           <div>
-            <h4 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">
+            {/* h3, not h4 — the page's last heading before the footer is
+                CTASection's h2, so footer nav groups step down one level
+                rather than skipping straight to h4. Visual size is controlled
+                entirely by the classes below, unaffected by the tag change. */}
+            <h3 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">
               Visit & Contact
-            </h4>
+            </h3>
             {/* Semantic NAP block — <address> is the signal Google's local
                 search uses to recognise the business's contact details. The
                 JSON-LD in index.html still does the heavy SEO lifting; this
@@ -145,7 +149,8 @@ export default function Footer() {
 function FooterCol({ title, links }) {
   return (
     <div>
-      <h4 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">{title}</h4>
+      {/* h3, not h4 — see the "Visit & Contact" heading above for why. */}
+      <h3 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">{title}</h3>
       <ul className="mt-5 flex flex-col gap-2.5">
         {links.map((l) => (
           <li key={l.to}>

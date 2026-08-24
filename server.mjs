@@ -6,6 +6,8 @@ import path from 'node:path';
 import tls from 'node:tls';
 import { fileURLToPath } from 'node:url';
 
+import { generateSalesReply } from './server/salesAgent.mjs';
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distDir = path.join(__dirname, 'dist');
 const isDev = process.env.NODE_ENV !== 'production';
@@ -29,6 +31,17 @@ const dashboardConfig = {
   supabaseUrl: process.env.VITE_SUPABASE_URL || '',
   serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
 };
+// ─── AI sales agent config ────────────────────────────────────────────────────
+// Server-only secrets — never bundled to the client. Leaving OLLAMA_ENDPOINT
+// unset disables the whole feature: generateSalesReply() short-circuits to
+// { mode: 'disabled' } and handleSendEnquiry behaves exactly as it does today.
+const ollamaConfig = {
+  endpoint: process.env.OLLAMA_ENDPOINT || '',
+  model: process.env.OLLAMA_MODEL || '',
+  apiKey: process.env.OLLAMA_API_KEY || '',
+  timeoutMs: Number(process.env.OLLAMA_TIMEOUT_MS || 9000),
+};
+
 const DASHBOARD_COOKIE = '_gym_dash_session';
 const DASHBOARD_SESSION_TTL_MS = 12 * 60 * 60 * 1000;
 const dashboardSessions = new Map(); // token -> expiresAt
@@ -427,7 +440,10 @@ async function handleSendEnquiry(req, res) {
     return;
   }
 
-  const subject = `Website enquiry — ${name}`;
+  const salesReply = await generateSalesReply({ name, email, message }, ollamaConfig);
+
+  const needsReply = salesReply.mode === 'deflected';
+  const subject = `${needsReply ? '[Needs reply] ' : ''}Website enquiry — ${name}`;
   const mime = buildMime({
     from: smtpConfig.from,
     to: smtpConfig.to,
@@ -439,7 +455,48 @@ async function handleSendEnquiry(req, res) {
     attachments: [],
   });
 
+  // The internal notification to the gym always sends, unchanged in content
+  // apart from the [Needs reply] subject prefix above.
   await sendSmtpMail(smtpConfig, mime);
+
+  if (salesReply.mode === 'answered') {
+    const autoReplyMime = buildMime({
+      from: smtpConfig.from,
+      to: email,
+      replyTo: smtpConfig.to,
+      subject: "Bossie's Gym — thanks for reaching out",
+      text: `Hi ${name},\n\n${salesReply.replyText}\n\n— This is an automated first response from Bossie's Gym. Reply to this email, call, or WhatsApp us for more help.`,
+      html: buildAutoReplyHtml({ name, bodyText: salesReply.replyText }),
+      attachments: [],
+    });
+    await sendSmtpMail(smtpConfig, autoReplyMime);
+  } else if (salesReply.mode === 'deflected') {
+    const deflectionText =
+      "Great question — let me get Bossie to answer that personally, he'll be in touch soon.";
+    const deflectionMime = buildMime({
+      from: smtpConfig.from,
+      to: email,
+      replyTo: smtpConfig.to,
+      subject: "Bossie's Gym — we've got your message",
+      text: `Hi ${name},\n\nThanks for reaching out to Bossie's Gym & Personal Training Studio. ${deflectionText}\n\n— Bossie's Gym`,
+      html: buildDeflectionHtml({ name, deflectionText }),
+      attachments: [],
+    });
+    await sendSmtpMail(smtpConfig, deflectionMime);
+  }
+  // salesReply.mode === 'disabled' → nothing extra sent, unchanged behaviour.
+
+  if (dashboardConfig.supabaseUrl && dashboardConfig.serviceRoleKey) {
+    insertToSupabase('sales_agent_log', {
+      name,
+      email,
+      message,
+      mode: salesReply.mode,
+      matched_question: salesReply.matchedQuestion || null,
+      confidence: typeof salesReply.confidence === 'number' ? salesReply.confidence : null,
+    }).catch((err) => console.error('Supabase sales_agent_log insert failed:', err));
+  }
+
   sendJson(res, 200, { ok: true });
 }
 
@@ -645,6 +702,76 @@ function buildEnquiryHtml({ name, email, phone, message }) {
   <!-- Footer -->
   <tr><td style="background:#0d1117;border-radius:0 0 16px 16px;padding:24px 36px;border-top:1px solid #1f2937">
     <p style="margin:0;font-size:13px;color:#6b7280">Reply to this email to respond directly to ${esc(name)}.</p>
+    <p style="margin:8px 0 0;font-size:12px;color:#4b5563">Bossie's Gym &amp; Personal Training Studio · Hennopspark, Centurion</p>
+  </td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
+}
+
+function buildAutoReplyHtml({ name, bodyText }) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>Thanks for reaching out</title></head>
+<body style="margin:0;padding:0;background:#0a0c12;font-family:Inter,Arial,sans-serif;color:#e5e7eb">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0c12;padding:32px 16px">
+<tr><td align="center">
+<table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%">
+
+  <!-- Header -->
+  <tr><td style="background:#111827;border-radius:16px 16px 0 0;padding:32px 36px;border-bottom:2px solid #dc2b38">
+    <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#dc2b38">Bossie's Gym</p>
+    <h1 style="margin:8px 0 0;font-size:24px;font-weight:700;color:#ffffff">Thanks for reaching out, ${esc(name)}</h1>
+  </td></tr>
+
+  <!-- Reply -->
+  <tr><td style="background:#111827;padding:28px 36px 0">
+    ${htmlSection('Our reply', `
+      <p style="margin:0;font-size:14px;color:#d1d5db;white-space:pre-wrap;line-height:1.7">${esc(bodyText)}</p>
+    `)}
+  </td></tr>
+
+  <!-- Footer -->
+  <tr><td style="background:#0d1117;border-radius:0 0 16px 16px;padding:24px 36px;border-top:1px solid #1f2937;margin-top:24px">
+    <p style="margin:0;font-size:13px;color:#6b7280">This is an automated first response. Reply to this email, call, or WhatsApp us if you need more help — a real person on the team will pick it up.</p>
+    <p style="margin:8px 0 0;font-size:12px;color:#4b5563">Bossie's Gym &amp; Personal Training Studio · Hennopspark, Centurion</p>
+  </td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
+}
+
+function buildDeflectionHtml({ name, deflectionText }) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>We've got your message</title></head>
+<body style="margin:0;padding:0;background:#0a0c12;font-family:Inter,Arial,sans-serif;color:#e5e7eb">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0c12;padding:32px 16px">
+<tr><td align="center">
+<table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%">
+
+  <!-- Header -->
+  <tr><td style="background:#111827;border-radius:16px 16px 0 0;padding:32px 36px;border-bottom:2px solid #dc2b38">
+    <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#dc2b38">Bossie's Gym</p>
+    <h1 style="margin:8px 0 0;font-size:24px;font-weight:700;color:#ffffff">Hi ${esc(name)}, we've got your message</h1>
+  </td></tr>
+
+  <!-- Body -->
+  <tr><td style="background:#111827;padding:28px 36px 0">
+    ${htmlSection('What happens next', `
+      <p style="margin:0;font-size:14px;color:#d1d5db;line-height:1.7">Thanks for reaching out to Bossie's Gym &amp; Personal Training Studio. ${esc(deflectionText)}</p>
+    `)}
+  </td></tr>
+
+  <!-- Footer -->
+  <tr><td style="background:#0d1117;border-radius:0 0 16px 16px;padding:24px 36px;border-top:1px solid #1f2937;margin-top:24px">
+    <p style="margin:0;font-size:13px;color:#6b7280">Reply to this email, call, or WhatsApp us any time.</p>
     <p style="margin:8px 0 0;font-size:12px;color:#4b5563">Bossie's Gym &amp; Personal Training Studio · Hennopspark, Centurion</p>
   </td></tr>
 

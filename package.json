@@ -14,7 +14,8 @@
 		"build": "vite build",
 		"postbuild": "node scripts/prerender.cjs",
 		"preview": "vite preview",
-		"serve": "node server.mjs"
+		"serve": "node server.mjs",
+		"test:unit": "node --test server/*.test.mjs"
 	},
 	"reactSnap": {
 		"source": "dist",

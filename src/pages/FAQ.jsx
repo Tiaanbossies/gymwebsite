@@ -87,7 +87,7 @@ export default function FAQ() {
           href: site.ctas.call.href,
           variant: 'ghost',
         }}
-        tertiary={{ label: 'Start a Free Trial', to: site.ctas.trial.to, variant: 'link' }}
+        tertiary={{ label: site.ctas.trial.label, to: site.ctas.trial.to, variant: 'link' }}
       />
     </PagePose>
   );

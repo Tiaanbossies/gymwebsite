@@ -21,7 +21,7 @@ export default function ContactForm() {
 
   const prefillMessage = useMemo(() => {
     if (intent === 'trial')
-      return "Hi Bossie's Gym, I'd like to book a free trial session. When would be a good time to come in?";
+      return "Hi Bossie's Gym, I'd like to book a free open-gym trial session. When would be a good time to come in?";
     if (intent === 'join')
       return "Hi Bossie's Gym, I'd like to join. Please send me the latest pricing and next steps.";
     if (intent === 'tour')

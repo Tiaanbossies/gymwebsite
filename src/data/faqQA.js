@@ -30,7 +30,7 @@ export const faqGroups = [
       {
         question: 'Do you offer a free trial?',
         answer:
-          "Yes. We'd rather you try the gym before you commit. Book a free trial and come in for a session — if it's the right fit, we'll talk memberships after.",
+          "Yes — a free open-gym trial. We'd rather you try the floor before you commit. This covers open-gym access only, not personal training; book it and come in for a session, and if it's the right fit, we'll talk memberships after.",
       },
       {
         question: 'How do I sign up?',

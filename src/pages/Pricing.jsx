@@ -41,7 +41,7 @@ import { useCountUp } from '../hooks/useCountUp.js';
  * • Personal training: R2,100 (3×/w), R2,400 (4×/w), R2,700 (5×/w)
  * — Q45 + client follow-ups
  * • R200 joining fee on open gym memberships       — client-confirmed
- * • Free trial available                           — Q52
+ * • Free open-gym trial available (not PT)          — Q52
  * • No group classes                               — Q36
  */
 
@@ -317,9 +317,9 @@ export default function Pricing() {
           >
             <PerkCard
               icon={Sparkles}
-              title="Free trial"
-              body="Come try the gym on us before you sign anything. Book it via the form, give us a call, or drop a WhatsApp."
-              cta={{ label: 'Start a free trial', to: site.ctas.trial.to }}
+              title="Free open-gym trial"
+              body="Come try the open gym floor on us before you sign anything — not applicable to personal training. Book it via the form, give us a call, or drop a WhatsApp."
+              cta={{ label: 'Start a free open-gym trial', to: site.ctas.trial.to }}
             />
             <PerkCard
               icon={GraduationCap}
@@ -437,7 +437,7 @@ export default function Pricing() {
           href: site.ctas.call.href,
           variant: 'ghost',
         }}
-        tertiary={{ label: 'Start a Free Trial', to: site.ctas.trial.to, variant: 'link' }}
+        tertiary={{ label: site.ctas.trial.label, to: site.ctas.trial.to, variant: 'link' }}
       />
     </PagePose>
   );
@@ -458,7 +458,7 @@ const compareMatrix = [
   { feature: 'Personalised diet plan',             day: false, open: false, pt: true },
   { feature: 'Regular body assessments',           day: false, open: false, pt: true },
   { feature: 'Competition prep on request',        day: false, open: false, pt: true },
-  { feature: 'Free trial available',               day: true, open: true, pt: true },
+  { feature: 'Free open-gym trial available',      day: true, open: true, pt: false },
   { feature: 'Joining fee',                        day: 'None', open: 'R200 once-off', pt: 'None' },
 ];
 

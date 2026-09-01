@@ -91,7 +91,7 @@ export default function HeroHome() {
                   the shimmer sweep was one more thing firing on mount
                   alongside the headline and this badge row. */}
               <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8fafc3]">
-                ✦ Free trial available
+                ✦ Free open-gym trial available
               </span>
             </motion.div>
 
@@ -129,7 +129,7 @@ export default function HeroHome() {
                 {site.ctas.join.label}
               </Button>
               <Button to={site.ctas.trial.to} variant="ghost" data-track="Free Trial — Hero">
-                Start a free trial
+                Free open-gym trial
               </Button>
               <Button href={site.ctas.call.href} variant="link" data-track="Call Gym — Hero">
                 Call {site.phone.display}

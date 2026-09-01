@@ -41,8 +41,8 @@ const VALUE_FEATURES = [
   },
   {
     icon: Sparkles,
-    title: 'Free trial',
-    body: "Come train with us first. If it's the right fit, then we talk memberships.",
+    title: 'Free open-gym trial',
+    body: "Come try open-gym access first — not personal training. If it's the right fit, then we talk memberships.",
   },
 ];
 
@@ -301,8 +301,8 @@ export default function Home() {
             />
             <ValueTile
               icon={Sparkles}
-              title="Free trial"
-              body="Try before you commit — on us."
+              title="Free open-gym trial"
+              body="Try open-gym access before you commit — on us. Not applicable to personal training."
             />
           </ul>
         </Container>
@@ -315,7 +315,7 @@ export default function Home() {
       <CTASection
         eyebrow="Ready to start?"
         title="Come see the place before you commit."
-        description="Book a free trial, give us a call, or send us a WhatsApp — we'll set you up."
+        description="Book a free open-gym trial, give us a call, or send us a WhatsApp — we'll set you up."
         primary={{ label: site.ctas.join.label, to: site.ctas.join.to }}
         secondary={{
           label: `Call ${site.phone.display}`,

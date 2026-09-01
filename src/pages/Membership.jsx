@@ -16,7 +16,7 @@ export default function Membership() {
       <PageHero
         eyebrow="Membership"
         title="Open gym & personal training in Centurion — real prices, no surprises."
-        description="R100 day passes, monthly/6-month/12-month open gym membership, and personal training from R2,100/month. Students pay less. Everyone gets a free trial."
+        description="R100 day passes, monthly/6-month/12-month open gym membership, and personal training from R2,100/month. Students pay less. Free trial on open-gym access."
         imagePath="/images/gym/reception-lounge.webp"
         breadcrumbs={[{ label: 'Home', to: '/' }, { label: 'Membership' }]}
       />
@@ -29,14 +29,14 @@ export default function Membership() {
               <Sparkles size={16} />
             </div>
             <div>
-              <p className="font-display text-lg tracking-headline text-white">Free trial available</p>
+              <p className="font-display text-lg tracking-headline text-white">Free open-gym trial available</p>
               <p className="mt-0.5 text-sm text-ink-300">
-                Come try the gym on us first — then decide which membership fits.
+                Come try open-gym access on us first — not applicable to personal training.
               </p>
             </div>
           </div>
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap">
-            <Button to={site.ctas.trial.to}>Start my free trial</Button>
+            <Button to={site.ctas.trial.to}>{site.ctas.trial.label}</Button>
             <Button
               href={site.ctas.call.href}
               variant="ghost"
@@ -62,8 +62,8 @@ export default function Membership() {
           >
             <Perk
               icon={Sparkles}
-              title="Free trial"
-              body="Try the gym before you sign anything. No pressure, no sales pitch."
+              title="Free open-gym trial"
+              body="Try open-gym access before you sign anything. Not applicable to personal training. No pressure, no sales pitch."
             />
             <Perk
               icon={GraduationCap}
@@ -109,14 +109,14 @@ export default function Membership() {
       <CTASection
         eyebrow="Join Bossie's"
         title="Pick an option, hit send, and train."
-        description="Free trial, month-to-month, long contract or full personal training — we'll help you choose the right fit."
+        description="Free open-gym trial, month-to-month, long contract or full personal training — we'll help you choose the right fit."
         primary={{ label: site.ctas.join.label, to: site.ctas.join.to }}
         secondary={{
           label: `Call ${site.phone.display}`,
           href: site.ctas.call.href,
           variant: 'ghost',
         }}
-        tertiary={{ label: 'Start a Free Trial', to: site.ctas.trial.to, variant: 'link' }}
+        tertiary={{ label: site.ctas.trial.label, to: site.ctas.trial.to, variant: 'link' }}
       />
     </PagePose>
   );

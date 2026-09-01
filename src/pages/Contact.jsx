@@ -133,16 +133,16 @@ export default function Contact() {
 
               {/* Free trial card */}
               <div className="rounded-2xl border border-accent-500/30 bg-gradient-to-b from-accent-500/10 to-ink-900 p-7">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400 mb-1">Free trial</p>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400 mb-1">Free open-gym trial</p>
                 <h3 className="mt-3 font-display text-2xl tracking-headline text-white">
                   Train with us first.
                 </h3>
                 <p className="mt-3 text-sm text-ink-300 leading-relaxed">
-                  Come in, try the floor, meet a trainer — all on us. If it's a fit, we sort the rest
-                  out after.
+                  Come in and try the open gym on us — not a personal training session. If it's a fit,
+                  we sort the rest out after.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-3">
-                  <Button to={site.ctas.trial.to}>Book my free trial</Button>
+                  <Button to={site.ctas.trial.to}>{site.ctas.trial.label}</Button>
                 </div>
               </div>
             </motion.aside>

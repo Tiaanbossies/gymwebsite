@@ -310,14 +310,14 @@ export default function Team() {
       <CTASection
         eyebrow="Want to train with us?"
         title="Come meet the team. Then decide."
-        description="Start with a free trial or call the gym — one of the family will answer."
+        description="Start with a free open-gym trial or call the gym — one of the family will answer."
         primary={{ label: site.ctas.join.label, to: site.ctas.join.to }}
         secondary={{
           label: `Call ${site.phone.display}`,
           href: site.ctas.call.href,
           variant: 'ghost',
         }}
-        tertiary={{ label: 'Start a Free Trial', to: site.ctas.trial.to, variant: 'link' }}
+        tertiary={{ label: site.ctas.trial.label, to: site.ctas.trial.to, variant: 'link' }}
       />
     </PagePose>
   );

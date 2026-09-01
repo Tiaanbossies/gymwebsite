@@ -20,7 +20,7 @@ const Threads = lazy(() => import('../ui/Threads.jsx'));
 export default function CTASection({
   eyebrow = 'Ready to train?',
   title = 'Stop overthinking it. Come try us.',
-  description = "Start with a free trial, or just pick up the phone. We're a small team — you'll talk to someone who knows the gym.",
+  description = "Start with a free open-gym trial, or just pick up the phone. We're a small team — you'll talk to someone who knows the gym.",
   primary = { label: site.ctas.join.label, to: site.ctas.join.to },
   secondary = {
     label: `Call ${site.phone.display}`,
@@ -28,7 +28,7 @@ export default function CTASection({
     variant: 'ghost',
     iconNode: <Phone size={14} strokeWidth={2.5} />,
   },
-  tertiary = { label: 'Start a Free Trial', to: site.ctas.trial.to, variant: 'link' },
+  tertiary = { label: site.ctas.trial.label, to: site.ctas.trial.to, variant: 'link' },
   variant = 'default',
 }) {
   const isBrand = variant === 'default';

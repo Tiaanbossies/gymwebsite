@@ -7,6 +7,8 @@ import tls from 'node:tls';
 import { fileURLToPath } from 'node:url';
 
 import { generateSalesReply } from './server/salesAgent.mjs';
+import { sendWelcomeEmail } from './server/welcomeEmail.mjs';
+import { site } from './src/lib/site.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distDir = path.join(__dirname, 'dist');
@@ -410,6 +412,13 @@ async function handleSendAgreement(req, res) {
       signature_date: formData.signatureDate || null,
     }).catch((err) => console.error('Supabase member insert failed:', err));
   }
+
+  // Best-effort: a welcome-email failure must never fail this response — the
+  // member's agreement is already emailed and recorded above.
+  await sendWelcomeEmail(
+    { memberName, memberEmail, formData, smtpConfig, site },
+    { buildMime, sendSmtpMail },
+  );
 
   sendJson(res, 200, { ok: true });
 }

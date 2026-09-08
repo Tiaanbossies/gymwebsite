@@ -120,8 +120,9 @@ export default function Onboarding() {
                       Not ready to sign yet?
                     </p>
                     <p className="mt-2 text-sm leading-relaxed text-ink-300">
-                      Start with the free trial instead. Come see the floor, meet the team, and then
-                      circle back to the agreement if it feels right.
+                      Start with the free open-gym trial instead (open-gym access only, not a personal
+                      training session). Come see the floor, meet the team, and then circle back to
+                      the agreement if it feels right.
                     </p>
                   </div>
                 </div>

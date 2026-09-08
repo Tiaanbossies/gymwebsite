@@ -13,6 +13,17 @@ function useElementWidth(ref) {
   const [width, setWidth] = useState(0);
 
   useLayoutEffect(() => {
+    // react-snap prerenders with a real browser (its default `userAgent:
+    // "ReactSnap"`, see node_modules/react-snap/index.js), so this layout
+    // effect actually runs and measures a real width during the build-time
+    // crawl — baking a non-zero `x` transform into the static HTML. A real
+    // visitor's client then hydrates starting from `width: 0` again (state
+    // always restarts at 0 on mount), which no longer matches that baked
+    // value and throws a hydration mismatch. Skipping the measurement during
+    // the crawl keeps the snapshot's `x` at the same `0px` the client's own
+    // first paint will produce, so hydration has nothing to reconcile.
+    if (navigator.userAgent.includes('ReactSnap')) return;
+
     function updateWidth() {
       if (ref.current) {
         setWidth(ref.current.offsetWidth);

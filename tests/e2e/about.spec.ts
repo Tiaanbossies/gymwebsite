@@ -24,7 +24,7 @@ test.describe('About page', () => {
   });
 
   test('CTA section is present', async ({ page }) => {
-    const cta = page.locator('a[href="/onboarding"], a[href="/contact"]').first();
+    const cta = page.locator('a[href="/onboarding"]:visible, a[href="/contact"]:visible').first();
     await expect(cta).toBeVisible();
   });
 });

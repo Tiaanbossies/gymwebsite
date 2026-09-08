@@ -70,6 +70,8 @@ export const site = {
   // "Join Online", "Call the Gym", "Send an Enquiry" were checked.
   // (Book a Consultation and Book a Class were NOT checked.)
   // Free Trial is offered (Q52), so we surface it as a conversion path.
+  // Scoped to open-gym access only — not personal training — per client
+  // feedback that walk-ins were reading "free trial" as a free PT session.
   ctas: {
     // Join Online now routes to the in-site membership agreement + sign-up
     // flow so the user never has to leave the website to complete it.
@@ -77,7 +79,7 @@ export const site = {
     call:    { label: 'Call the Gym',   href: 'tel:+27724827922' },
     enquire: { label: 'Send an Enquiry', to: '/contact' },
     whatsapp:{ label: 'WhatsApp Us',    href: 'https://wa.me/27724827922' },
-    trial:   { label: 'Start a Free Trial', to: '/contact?intent=trial' },
+    trial:   { label: 'Start a Free Open-Gym Trial', to: '/contact?intent=trial' },
     pricing: { label: 'See Full Pricing', to: '/pricing' },
     tour:    { label: 'Book a Gym Tour', to: '/contact?intent=tour' },
   },

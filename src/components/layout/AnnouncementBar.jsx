@@ -41,11 +41,11 @@ export default function AnnouncementBar() {
       <div className="container-x flex flex-wrap items-center justify-center gap-x-3 gap-y-1 py-2 pr-10 text-center text-[11px] font-medium text-ink-100">
         <span className="inline-flex items-center gap-1.5 text-brand-200">
           <Sparkles size={13} strokeWidth={2.5} />
-          Free Trial available
+          Free open-gym trial available
         </span>
         <span className="hidden text-ink-500 sm:inline">·</span>
         <span className="text-ink-300">
-          Come try {site.name} before you commit —{' '}
+          Try open-gym access at {site.name} before you commit (not personal training) —{' '}
           <Link
             to={site.ctas.trial.to}
             className="font-semibold text-white underline decoration-accent-400/60 decoration-2 underline-offset-4 hover:decoration-accent-300"

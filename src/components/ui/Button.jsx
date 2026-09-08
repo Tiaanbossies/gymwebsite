@@ -8,13 +8,15 @@ function PulseRing() {
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // One-shot on mount, not looped — a primary button pulsing forever at
+    // rest violates the design system's Hover-Earns-It rule (glow/motion is
+    // an interaction reward, never ambient decoration).
     const anim = anime({
       targets: ref.current,
       scale: [1, 1.7],
       opacity: [0.5, 0],
       duration: 2200,
       easing: 'easeOutExpo',
-      loop: true,
       delay: 1800,
     });
     return () => anim.pause();

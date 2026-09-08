@@ -465,10 +465,10 @@ function GalleryPage() {
       <CTASection
         eyebrow="Like what you see?"
         title="Come see it in person."
-        description="Book a free trial, give us a call, or send a WhatsApp — we'll show you around the floor."
+        description="Book a free open-gym trial, give us a call, or send a WhatsApp — we'll show you around the floor."
         primary={{ label: site.ctas.join.label, to: site.ctas.join.to }}
         secondary={{ label: `Call ${site.phone.display}`, href: site.ctas.call.href, variant: 'ghost' }}
-        tertiary={{ label: 'Start a Free Trial', to: site.ctas.trial.to, variant: 'link' }}
+        tertiary={{ label: site.ctas.trial.label, to: site.ctas.trial.to, variant: 'link' }}
       />
     </PagePose>
   );

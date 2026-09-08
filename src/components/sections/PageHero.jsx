@@ -13,7 +13,7 @@ const SITE_ORIGIN = 'https://bossiesgym.co.za';
  * Breadcrumbs (when provided) render both the visual nav and a matching
  * BreadcrumbList JSON-LD block via useStructuredData.
  */
-export default function PageHero({ eyebrow, title, description, imagePath, lightOverlay = false, breadcrumbs = [] }) {
+export default function PageHero({ eyebrow, title, description, imagePath, lightOverlay = false, breadcrumbs = [], lastUpdated }) {
   useStructuredData(
     breadcrumbs.length > 0
       ? {
@@ -117,6 +117,16 @@ export default function PageHero({ eyebrow, title, description, imagePath, light
               transition={{ duration: 0.6, delay: 0.1 }}
             >
               {description}
+            </motion.p>
+          )}
+          {lastUpdated && (
+            <motion.p
+              className="mt-4 text-xs text-ink-400"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+            >
+              Last reviewed {lastUpdated}.
             </motion.p>
           )}
         </div>

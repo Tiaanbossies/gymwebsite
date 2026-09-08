@@ -176,9 +176,11 @@ export default function Services() {
                     >
                       {s.cta.label}
                     </Button>
-                    <Button to={site.ctas.trial.to} variant="link">
-                      Start a free trial
-                    </Button>
+                    {s.id !== 'personal-training' && (
+                      <Button to={site.ctas.trial.to} variant="link">
+                        Free open-gym trial
+                      </Button>
+                    )}
                   </div>
                 </div>
 
@@ -204,14 +206,14 @@ export default function Services() {
       <CTASection
         eyebrow="Not sure which fits?"
         title="Chat to a coach first. No pressure."
-        description="Give us a call, send a WhatsApp, or book a free trial. We'll walk you through the floor and help you pick what makes sense."
+        description="Give us a call, send a WhatsApp, or book a free open-gym trial. We'll walk you through the floor and help you pick what makes sense."
         primary={{ label: site.ctas.join.label, to: site.ctas.join.to }}
         secondary={{
           label: `Call ${site.phone.display}`,
           href: site.ctas.call.href,
           variant: 'ghost',
         }}
-        tertiary={{ label: 'Start a Free Trial', to: site.ctas.trial.to, variant: 'link' }}
+        tertiary={{ label: site.ctas.trial.label, to: site.ctas.trial.to, variant: 'link' }}
       />
     </PagePose>
   );

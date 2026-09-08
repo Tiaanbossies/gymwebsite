@@ -17,7 +17,8 @@ const ALL_FOOTER_PATHS = [
 ];
 
 test.describe('Navigation', () => {
-  test('desktop nav links are visible and functional', async ({ page }) => {
+  test('desktop nav links are visible and functional', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name === 'mobile-chrome', 'Desktop nav is intentionally hidden on mobile — see Header.jsx');
     await page.goto('/');
     for (const { label, path } of DESKTOP_NAV_LINKS) {
       const link = page.locator(`nav a:has-text("${label}")`).first();

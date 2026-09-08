@@ -49,7 +49,7 @@ export default function About() {
                 <p>
                   We serve Centurion, Midstream, Lyttelton and the surrounding suburbs with{' '}
                   <Link to="/services" className="text-brand-300 underline decoration-brand-500/40 underline-offset-2 hover:text-brand-200">personal training, open gym access, nutrition and body assessments</Link>
-                  {' '}— and we offer a free trial so you can see whether it's the right fit before committing to anything.
+                  {' '}— and we offer a free open-gym trial (not personal training) so you can see whether it's the right fit before committing to anything.
                 </p>
               </div>
 
@@ -186,14 +186,14 @@ export default function About() {
       <CTASection
         eyebrow="Train with Bossie's"
         title="A family gym that actually helps you progress."
-        description="Start with a free trial or a phone call — whichever feels easier."
+        description="Start with a free open-gym trial or a phone call — whichever feels easier."
         primary={{ label: site.ctas.join.label, to: site.ctas.join.to }}
         secondary={{
           label: `Call ${site.phone.display}`,
           href: site.ctas.call.href,
           variant: 'ghost',
         }}
-        tertiary={{ label: 'Start a Free Trial', to: site.ctas.trial.to, variant: 'link' }}
+        tertiary={{ label: site.ctas.trial.label, to: site.ctas.trial.to, variant: 'link' }}
       />
     </PagePose>
   );

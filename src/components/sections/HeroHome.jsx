@@ -1,16 +1,11 @@
 import { Fragment, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import anime from 'animejs';
-import ShinyText from '../ui/ShinyText.jsx';
-import Magnet from '../ui/Magnet.jsx';
-import ClickSpark from '../ui/ClickSpark.jsx';
 
 import Container from '../ui/Container.jsx';
 import Button from '../ui/Button.jsx';
 import { site, fadeUp, stagger } from '../../lib/site.js';
-import { useCountUp } from '../../hooks/useCountUp.js';
 
 // ─── Headline word map ────────────────────────────────────────────────────────
 
@@ -70,26 +65,35 @@ export default function HeroHome() {
           variants={stagger}
           initial="hidden"
           animate="show"
-          className="grid gap-12 lg:grid-cols-[1fr_auto] lg:items-center xl:gap-20"
+          className="grid gap-12"
         >
           {/* Left: Copy stack */}
           <motion.div variants={fadeUp} className="max-w-2xl">
-            <div className="flex flex-wrap items-center gap-3 mb-6">
+            {/* Sequenced to start only after the word-by-word headline reveal
+                finishes (last word starts at 180ms + 10 * 55ms stagger =
+                730ms, animates 700ms -> settles at ~1430ms), so the badge row
+                doesn't compete with the headline for attention on load. */}
+            <motion.div
+              className="flex flex-wrap items-center gap-3 mb-6"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 1.43, ease: [0.22, 1, 0.36, 1] }}
+            >
               <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">
                 <span aria-hidden="true">● </span>Hennopspark · Centurion &amp; Midstream
               </span>
-              <span aria-hidden="true" className="text-ink-500">·</span>
+              <span aria-hidden="true" className="text-ink-300">·</span>
               <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-300">
                 Family-run since day one
               </span>
-              <ShinyText
-                text="✦ Free trial available"
-                color="#8fafc3"
-                shineColor="#ffffff"
-                speed={3}
-                className="text-[11px] font-semibold uppercase tracking-[0.22em]"
-              />
-            </div>
+              {/* Plain solid text, not ShinyText's gradient-clip shimmer —
+                  DESIGN.md bans background-clip:text gradients outright, and
+                  the shimmer sweep was one more thing firing on mount
+                  alongside the headline and this badge row. */}
+              <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8fafc3]">
+                ✦ Free open-gym trial available
+              </span>
+            </motion.div>
 
             {/* Word-by-word animated headline */}
             <h1
@@ -116,21 +120,21 @@ export default function HeroHome() {
               Body assessments.
             </p>
 
-            <ClickSpark sparkColor="#dc2b38" sparkCount={8} sparkSize={9} sparkRadius={28} duration={500}>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Magnet magnetStrength={3} padding={50}>
-                  <Button to={site.ctas.join.to} data-track="Join Now — Hero" iconNode={<ArrowUpRight size={16} strokeWidth={2.5} />}>
-                    {site.ctas.join.label}
-                  </Button>
-                </Magnet>
-                <Button to={site.ctas.trial.to} variant="ghost" data-track="Free Trial — Hero">
-                  Start a free trial
-                </Button>
-                <Button href={site.ctas.call.href} variant="link" data-track="Call Gym — Hero">
-                  Call {site.phone.display}
-                </Button>
-              </div>
-            </ClickSpark>
+            {/* Plain buttons — the primary variant's own static hover-glow
+                (Button.jsx / btn-primary) already signals "this is
+                interactive" per the Hover-Earns-It rule, so the Magnet pull
+                and ClickSpark particle burst were redundant flourishes. */}
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button to={site.ctas.join.to} data-track="Join Now — Hero" iconNode={<ArrowUpRight size={16} strokeWidth={2.5} />}>
+                {site.ctas.join.label}
+              </Button>
+              <Button to={site.ctas.trial.to} variant="ghost" data-track="Free Trial — Hero">
+                Free open-gym trial
+              </Button>
+              <Button href={site.ctas.call.href} variant="link" data-track="Call Gym — Hero">
+                Call {site.phone.display}
+              </Button>
+            </div>
 
             <div className="mt-10 pt-10 border-t border-white/10 grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div className="min-w-0">
@@ -143,60 +147,18 @@ export default function HeroHome() {
               </div>
               <div className="min-w-0">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400 mb-1">Pricing</p>
-                <p className="font-display text-sm text-white">R100 day pass · PT from R2,100</p>
+                {/* Leads with the month-to-month rate (site.pricing.openGym[0],
+                    no lock-in) rather than the 12-month-contract figure, so the
+                    hero doesn't anchor on a number that needs a contract-length
+                    caveat to be accurate — that caveat now sits right below it
+                    instead of living only on /pricing. */}
+                <p className="font-display text-sm text-white">R100 day pass · Open gym from R450/mo · PT from R2,100</p>
+                <p className="mt-0.5 text-[11px] text-ink-400">From R360/mo on a 12-month plan</p>
               </div>
-            </div>
-          </motion.div>
-
-          {/* Right: Stat cards */}
-          <motion.div
-            variants={fadeUp}
-            className="grid gap-3 grid-cols-1 sm:grid-cols-3 lg:flex lg:flex-col lg:w-[320px]"
-          >
-            <StatCard label="Open gym"          value="From R360" detail="per month (12-month)" accent />
-            <StatCard label="Personal training" value="R2,100"    detail="3 sessions/week" />
-            <StatCard label="Day pass"          value="R100"      detail="no contract" />
-
-            <div className="hidden lg:flex flex-col mt-4 rounded-2xl border border-accent-500/30 bg-gradient-to-br from-accent-500/10 to-brand-500/10 p-6 backdrop-blur-md">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-300 mb-2">Next step</p>
-              <p className="font-display text-base tracking-headline text-white mb-3">Try it first</p>
-              <p className="text-xs text-ink-200 mb-5 leading-relaxed">
-                Book a free trial session and come see the floor. No sign-up, no pressure.
-              </p>
-              <Link
-                to={site.ctas.trial.to}
-                className="mt-auto inline-block text-xs font-semibold text-accent-300 hover:text-accent-200 transition-colors"
-              >
-                Start your trial →
-              </Link>
             </div>
           </motion.div>
         </motion.div>
       </Container>
     </section>
-  );
-}
-
-// ─── StatCard with count-up ───────────────────────────────────────────────────
-
-function StatCard({ label, value, detail, accent = false }) {
-  const valRef = useCountUp(value);
-
-  return (
-    <motion.div
-      variants={fadeUp}
-      className={`flex flex-col justify-center rounded-2xl border p-5 backdrop-blur-md transition-colors ${
-        accent ? 'border-brand-500/40 bg-brand-500/15' : 'border-white/10 bg-ink-950/50'
-      }`}
-    >
-      <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-300">{label}</p>
-      <p
-        ref={valRef}
-        className={`mt-2 font-display text-2xl tracking-headline ${accent ? 'text-brand-300' : 'text-white'}`}
-      >
-        {value}
-      </p>
-      <p className="mt-1 text-xs text-ink-300">{detail}</p>
-    </motion.div>
   );
 }

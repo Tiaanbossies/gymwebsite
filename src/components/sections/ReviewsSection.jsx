@@ -46,7 +46,7 @@ export default function ReviewsSection({ featuredOnly = true }) {
               </p>
               <p className="text-[11px] text-ink-400">See all on Google</p>
             </div>
-            <ExternalLink size={14} className="text-ink-500" />
+            <ExternalLink size={14} className="text-ink-300" />
           </a>
         </div>
 
@@ -93,19 +93,23 @@ function ReviewCard({ review }) {
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500/20 text-sm font-bold text-brand-300 ring-1 ring-brand-500/30">
+          {/* Mist White, not Soft Rose (brand-300/#ff8d96) — Soft Rose clears
+              only ~2.1:1 against a solid Bossie Red surface (verified against
+              #dc2b38 directly), so avatar initials use the token that clears
+              4.5:1 regardless of how strong the red tint behind them gets. */}
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500/20 text-sm font-bold text-white ring-1 ring-brand-500/30">
             {initials}
           </div>
           <div>
             <p className="text-sm font-semibold text-white leading-tight">{review.name}</p>
             {review.isLocalGuide && (
-              <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-ink-500">
+              <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-ink-300">
                 Local Guide
               </p>
             )}
           </div>
         </div>
-        <span className="shrink-0 text-[11px] text-ink-500">{review.date}</span>
+        <span className="shrink-0 text-[11px] text-ink-300">{review.date}</span>
       </div>
 
       <div className="flex items-center gap-0.5" aria-hidden="true">
@@ -119,7 +123,7 @@ function ReviewCard({ review }) {
 
       <div className="flex items-center gap-2 border-t border-white/5 pt-3">
         <GoogleColourLogo />
-        <span className="text-[11px] text-ink-500">Posted on Google</span>
+        <span className="text-[11px] text-ink-300">Posted on Google</span>
       </div>
     </motion.li>
   );

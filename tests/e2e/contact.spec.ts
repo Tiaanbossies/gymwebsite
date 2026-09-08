@@ -10,7 +10,7 @@ test.describe('Contact page', () => {
   });
 
   test('phone number 072 482 7922 is shown', async ({ page }) => {
-    await expect(page.locator('text=/072 482 7922/').first()).toBeVisible();
+    await expect(page.locator(':text-matches("072 482 7922"):visible').first()).toBeVisible();
   });
 
   test('address Hennopspark is mentioned', async ({ page }) => {

@@ -120,7 +120,10 @@ export default function MobileNav({ open, onClose }) {
                 </Button>
               </div>
 
-              <p className="mt-6 text-center text-[11px] uppercase tracking-[0.22em] text-ink-500">
+              {/* Normal case, not all-caps — this is a full street address
+                  (up to ~40 chars), not a short Label-scale tag, so all-caps
+                  tracking hurt readability without adding anything. */}
+              <p className="mt-6 text-center text-[11px] font-medium tracking-[0.04em] text-ink-500">
                 {site.location.line1}, {site.location.city}
               </p>
             </nav>

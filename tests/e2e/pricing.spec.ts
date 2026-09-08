@@ -34,7 +34,7 @@ test.describe('Pricing page', () => {
   });
 
   test('join CTA is present', async ({ page }) => {
-    const cta = page.locator('a[href="/onboarding"], a[href="/join"]').first();
+    const cta = page.locator('a[href="/onboarding"]:visible, a[href="/join"]:visible').first();
     await expect(cta).toBeVisible();
   });
 });

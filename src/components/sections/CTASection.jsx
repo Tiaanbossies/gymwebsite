@@ -4,8 +4,6 @@ import { ArrowUpRight, Phone } from 'lucide-react';
 
 import Container from '../ui/Container.jsx';
 import Button from '../ui/Button.jsx';
-import ShinyText from '../ui/ShinyText.jsx';
-import ClickSpark from '../ui/ClickSpark.jsx';
 import { fadeUp, site } from '../../lib/site.js';
 
 // Purely decorative WebGL backdrop. Loading `ogl` lazily keeps it out of the
@@ -22,7 +20,7 @@ const Threads = lazy(() => import('../ui/Threads.jsx'));
 export default function CTASection({
   eyebrow = 'Ready to train?',
   title = 'Stop overthinking it. Come try us.',
-  description = "Start with a free trial, or just pick up the phone. We're a small team — you'll talk to someone who knows the gym.",
+  description = "Start with a free open-gym trial, or just pick up the phone. We're a small team — you'll talk to someone who knows the gym.",
   primary = { label: site.ctas.join.label, to: site.ctas.join.to },
   secondary = {
     label: `Call ${site.phone.display}`,
@@ -30,7 +28,7 @@ export default function CTASection({
     variant: 'ghost',
     iconNode: <Phone size={14} strokeWidth={2.5} />,
   },
-  tertiary = { label: 'Start a Free Trial', to: site.ctas.trial.to, variant: 'link' },
+  tertiary = { label: site.ctas.trial.label, to: site.ctas.trial.to, variant: 'link' },
   variant = 'default',
 }) {
   const isBrand = variant === 'default';
@@ -62,11 +60,33 @@ export default function CTASection({
           )}
           <div className="relative flex flex-col items-start gap-8 xl:flex-row xl:items-end xl:justify-between">
             <div className="max-w-2xl">
-              <ShinyText text={eyebrow} color="#ff8d96" shineColor="#ffffff" speed={4} className="eyebrow" />
+              {isBrand ? (
+                // Plain solid text, not ShinyText's gradient-clip shimmer: Soft
+                // Rose is calibrated for eyebrows on neutral dark backgrounds,
+                // and against this card's red glow it drops well under WCAG AA
+                // contrast. A gradient-clipped fill also can't be reasoned
+                // about as a single contrast-checkable color, so Mist White as
+                // plain text is both the accessible and the simplest fix.
+                <span className="eyebrow text-[#f5f6fa]">{eyebrow}</span>
+              ) : (
+                // Same reasoning as the brand-variant eyebrow above: plain
+                // solid text, not ShinyText's background-clip:text shimmer,
+                // which DESIGN.md's Don'ts ban outright regardless of color.
+                <span className="eyebrow">{eyebrow}</span>
+              )}
               <h2 className="mt-3 display-2 text-white text-balance">{title}</h2>
-              {description && <p className="mt-5 body-lg text-balance">{description}</p>}
+              {description && (
+                // Cool Slate (.body-lg's default) is calibrated against a
+                // near-black background, same issue as the eyebrow above —
+                // this card's red-tinted gradient needs a lighter override.
+                <p className={`mt-5 body-lg text-balance ${isBrand ? 'text-white' : ''}`}>
+                  {description}
+                </p>
+              )}
             </div>
-            <ClickSpark sparkColor="#dc2b38" sparkCount={8} sparkSize={9} sparkRadius={28} duration={500}>
+            {/* Plain button row — Button.jsx's own hover-glow already
+                satisfies Hover-Earns-It; the click-particle burst was a
+                redundant flourish on top of it. */}
             <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap xl:w-auto xl:justify-end">
               {primary && (
                 <Button
@@ -103,7 +123,6 @@ export default function CTASection({
                 </Button>
               )}
             </div>
-            </ClickSpark>
           </div>
         </motion.div>
       </Container>

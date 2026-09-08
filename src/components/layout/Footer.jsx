@@ -71,9 +71,13 @@ export default function Footer() {
           />
 
           <div>
-            <h4 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">
+            {/* h3, not h4 — the page's last heading before the footer is
+                CTASection's h2, so footer nav groups step down one level
+                rather than skipping straight to h4. Visual size is controlled
+                entirely by the classes below, unaffected by the tag change. */}
+            <h3 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">
               Visit & Contact
-            </h4>
+            </h3>
             {/* Semantic NAP block — <address> is the signal Google's local
                 search uses to recognise the business's contact details. The
                 JSON-LD in index.html still does the heavy SEO lifting; this
@@ -116,15 +120,19 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-16 border-t border-white/10 pt-8 text-xs text-ink-500">
+        <div className="mt-16 border-t border-white/10 pt-8 text-xs text-ink-300">
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-            <p>© {year} {site.fullName}. All rights reserved.</p>
-            <p className="text-ink-500">
+            {/* suppressHydrationWarning: the year is computed at render time,
+                so react-snap's build-time snapshot and a visitor's live render
+                will disagree for the one day a year the build predates a
+                rollover. React's documented pattern for exactly this case. */}
+            <p>© <span suppressHydrationWarning>{year}</span> {site.fullName}. All rights reserved.</p>
+            <p className="text-ink-300">
               Family-run in {site.location.city}, serving {site.areasServed.slice(0, 2).join(' & ')}.
             </p>
           </div>
 
-          <p className="mt-6 text-ink-500">
+          <p className="mt-6 text-ink-300">
             Designed, built &amp; maintained by{' '}
             <a
               href={site.credit.url}
@@ -145,7 +153,8 @@ export default function Footer() {
 function FooterCol({ title, links }) {
   return (
     <div>
-      <h4 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">{title}</h4>
+      {/* h3, not h4 — see the "Visit & Contact" heading above for why. */}
+      <h3 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-400">{title}</h3>
       <ul className="mt-5 flex flex-col gap-2.5">
         {links.map((l) => (
           <li key={l.to}>

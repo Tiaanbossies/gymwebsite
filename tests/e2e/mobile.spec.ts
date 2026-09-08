@@ -17,7 +17,7 @@ test.describe('Mobile responsiveness', () => {
     if (await toggle.isVisible()) {
       await toggle.click();
       await page.waitForTimeout(300);
-      await expect(page.locator('a[href="/services"]').first()).toBeVisible();
+      await expect(page.locator('a[href="/services"]:visible').first()).toBeVisible();
     } else {
       await expect(page.locator('a[href="/services"]').first()).toBeAttached();
     }
@@ -25,7 +25,7 @@ test.describe('Mobile responsiveness', () => {
 
   test('contact page phone number is a tel: link', async ({ page }) => {
     await page.goto('/contact');
-    const telLink = page.locator('a[href^="tel:"]').first();
+    const telLink = page.locator('a[href^="tel:"]:visible').first();
     await expect(telLink).toBeVisible();
   });
 

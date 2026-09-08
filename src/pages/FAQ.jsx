@@ -60,6 +60,7 @@ export default function FAQ() {
         description="The questions we get asked most. If something isn't covered here, send a WhatsApp and we'll come back to you."
         imagePath="/images/gym/reception-lounge.webp"
         breadcrumbs={[{ label: 'Home', to: '/' }, { label: 'FAQ' }]}
+        lastUpdated={__BUILD_DATE__}
       />
 
       <section className="section">

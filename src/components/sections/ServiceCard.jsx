@@ -43,10 +43,14 @@ export default function ServiceCard({
 
       <Link
         to={to}
-        aria-label={`Learn more about ${title}`}
         className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-brand-400 transition-colors hover:text-brand-300"
       >
-        Learn more
+        {/* Visible label stays terse for the card's compact CTA styling; the
+            sr-only suffix makes the link's actual text content — what both
+            screen readers and search-engine crawlers read — describe the
+            destination instead of two generic "Learn more" links pointing
+            at different anchors on /services. */}
+        Learn more<span className="sr-only"> about {title}</span>
         <ArrowUpRight
           size={14}
           className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"

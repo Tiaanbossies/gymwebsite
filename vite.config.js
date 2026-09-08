@@ -1,7 +1,22 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
+// Computed once when Vite evaluates this config (build start), not in the
+// browser — the literal gets substituted into the bundle at compile time, so
+// react-snap's crawl and every later visitor read the exact same baked-in
+// string. A `new Date()` call inside a component, by contrast, re-evaluates
+// on every render and is exactly the hydration-mismatch pattern already
+// fixed in Footer.jsx — don't reintroduce that shape for this value.
+const BUILD_DATE = new Date().toLocaleDateString('en-ZA', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+
 export default defineConfig({
+  define: {
+    __BUILD_DATE__: JSON.stringify(BUILD_DATE),
+  },
   plugins: [react()],
   server: {
     port: 5173,

@@ -67,6 +67,7 @@ export default function Pricing() {
         imagePath="/images/gym/assessment-desk.webp"
         lightOverlay
         breadcrumbs={[{ label: 'Home', to: '/' }, { label: 'Pricing' }]}
+        lastUpdated={__BUILD_DATE__}
       />
 
       {/* At-a-glance strip */}

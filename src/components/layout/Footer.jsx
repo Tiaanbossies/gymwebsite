@@ -122,7 +122,11 @@ export default function Footer() {
 
         <div className="mt-16 border-t border-white/10 pt-8 text-xs text-ink-300">
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-            <p>© {year} {site.fullName}. All rights reserved.</p>
+            {/* suppressHydrationWarning: the year is computed at render time,
+                so react-snap's build-time snapshot and a visitor's live render
+                will disagree for the one day a year the build predates a
+                rollover. React's documented pattern for exactly this case. */}
+            <p>© <span suppressHydrationWarning>{year}</span> {site.fullName}. All rights reserved.</p>
             <p className="text-ink-300">
               Family-run in {site.location.city}, serving {site.areasServed.slice(0, 2).join(' & ')}.
             </p>

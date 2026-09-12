@@ -27,9 +27,12 @@ WORKDIR /app
 RUN addgroup -g 1001 -S app && adduser -S app -u 1001
 
 # Only copy what the server needs at runtime
-COPY --from=build --chown=app:app /app/dist        ./dist
-COPY --from=build --chown=app:app /app/server.mjs  ./server.mjs
-COPY --from=build --chown=app:app /app/package.json ./package.json
+COPY --from=build --chown=app:app /app/dist               ./dist
+COPY --from=build --chown=app:app /app/server.mjs         ./server.mjs
+COPY --from=build --chown=app:app /app/server             ./server
+COPY --from=build --chown=app:app /app/src/lib/site.js    ./src/lib/site.js
+COPY --from=build --chown=app:app /app/src/data/faqQA.js  ./src/data/faqQA.js
+COPY --from=build --chown=app:app /app/package.json       ./package.json
 
 USER app
 

@@ -24,9 +24,9 @@ export default function FAQAccordion({ items = [] }) {
               aria-expanded={isOpen}
               aria-controls={panelId}
             >
-              <span className="pr-2 font-display text-base tracking-headline text-white sm:text-lg">
+              <h3 className="m-0 pr-2 font-display text-base font-normal tracking-headline text-white sm:text-lg">
                 {item.question}
-              </span>
+              </h3>
               <span
                 className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-ink-200 transition-transform duration-300 ${
                   isOpen ? 'rotate-45 border-brand-500/50 text-brand-400' : ''

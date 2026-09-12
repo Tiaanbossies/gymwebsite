@@ -29,7 +29,8 @@
 			"/gallery",
 			"/about",
 			"/faq",
-			"/contact"
+			"/contact",
+			"/community"
 		],
 		"puppeteerArgs": [
 			"--no-sandbox",

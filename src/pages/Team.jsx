@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowUpRight, Trophy, HeartHandshake, Users2, Flame } from 'lucide-react';
 
@@ -8,6 +9,7 @@ import SectionHeading from '../components/ui/SectionHeading.jsx';
 import CTASection from '../components/sections/CTASection.jsx';
 import Button from '../components/ui/Button.jsx';
 import Reveal from '../components/ui/Reveal.jsx';
+import { useStructuredData } from '../hooks/useStructuredData.js';
 import { site, fadeUp, stagger } from '../lib/site.js';
 
 // Slower per-row cadence than the shared `stagger` — the trainer roster should
@@ -141,6 +143,21 @@ function initials(name) {
 }
 
 export default function Team() {
+  const trainerSchema = useMemo(
+    () =>
+      team.map((person) => ({
+        '@type': 'Person',
+        name: person.name,
+        jobTitle: person.role,
+        worksFor: { '@id': 'https://bossiesgym.co.za/#gym' },
+      })),
+    []
+  );
+  useStructuredData({
+    '@context': 'https://schema.org',
+    '@graph': trainerSchema,
+  });
+
   return (
     <PagePose>
       <PageHero

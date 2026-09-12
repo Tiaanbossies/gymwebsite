@@ -52,6 +52,21 @@ export default function FAQ() {
     ),
   });
 
+  // Separate HowTo node for "How do I sign up?" — its answer is three
+  // alternative single steps (form / WhatsApp / call), not a strict sequence,
+  // but HowTo is still the right type for surfacing it as a step-by-step rich
+  // result. Sourced from the same faqQA.js entry as the FAQPage answer above,
+  // via its `steps` field.
+  const signUpSteps = faqGroups.flatMap((g) => g.items).find((item) => item.steps)?.steps;
+  useStructuredData(
+    signUpSteps && {
+      '@context': 'https://schema.org',
+      '@type': 'HowTo',
+      name: "How to sign up at Bossie's Gym",
+      step: signUpSteps.map((s) => ({ '@type': 'HowToStep', name: s.name, text: s.text })),
+    }
+  );
+
   return (
     <PagePose>
       <PageHero

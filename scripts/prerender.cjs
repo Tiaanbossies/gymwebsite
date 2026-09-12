@@ -61,7 +61,7 @@ const opts = {
   // react-snap's real option is `include` (default ["/"]) — not `routes`, which
   // is silently dropped by react-snap's option merge and was truncating every
   // build to a single prerendered page regardless of this list's contents.
-  include: ['/', '/services', '/membership', '/pricing', '/team', '/gallery', '/about', '/faq', '/contact'],
+  include: ['/', '/services', '/membership', '/pricing', '/team', '/gallery', '/about', '/faq', '/contact', '/community'],
   puppeteerArgs: [
     '--no-sandbox',
     '--disable-setuid-sandbox',

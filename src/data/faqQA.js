@@ -43,6 +43,13 @@ export const faqGroups = [
         // Plain-text mirror for FAQPage JSON-LD and the sales agent —
         // acceptedAnswer.text must be a string, and the agent never renders JSX.
         answerText: `Three options, pick the one that suits you best:\n• Fill in the form on our Contact page.\n• Send a WhatsApp to ${site.phone.display}.\n• Call the gym — we answer during opening hours.`,
+        // Plain steps (any one of the three completes sign-up) — feeds the
+        // HowTo schema in FAQ.jsx, separate from the FAQPage entry above.
+        steps: [
+          { name: 'Fill in the Contact page form', text: 'Go to the Contact page and submit the short enquiry form.' },
+          { name: 'Or send a WhatsApp', text: `Message ${site.phone.display} on WhatsApp.` },
+          { name: 'Or call the gym', text: `Call ${site.phone.display} during opening hours.` },
+        ],
       },
       {
         question: 'Is there a joining fee?',
